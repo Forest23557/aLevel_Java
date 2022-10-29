@@ -1,6 +1,5 @@
 package com.shulha;
 import java.util.Scanner;
-import java.util.regex.*;
 
 public class Main4 {
     public static void main(String[] args) {
@@ -35,8 +34,47 @@ public class Main4 {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Write your string: ");
-        String inputString = scanner.next();
+        String inputString = scanner.nextLine();
+
+        while (inputString.isBlank()) {
+            System.out.println("You wrote an empty string! Write a full string: ");
+            inputString = scanner.nextLine();
+        }
+
         System.out.println("Does the string \"" + myString + "\" has the substring \"" + inputString + "\"?");
         System.out.println(myString.indexOf(inputString) >= 0 ? true : false);
+        System.out.println();
+
+//      3.1
+        System.out.println("Task 3");
+
+        System.out.println("Write your second string: ");
+        String inputString1 = scanner.nextLine();
+
+        while (inputString1.isBlank()) {
+            System.out.println("You wrote an empty string! Write a full string: ");
+            inputString1 = scanner.nextLine();
+        }
+
+        System.out.println("Does the string \"" + myString + "\" has the substring \"" + inputString1 + "\"?");
+        System.out.println("The case of the strings will be ignored.");
+
+        myString = myString.toLowerCase();
+        inputString1 = inputString1.toLowerCase();
+        System.out.println(myString.indexOf(inputString1) >= 0 ? true : false);
+        System.out.println();
+//      3.2
+        String strForChecking = "Red";
+
+        System.out.println("Write your string for checking: ");
+        String inputString2 = scanner.nextLine();
+
+        while (inputString2.isBlank()) {
+            System.out.println("You wrote an empty string! Write a full string: ");
+            inputString2 = scanner.nextLine();
+        }
+
+        System.out.println("Does the string \"" + inputString2 + "\" starts with \"" + strForChecking + "\"?");
+        System.out.println(inputString2.startsWith(strForChecking));
     }
 }
