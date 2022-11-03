@@ -5,7 +5,32 @@ import java.util.Random;
 
 public class Main5 {
     public static void main(String[] args) {
-        bubbleSort(10);
+        task1(12);
+//        bubbleSort(10);
+    }
+
+//  Task 1
+    private static void task1(int arrLength) {
+        System.out.println("Task 1");
+
+        int[] randomArray = new int[arrLength];
+        final Random random = new Random();
+        int index = 0;
+
+        for (int i = 0; i < arrLength; i++) {
+            randomArray[i] = random.nextInt(30) - 15;
+        }
+
+        System.out.println("Our array: " + Arrays.toString(randomArray));
+
+        for (int i = 0; i < arrLength; i++) {
+            if (randomArray[i] >= randomArray[index]) {
+                index = i;
+            }
+        }
+
+        System.out.printf("The index of the biggest number: %d%n", index);
+        System.out.println();
     }
 
 //  Additional task
