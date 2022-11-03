@@ -5,10 +5,11 @@ import java.util.Random;
 
 public class Main5 {
     public static void main(String[] args) {
-//        task1(12);
-//        task2(8);
+        task1(12);
+        task2(8);
         task3(4);
-//        bubbleSort(10);
+        task4(5);
+        bubbleSort(10);
     }
 
 //  Task 1
@@ -20,7 +21,7 @@ public class Main5 {
         int index = 0;
 
         for (int i = 0; i < arrLength; i++) {
-            randomArray[i] = random.nextInt(30) - 15;
+            randomArray[i] = random.nextInt(31) - 15;
         }
 
         System.out.println("Our array: " + Arrays.toString(randomArray));
@@ -79,6 +80,45 @@ public class Main5 {
         }
 
         System.out.println(answer);
+        System.out.println();
+    }
+
+    //  Task 4
+    private static void task4(int arrLength) {
+        System.out.println("Task 4");
+
+        int[] randomArray = new int[arrLength];
+        int[] randomArray2 = new int[arrLength];
+        final Random random = new Random();
+        float firstArrAverage = 0F;
+        float secondArrAverage = 0F;
+
+        for (int i = 0; i < arrLength; i++) {
+            randomArray[i] = random.nextInt(6);
+            randomArray2[i] = random.nextInt(6);
+        }
+
+        System.out.println("Our first array: " + Arrays.toString(randomArray));
+        System.out.println("Our second array: " + Arrays.toString(randomArray2));
+
+        for (int i = 0; i < arrLength; i++) {
+            firstArrAverage += randomArray[i];
+            secondArrAverage += randomArray2[i];
+        }
+
+        firstArrAverage /= arrLength;
+        secondArrAverage /= arrLength;
+
+        if (firstArrAverage > secondArrAverage) {
+            System.out.printf("The average %.1f of the 1st array is bigger than the average %.1f of the 2nd array%n",
+                    firstArrAverage, secondArrAverage);
+        } else if (firstArrAverage == secondArrAverage) {
+            System.out.printf("The average of both arrays is equal: %.1f%n", firstArrAverage);
+        } else {
+            System.out.printf("The average %.1f of the 2nd array is bigger than the average %.1f of the 1st array%n",
+                    secondArrAverage, firstArrAverage);
+        }
+
         System.out.println();
     }
 
