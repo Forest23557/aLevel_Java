@@ -5,23 +5,22 @@ import java.util.Random;
 
 public class Main5 {
     public static void main(String[] args) {
-        bubbleSort();
+        bubbleSort(10);
     }
 
 //  Additional task
-    private static void bubbleSort() {
+    private static void bubbleSort(int arrLength) {
         System.out.println("Additional task");
 
-        int[] unsortedArray = new int[20];
+        int[] unsortedArray = new int[arrLength];
         final Random random = new Random();
 
-        for (int i = 0; i < unsortedArray.length; i++) {
+        for (int i = 0; i < arrLength; i++) {
             unsortedArray[i] = random.nextInt(100);
         }
 
         System.out.println("Our unsorted array: " + Arrays.toString(unsortedArray));
 
-        int arrLength = unsortedArray.length;
         for (int i = 0; i < arrLength - 1; i++) {
 
             for (int j = 0; j < arrLength - i - 1; j++) {
