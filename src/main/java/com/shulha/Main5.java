@@ -6,7 +6,8 @@ import java.util.Random;
 public class Main5 {
     public static void main(String[] args) {
 //        task1(12);
-        task2(8);
+//        task2(8);
+        task3(4);
 //        bubbleSort(10);
     }
 
@@ -52,6 +53,32 @@ public class Main5 {
         }
 
         System.out.println("The array after changing: " + Arrays.toString(randomArray));
+        System.out.println();
+    }
+
+    //  Task 3
+    private static void task3(int arrLength) {
+        System.out.println("Task 3");
+
+        int[] randomArray = new int[arrLength];
+        final Random random = new Random();
+        String answer = "Yes, it is.";
+
+        for (int i = 0; i < arrLength; i++) {
+            randomArray[i] = random.nextInt(90) + 10;
+        }
+
+        System.out.println("Our array: " + Arrays.toString(randomArray));
+        System.out.println("Is the array a strictly increasing sequence? ");
+
+        for (int i = 0; i < arrLength - 1; i++) {
+            if (randomArray[i] > randomArray[i + 1]) {
+                answer = "No, it isn't.";
+                break;
+            }
+        }
+
+        System.out.println(answer);
         System.out.println();
     }
 
