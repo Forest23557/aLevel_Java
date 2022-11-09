@@ -6,11 +6,11 @@ public class Car {
     final static Random random = new Random();
     final static int upperBound = 99_001;
 
-    String manufacturer;
-    String engine;
-    String color;
-    int count;
-    int price;
+    private String manufacturer;
+    private String engine;
+    private String color;
+    private int count;
+    private int price;
 
     public Car() {
         this("audi", "v12", "black");

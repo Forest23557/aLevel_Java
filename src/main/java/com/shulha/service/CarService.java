@@ -13,7 +13,7 @@ public class CarService {
 //      creating a random manufacturer
         String randomCarsManufacturer = "";
         try {
-            File cars = new File("D:/java/aLevel_Java/src/main/java/com/shulha/service/carsManufacturers.txt");
+            File cars = new File("src/main/java/com/shulha/service/carsManufacturers.txt");
             Scanner scan = new Scanner(cars);
             ArrayList<String> carsManufacturers = new ArrayList<>();
 
@@ -30,7 +30,7 @@ public class CarService {
 //      creating a random engine
         String randomCarEngine = "";
         try {
-            File engines = new File("D:/java/aLevel_Java/src/main/java/com/shulha/service/carsEngines.txt");
+            File engines = new File("src/main/java/com/shulha/service/carsEngines.txt");
             Scanner scan = new Scanner(engines);
             ArrayList<String> carEngines = new ArrayList<>();
 
@@ -47,7 +47,7 @@ public class CarService {
         //      creating a random color
         String randomCarColor = "";
         try {
-            File colors = new File("D:/java/aLevel_Java/src/main/java/com/shulha/service/carsColors.txt");
+            File colors = new File("src/main/java/com/shulha/service/carsColors.txt");
             Scanner scan = new Scanner(colors);
             ArrayList<String> carColors = new ArrayList<>();
 
