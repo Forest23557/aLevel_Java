@@ -4,31 +4,26 @@ import com.shulha.model.Car;
 import java.util.Random;
 
 public class CarService {
-    private final Random random = new Random();
-
-    private String carsManufacturer;
-    private String carEngine;
-    private String carColor;
-    private int randomIndex;
+    private final Random RANDOM = new Random();
 
     private String getRandomManufacturer() {
         CarsManufacturers[] carsManufacturers = CarsManufacturers.values();
-        randomIndex = random.nextInt(carsManufacturers.length);
-        carsManufacturer = carsManufacturers[randomIndex].toString();
+        int randomIndex = RANDOM.nextInt(carsManufacturers.length);
+        String carsManufacturer = carsManufacturers[randomIndex].toString();
         return carsManufacturer;
     }
 
     private String getRandomEngine() {
         CarsEngines[] carsEngines = CarsEngines.values();
-        randomIndex = random.nextInt(carsEngines.length);
-        carEngine = carsEngines[randomIndex].toString();
+        int randomIndex = RANDOM.nextInt(carsEngines.length);
+        String carEngine = carsEngines[randomIndex].toString();
         return carEngine;
     }
 
     private String getRandomColor() {
         CarsColors[] carsColors = CarsColors.values();
-        randomIndex = random.nextInt(carsColors.length);
-        carColor = carsColors[randomIndex].toString();
+        int randomIndex = RANDOM.nextInt(carsColors.length);
+        String carColor = carsColors[randomIndex].toString();
         return carColor;
     }
     public Car create() {
@@ -41,32 +36,11 @@ public class CarService {
 //      creating a random color
         getRandomColor();
 
-        return new Car(carsManufacturer, carEngine, carColor);
+        return new Car(getRandomManufacturer(), getRandomEngine(), getRandomColor());
     }
 
     public Car create(final String manufacturer, final String engine, final String color) {
-        if (manufacturer.isBlank()) {
-//          creating a random manufacturer
-            getRandomManufacturer();
-        } else {
-            this.carsManufacturer = manufacturer;
-        }
-
-        if (engine.isBlank()) {
-//          creating a random engine
-            getRandomEngine();
-        } else {
-            this.carEngine = engine;
-        }
-
-        if (color.isBlank()) {
-//          creating a random color
-            getRandomColor();
-        } else {
-            this.carColor = color;
-        }
-
-        return new Car(carsManufacturer, carEngine, carColor);
+        return new Car(manufacturer, engine, color);
     }
 
 
