@@ -7,64 +7,77 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class CarService {
-    public Car create() {
-        final Random random = new Random();
+    private final Random random = new Random();
 
-//      creating a random manufacturer
-        String randomCarsManufacturer = "";
-        try {
-            File cars = new File("src/main/java/com/shulha/service/carsManufacturers.txt");
-            Scanner scan = new Scanner(cars);
-            ArrayList<String> carsManufacturers = new ArrayList<>();
+    private String carsManufacturer;
+    private String carEngine;
+    private String carColor;
+    private Car car;
+    private int randomIndex;
 
-            while (scan.hasNext()) {
-                carsManufacturers.add(scan.next());
-            }
-
-            int randomIndex = random.nextInt(carsManufacturers.size());
-            randomCarsManufacturer = carsManufacturers.get(randomIndex).toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-//      creating a random engine
-        String randomCarEngine = "";
-        try {
-            File engines = new File("src/main/java/com/shulha/service/carsEngines.txt");
-            Scanner scan = new Scanner(engines);
-            ArrayList<String> carEngines = new ArrayList<>();
-
-            while (scan.hasNext()) {
-                carEngines.add(scan.next());
-            }
-
-            int randomIndex = random.nextInt(carEngines.size());
-            randomCarEngine = carEngines.get(randomIndex).toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //      creating a random color
-        String randomCarColor = "";
-        try {
-            File colors = new File("src/main/java/com/shulha/service/carsColors.txt");
-            Scanner scan = new Scanner(colors);
-            ArrayList<String> carColors = new ArrayList<>();
-
-            while (scan.hasNext()) {
-                carColors.add(scan.next());
-            }
-
-            int randomIndex = random.nextInt(carColors.size());
-            randomCarColor = carColors.get(randomIndex).toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return new Car(randomCarsManufacturer, randomCarEngine, randomCarColor);
+    private String getRandomManufacturer() {
+        CarsManufacturers[] carsManufacturers = CarsManufacturers.values();
+        randomIndex = random.nextInt(carsManufacturers.length);
+        carsManufacturer = carsManufacturers[randomIndex].toString();
+        return carsManufacturer;
     }
 
-    public static void print(final Car car) {
+    private String getRandomEngine() {
+        CarsEngines[] carsEngines = CarsEngines.values();
+        randomIndex = random.nextInt(carsEngines.length);
+        carEngine = carsEngines[randomIndex].toString();
+        return carEngine;
+    }
+
+    private String getRandomColor() {
+        CarsColors[] carsColors = CarsColors.values();
+        randomIndex = random.nextInt(carsColors.length);
+        carColor = carsColors[randomIndex].toString();
+        return carColor;
+    }
+    public Car create() {
+//      creating a random manufacturer
+        getRandomManufacturer();
+
+//      creating a random engine
+        getRandomEngine();
+
+//      creating a random color
+        getRandomColor();
+
+        car = new Car(carsManufacturer, carEngine, carColor);
+        return car;
+    }
+
+    public Car create(final String manufacturer, final String engine, final String color) {
+        if (manufacturer.isBlank()) {
+//          creating a random manufacturer
+            getRandomManufacturer();
+        } else {
+            this.carsManufacturer = manufacturer;
+        }
+
+        if (engine.isBlank()) {
+//          creating a random engine
+            getRandomEngine();
+        } else {
+            this.carEngine = engine;
+        }
+
+        if (color.isBlank()) {
+//          creating a random color
+            getRandomColor();
+        } else {
+            this.carColor = color;
+        }
+
+        car = new Car(carsManufacturer, carEngine, carColor);
+        return car;
+    }
+
+
+
+    public void print() {
         System.out.println("Manufacturer: " + car.getManufacturer());
         System.out.println("Engine: " + car.getEngine());
         System.out.println("Color: " + car.getColor());

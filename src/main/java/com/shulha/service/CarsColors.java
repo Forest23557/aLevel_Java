@@ -1,0 +1,33 @@
+package com.shulha.service;
+
+public enum CarsColors {
+    WHITE,
+    YELLOW,
+    BLUE,
+    RED,
+    GREEN,
+    BLACK,
+    BROWN,
+    AZURE,
+    IVORY,
+    TEAL,
+    SILVER,
+    PURPLE,
+    GRAY,
+    ORANGE,
+    MAROON,
+    CHARCOAL,
+    AQUAMARINE,
+    CORAL,
+    FUCHSIA,
+    WHEAT,
+    LIME,
+    CRIMSON,
+    KHAKI,
+    PINK,
+    MAGENTA,
+    OLDEN,
+    PLUM,
+    OLIVE,
+    CYAN
+}
