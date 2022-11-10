@@ -9,7 +9,6 @@ public class CarService {
     private String carsManufacturer;
     private String carEngine;
     private String carColor;
-    private Car car;
     private int randomIndex;
 
     private String getRandomManufacturer() {
@@ -42,8 +41,7 @@ public class CarService {
 //      creating a random color
         getRandomColor();
 
-        car = new Car(carsManufacturer, carEngine, carColor);
-        return car;
+        return new Car(carsManufacturer, carEngine, carColor);
     }
 
     public Car create(final String manufacturer, final String engine, final String color) {
@@ -68,13 +66,12 @@ public class CarService {
             this.carColor = color;
         }
 
-        car = new Car(carsManufacturer, carEngine, carColor);
-        return car;
+        return new Car(carsManufacturer, carEngine, carColor);
     }
 
 
 
-    public void print() {
+    public void print(Car car) {
         System.out.println("Manufacturer: " + car.getManufacturer());
         System.out.println("Engine: " + car.getEngine());
         System.out.println("Color: " + car.getColor());

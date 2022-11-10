@@ -5,15 +5,13 @@ import com.shulha.service.CarService;
 
 public class Main {
     public static void main(String[] args) {
-        final CarService randomCar = new CarService();
-        final CarService randomCar1 = new CarService();
-        final CarService randomCar2 = new CarService();
-        randomCar.create("", "v8", "grey");
-        randomCar1.create();
-        randomCar2.create();
+        final CarService carService = new CarService();
+        final Car randomCar = carService.create();
+        final Car randomCar1 = carService.create();
+        final Car randomCar2 = carService.create();
 
-        randomCar.print();
-        randomCar1.print();
-        randomCar2.print();
+        carService.print(randomCar);
+        carService.print(randomCar1);
+        carService.print(randomCar2);
     }
 }
