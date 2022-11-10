@@ -3,8 +3,8 @@ package com.shulha.model;
 import java.util.Random;
 
 public class Car {
-    private final static Random random = new Random();
-    private final static int upperBound = 99_001;
+    private final static Random RANDOM = new Random();
+    private final static int UPPER_BOUND = 99_001;
 
     private String manufacturer;
     private String engine;
@@ -21,7 +21,7 @@ public class Car {
         this.engine = engine.toUpperCase().trim();
         this.color = color.toUpperCase().trim();
         count = 1;
-        price = random.nextInt(upperBound + 1_000);
+        price = RANDOM.nextInt(UPPER_BOUND + 1_000);
     }
 
     public String getManufacturer() {

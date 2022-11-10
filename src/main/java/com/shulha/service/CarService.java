@@ -4,7 +4,7 @@ import com.shulha.model.Car;
 import java.util.Random;
 
 public class CarService {
-    private final Random RANDOM = new Random();
+    private static final Random RANDOM = new Random();
 
     private String getRandomManufacturer() {
         CarsManufacturers[] carsManufacturers = CarsManufacturers.values();
