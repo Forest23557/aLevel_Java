@@ -88,11 +88,11 @@ public class CarArrayRepository {
     }
 
     public void insert(int index, final Car car) {
-        if (index >= cars.length) {
-            if (cars[cars.length - 1] != null) {
-                increaseArray();
-            }
+        if (cars[cars.length - 1] != null) {
+            increaseArray();
+        }
 
+        if (index >= cars.length) {
             for (int i = 0; i < cars.length; i++) {
                 if (cars[i] == null) {
                     index = i;
@@ -100,16 +100,9 @@ public class CarArrayRepository {
                 }
             }
         } else if (cars[index] != null) {
-            if (cars[cars.length - 1] != null) {
-                increaseArray();
-            }
             System.arraycopy(cars, index, cars, index + 1,
                     cars.length - (index + 1));
         } else {
-            if (cars[cars.length - 1] != null) {
-                increaseArray();
-            }
-
             for (int i = 0; i < index; i++) {
                 if (cars[i] == null) {
                     index = i;
@@ -117,6 +110,7 @@ public class CarArrayRepository {
                 }
             }
         }
+
         cars[index] = car;
     }
 }
