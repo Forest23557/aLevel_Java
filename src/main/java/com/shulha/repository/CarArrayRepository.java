@@ -95,6 +95,10 @@ public class CarArrayRepository {
             System.arraycopy(cars, index, cars, index + 1,
                     cars.length - (index + 1));
         } else {
+            if (cars[cars.length - 1] != null) {
+                increaseArray();
+            }
+
             for (int i = 0; i < index; i++) {
                 if (cars[i] == null) {
                     index = i;
