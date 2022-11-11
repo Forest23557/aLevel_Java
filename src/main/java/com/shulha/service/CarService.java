@@ -1,16 +1,27 @@
 package com.shulha.service;
 import com.shulha.model.*;
+import com.shulha.repository.CarArrayRepository;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class CarService {
-    private static final Random RANDOM = new Random();
+    private final static Random RANDOM = new Random();
+
+    private final CarArrayRepository carArrayRepository;
+
+    public CarService() {
+        this(new CarArrayRepository());
+    }
+
+    public CarService(final CarArrayRepository carArrayRepository) {
+        this.carArrayRepository = carArrayRepository;
+    }
 
     private CarsManufacturers getRandomManufacturer() {
         CarsManufacturers[] carsManufacturers = CarsManufacturers.values();
         int randomIndex = RANDOM.nextInt(carsManufacturers.length);
-        CarsManufacturers carsManufacturer = carsManufacturers[randomIndex];
-        return carsManufacturer;
+        return carsManufacturers[randomIndex];
     }
 
     private Engine getRandomEngine() {
@@ -24,20 +35,78 @@ public class CarService {
     private CarsColors getRandomColor() {
         CarsColors[] carsColors = CarsColors.values();
         int randomIndex = RANDOM.nextInt(carsColors.length);
-        CarsColors carColor = carsColors[randomIndex];
-        return carColor;
+        return carsColors[randomIndex];
     }
     public Car create() {
-//      creating a random manufacturer
-        getRandomManufacturer();
+        final Car car = new Car(getRandomManufacturer(), getRandomEngine(), getRandomColor());
+        carArrayRepository.save(car);
+        return car;
+    }
 
-//      creating a random engine
-        getRandomEngine();
+    public void create(final int count) {
+        for (int i = 0; i < count; i++) {
+            create();
+        }
+    }
 
-//      creating a random color
-        getRandomColor();
+    public void insert(int index, final Car car) {
+        int length = carArrayRepository.getAll().length;
+        if (index < 0) {
+            return;
+        }
 
-        return new Car(getRandomManufacturer(), getRandomEngine(), getRandomColor());
+        if (car == null) {
+            return;
+        }
+        carArrayRepository.insert(index, car);
+    }
+
+    public void printAll() {
+        final Car[] allCars = carArrayRepository.getAll();
+        for (int i = 0; i < allCars.length; i++) {
+            System.out.println(allCars[i]);
+        }
+    }
+
+    public Car[] getAll() {
+        return carArrayRepository.getAll();
+    }
+
+    public Car find(final String id) {
+        if (id == null || id.isBlank()) {
+            return null;
+        }
+        return carArrayRepository.getById(id);
+    }
+
+    public void delete(final  String id) {
+        if (id == null || id.isBlank()) {
+            return;
+        }
+        carArrayRepository.delete(id);
+    }
+
+    public void changeRandomColor(final String id) {
+        if (id == null || id.isBlank()) {
+            return;
+        }
+
+        final Car car = find(id);
+        if (car == null) {
+            return;
+        }
+
+        findAndChangeRandomColor(car);
+    }
+
+    private  void findAndChangeRandomColor(final Car car) {
+        final CarsColors color = car.getColor();
+        CarsColors randomColor;
+
+        do {
+            randomColor = getRandomColor();
+        } while (randomColor == color);
+        carArrayRepository.updateColor(car.getId(), randomColor);
     }
 
     public Car create(final CarsManufacturers manufacturer, final Engine engine, final CarsColors color) {
