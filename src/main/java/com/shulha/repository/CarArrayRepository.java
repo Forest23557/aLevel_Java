@@ -88,7 +88,18 @@ public class CarArrayRepository {
     }
 
     public void insert(int index, final Car car) {
-        if (cars[index] != null) {
+        if (index >= cars.length) {
+            if (cars[cars.length - 1] != null) {
+                increaseArray();
+            }
+
+            for (int i = 0; i < cars.length; i++) {
+                if (cars[i] == null) {
+                    index = i;
+                    break;
+                }
+            }
+        } else if (cars[index] != null) {
             if (cars[cars.length - 1] != null) {
                 increaseArray();
             }
