@@ -1,8 +1,5 @@
 package com.shulha.service;
-import com.shulha.model.Car;
-import com.shulha.model.CarsColors;
-import com.shulha.model.EngineTypes;
-import com.shulha.model.CarsManufacturers;
+import com.shulha.model.*;
 
 import java.util.Random;
 
@@ -16,11 +13,12 @@ public class CarService {
         return carsManufacturer;
     }
 
-    private String getRandomEngine() {
-        EngineTypes[] carsEngines = EngineTypes.values();
-        int randomIndex = RANDOM.nextInt(carsEngines.length);
-        String carEngine = carsEngines[randomIndex].toString();
-        return carEngine;
+    private Engine getRandomEngine() {
+        EngineTypes[] engineTypes = EngineTypes.values();
+        int randomIndex = RANDOM.nextInt(engineTypes.length);
+        EngineTypes engineType = engineTypes[randomIndex];
+        int randomPower = RANDOM.nextInt(1001);
+        return new Engine(randomPower, engineType);
     }
 
     private CarsColors getRandomColor() {
@@ -42,18 +40,12 @@ public class CarService {
         return new Car(getRandomManufacturer(), getRandomEngine(), getRandomColor());
     }
 
-    public Car create(final CarsManufacturers manufacturer, final String engine, final CarsColors color) {
+    public Car create(final CarsManufacturers manufacturer, final Engine engine, final CarsColors color) {
         return new Car(manufacturer, engine, color);
     }
 
-
-
     public void print(Car car) {
-        System.out.println("Manufacturer: " + car.getManufacturer());
-        System.out.println("Engine: " + car.getEngine());
-        System.out.println("Color: " + car.getColor());
-        System.out.println("Price: " + car.getPrice());
-        System.out.println("Count: " + car.getCount());
+        System.out.println(car.toString());
         System.out.println();
     }
 }
