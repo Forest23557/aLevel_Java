@@ -46,6 +46,18 @@ public class CarService {
 
     public void print(Car car) {
         System.out.println(car.toString());
+    }
+
+    public static void check(Car car) {
+        if (car.getCount() > 0 && car.getEngine().getPower() > 200) {
+            System.out.println("The car is ready for sale");
+        } else if (car.getCount() < 0) {
+            System.out.println("The count is wrong");
+        } else if (car.getEngine().getPower() < 200) {
+            System.out.println("The power of the engine is wrong");
+        } else {
+            System.out.println("The count and the power of the engine are wrong");
+        }
         System.out.println();
     }
 }

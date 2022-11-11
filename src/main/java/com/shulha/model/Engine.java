@@ -11,7 +11,7 @@ public class Engine {
     public Engine(int power, EngineTypes type) {
         this.type = type;
 
-        if(power < 0) {
+        if(power < 0 || power > 1000) {
             return;
         }
         this.power = power;
@@ -22,7 +22,7 @@ public class Engine {
     }
 
     public void setPower(int power) {
-        if(power < 0) {
+        if(power < 0 || power > 1000) {
             return;
         }
         this.power = power;
