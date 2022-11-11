@@ -1,29 +1,32 @@
 package com.shulha.service;
 import com.shulha.model.Car;
+import com.shulha.model.CarsColors;
+import com.shulha.model.EngineTypes;
+import com.shulha.model.CarsManufacturers;
 
 import java.util.Random;
 
 public class CarService {
     private static final Random RANDOM = new Random();
 
-    private String getRandomManufacturer() {
+    private CarsManufacturers getRandomManufacturer() {
         CarsManufacturers[] carsManufacturers = CarsManufacturers.values();
         int randomIndex = RANDOM.nextInt(carsManufacturers.length);
-        String carsManufacturer = carsManufacturers[randomIndex].toString();
+        CarsManufacturers carsManufacturer = carsManufacturers[randomIndex];
         return carsManufacturer;
     }
 
     private String getRandomEngine() {
-        CarsEngines[] carsEngines = CarsEngines.values();
+        EngineTypes[] carsEngines = EngineTypes.values();
         int randomIndex = RANDOM.nextInt(carsEngines.length);
         String carEngine = carsEngines[randomIndex].toString();
         return carEngine;
     }
 
-    private String getRandomColor() {
+    private CarsColors getRandomColor() {
         CarsColors[] carsColors = CarsColors.values();
         int randomIndex = RANDOM.nextInt(carsColors.length);
-        String carColor = carsColors[randomIndex].toString();
+        CarsColors carColor = carsColors[randomIndex];
         return carColor;
     }
     public Car create() {
@@ -39,7 +42,7 @@ public class CarService {
         return new Car(getRandomManufacturer(), getRandomEngine(), getRandomColor());
     }
 
-    public Car create(final String manufacturer, final String engine, final String color) {
+    public Car create(final CarsManufacturers manufacturer, final String engine, final CarsColors color) {
         return new Car(manufacturer, engine, color);
     }
 
