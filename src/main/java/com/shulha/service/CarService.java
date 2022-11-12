@@ -50,7 +50,6 @@ public class CarService {
     }
 
     public void insert(int index, final Car car) {
-        int length = carArrayRepository.getAll().length;
         if (index < 0) {
             return;
         }
