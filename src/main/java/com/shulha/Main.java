@@ -6,12 +6,32 @@ import com.shulha.service.CarService;
 public class Main {
     public static void main(String[] args) {
         final CarService carService = new CarService();
+
         final Car randomCar = carService.create();
         final Car randomCar1 = carService.create();
         final Car randomCar2 = carService.create();
 
         carService.print(randomCar);
-        carService.print(randomCar1);
-        carService.print(randomCar2);
+        CarService.check(randomCar);
+
+        carService.printAll();
+
+        System.out.println(carService.find(randomCar1.getId()));
+
+        carService.create(3);
+        carService.printAll();
+
+        final Car car = carService.create();
+        carService.insert(0, car);
+        carService.printAll();
+
+        carService.delete(randomCar1.getId());
+        carService.printAll();
+
+        final Car[] all = carService.getAll();
+        final Car car1 = all[0];
+        carService.print(car);
+        carService.changeRandomColor(car.getId());
+        System.out.println(carService.find(car.getId()));
     }
 }

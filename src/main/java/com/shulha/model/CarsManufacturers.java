@@ -1,4 +1,4 @@
-package com.shulha.service;
+package com.shulha.model;
 
 public enum CarsManufacturers {
     TOYOTA,
