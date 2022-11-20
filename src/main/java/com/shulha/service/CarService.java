@@ -1,4 +1,5 @@
 package com.shulha.service;
+
 import com.shulha.model.*;
 import com.shulha.repository.CarArrayRepository;
 
@@ -37,6 +38,7 @@ public class CarService {
         int randomIndex = RANDOM.nextInt(carsColors.length);
         return carsColors[randomIndex];
     }
+
     public Car create() {
         final Car car = new Car(getRandomManufacturer(), getRandomEngine(), getRandomColor());
         carArrayRepository.save(car);
@@ -78,7 +80,7 @@ public class CarService {
         return carArrayRepository.getById(id);
     }
 
-    public void delete(final  String id) {
+    public void delete(final String id) {
         if (id == null || id.isBlank()) {
             return;
         }
@@ -98,7 +100,7 @@ public class CarService {
         findAndChangeRandomColor(car);
     }
 
-    private  void findAndChangeRandomColor(final Car car) {
+    private void findAndChangeRandomColor(final Car car) {
         final CarsColors color = car.getColor();
         CarsColors randomColor;
 
