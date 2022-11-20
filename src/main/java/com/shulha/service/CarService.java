@@ -2,6 +2,8 @@ package com.shulha.service;
 
 import com.shulha.model.*;
 import com.shulha.repository.CarArrayRepository;
+import com.shulha.util.RandomGenerator;
+
 import java.util.Random;
 
 public class CarService {
@@ -15,6 +17,22 @@ public class CarService {
 
     public CarService(final CarArrayRepository carArrayRepository) {
         this.carArrayRepository = carArrayRepository;
+    }
+
+    public int create(final RandomGenerator randomGenerator) {
+        if (randomGenerator == null) {
+            return -1;
+        }
+
+        int count = randomGenerator.getRandomNumber();
+        if (count == 0) {
+            return -1;
+        }
+
+        create(count);
+        printAll();
+
+        return count;
     }
 
     private CarsManufacturers getRandomManufacturer() {
