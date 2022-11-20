@@ -2,8 +2,6 @@ package com.shulha.service;
 
 import com.shulha.model.*;
 import com.shulha.repository.CarArrayRepository;
-
-import java.util.Arrays;
 import java.util.Random;
 
 public class CarService {
