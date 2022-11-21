@@ -1,10 +1,13 @@
 package com.shulha.service;
 
 import com.shulha.model.Car;
+import com.shulha.model.CarsColors;
 import com.shulha.model.CarsManufacturers;
+import com.shulha.model.Engine;
 import com.shulha.repository.CarArrayRepository;
 import com.shulha.util.RandomGenerator;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -253,5 +256,103 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.delete(id));
+    }
+
+    @Test
+    void changeRandomColor() {
+//      initialize
+        String id = "1234567890";
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.changeRandomColor(id));
+    }
+
+    @Test
+    void changeRandomColorIncorrectIdNull() {
+//      initialize
+        String id = null;
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.changeRandomColor(id));
+    }
+
+    @Test
+    void changeRandomColorIncorrectIdEmpty() {
+//      initialize
+        String id = "";
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.changeRandomColor(id));
+    }
+
+    @Test
+    void createWithThreeIncorrectParametersNull() {
+//      initialize
+
+//      action
+        car = target.create(null, null, null);
+
+//      checks
+        Assertions.assertNull(car);
+    }
+
+    @Test
+    void createWithThreeParameters() {
+//      initialize
+        CarsManufacturers manufacturer = car.getManufacturer();
+        Engine engine = car.getEngine();
+        CarsColors color = car.getColor();
+
+//      action
+
+//      checks
+        Assertions.assertNotNull(target.create(manufacturer, engine, color));
+        Assertions.assertNotEquals(car, target.create(manufacturer, engine, color));
+    }
+
+    @Test
+    void print() {
+//      initialize
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.print(car));
+    }
+
+    @Test
+    void printIncorrectCarNull() {
+//      initialize
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.print(null));
+    }
+
+    @Test
+    static void check() {
+//      initialize
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> CarService.check(new Car()));
+    }
+
+    @Test
+    static void checkIncorrectCarNull() {
+//      initialize
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> CarService.check(null));
     }
 }

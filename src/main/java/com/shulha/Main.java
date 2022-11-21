@@ -36,6 +36,10 @@ public class Main {
 //        System.out.println(carService.find(car.getId()));
 
 
-        System.out.println(carService.create(new RandomGenerator()));
+//        System.out.println(carService.create(new RandomGenerator()));
+        carService.create(null, null, null);
+        carService.printAll();
+        carService.create();
+        carService.printAll();
     }
 }

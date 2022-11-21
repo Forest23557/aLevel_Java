@@ -120,6 +120,7 @@ public class CarService {
         carArrayRepository.delete(id);
     }
 
+//  tested
     public void changeRandomColor(final String id) {
         if (id == null || id.isBlank()) {
             return;
@@ -143,15 +144,30 @@ public class CarService {
         carArrayRepository.updateColor(car.getId(), randomColor);
     }
 
+//  tested
     public Car create(final CarsManufacturers manufacturer, final Engine engine, final CarsColors color) {
-        return new Car(manufacturer, engine, color);
+        if (manufacturer == null || engine == null || color == null) {
+            return null;
+        }
+        Car car = new Car(manufacturer, engine, color);
+        carArrayRepository.save(car);
+        return car;
     }
 
     public void print(Car car) {
+        if (car == null) {
+            System.out.println("Error! Car isn't delivered");
+            return;
+        }
         System.out.println(car.toString());
     }
 
     public static void check(Car car) {
+        if (car == null) {
+            System.out.println("Error! Car isn't delivered");
+            return;
+        }
+
         if (car.getCount() > 0 && car.getEngine().getPower() > 200) {
             System.out.println("The car is ready for sale");
         } else if (car.getCount() < 0) {
