@@ -337,17 +337,17 @@ class CarServiceTest {
     }
 
     @Test
-    static void check() {
+    void check() {
 //      initialize
 
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> CarService.check(new Car()));
+        Assertions.assertDoesNotThrow(() -> CarService.check(car));
     }
 
     @Test
-    static void checkIncorrectCarNull() {
+    void checkIncorrectCarNull() {
 //      initialize
 
 //      action
