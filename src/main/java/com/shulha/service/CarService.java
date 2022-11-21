@@ -19,13 +19,14 @@ public class CarService {
         this.carArrayRepository = carArrayRepository;
     }
 
+//  tested
     public int create(final RandomGenerator randomGenerator) {
         if (randomGenerator == null) {
             return -1;
         }
 
         int count = randomGenerator.getRandomNumber();
-        if (count == 0) {
+        if (count <= 0 || count > 10) {
             return -1;
         }
 
@@ -55,18 +56,25 @@ public class CarService {
         return carsColors[randomIndex];
     }
 
+//  tested
     public Car create() {
         final Car car = new Car(getRandomManufacturer(), getRandomEngine(), getRandomColor());
         carArrayRepository.save(car);
         return car;
     }
 
+//  tested
     public void create(final int count) {
+        if (count <= 0) {
+            return;
+        }
+
         for (int i = 0; i < count; i++) {
             create();
         }
     }
 
+//  tested
     public void insert(int index, final Car car) {
         if (index < 0) {
             return;
@@ -78,17 +86,25 @@ public class CarService {
         carArrayRepository.insert(index, car);
     }
 
+//  tested
     public void printAll() {
         final Car[] allCars = carArrayRepository.getAll();
+
+        if (allCars == null) {
+            return;
+        }
+
         for (int i = 0; i < allCars.length; i++) {
             System.out.println(allCars[i]);
         }
     }
 
+//  tested
     public Car[] getAll() {
         return carArrayRepository.getAll();
     }
 
+//  tested
     public Car find(final String id) {
         if (id == null || id.isBlank()) {
             return null;
@@ -96,6 +112,7 @@ public class CarService {
         return carArrayRepository.getById(id);
     }
 
+//  tested
     public void delete(final String id) {
         if (id == null || id.isBlank()) {
             return;
