@@ -76,13 +76,6 @@ public class CarService {
 
 //  tested
     public void insert(int index, final Car car) {
-        if (index < 0) {
-            return;
-        }
-
-        if (car == null) {
-            return;
-        }
         carArrayRepository.insert(index, car);
     }
 
