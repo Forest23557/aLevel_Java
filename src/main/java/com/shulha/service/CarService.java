@@ -154,6 +154,7 @@ public class CarService {
         return car;
     }
 
+//  tested
     public void print(Car car) {
         if (car == null) {
             System.out.println("Error! Car isn't delivered");
@@ -162,12 +163,14 @@ public class CarService {
         System.out.println(car.toString());
     }
 
+//  tested
     public static void check(Car car) {
         if (car == null) {
             System.out.println("Error! Car isn't delivered");
             return;
         }
 
+//      checks
         if (car.getCount() > 0 && car.getEngine().getPower() > 200) {
             System.out.println("The car is ready for sale");
         } else if (car.getCount() < 0) {
