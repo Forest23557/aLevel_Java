@@ -29,7 +29,7 @@ class CarArrayRepositoryTest {
     }
 
     @Test
-    void delete() {
+    void deleteIdIsNotFound() {
 //      initialize
         id = "1234";
 //        Mockito.when(car.getId()).thenReturn("1234");
@@ -41,15 +41,15 @@ class CarArrayRepositoryTest {
     }
 
     @Test
-    void deleteChecking() {
+    void delete() {
 //      initialize
         target.save(car);
         id = car.getId();
 
 //      action
-        target.delete(id);
 
 //      checks
+        Assertions.assertDoesNotThrow(() -> target.delete(id));
         Assertions.assertNull(target.getById(id));
     }
 
@@ -100,6 +100,7 @@ class CarArrayRepositoryTest {
 //      initialize
         id = car.getId();
         Car expected = car;
+
 //      action
         target.save(car);
         Car actual = target.getById(id);
@@ -139,6 +140,7 @@ class CarArrayRepositoryTest {
 //      initialize
         target.save(car);
         target.save(car);
+
 //      action
 
 //      checks
@@ -171,6 +173,18 @@ class CarArrayRepositoryTest {
     }
 
     @Test
+    void getByIdIsNotFound() {
+//      initialize
+        target.save(car);
+        String id = "12345";
+
+//      action
+
+//      checks
+        Assertions.assertNull(target.getById(id));
+    }
+
+    @Test
     void getByIdIncorrectIdNull() {
 //      initialize
         target.save(car);
@@ -198,6 +212,18 @@ class CarArrayRepositoryTest {
     void updateColor() {
 //      initialize
         id = car.getId();
+        CarsColors color = car.getColor();
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.updateColor(id, color));
+    }
+
+    @Test
+    void updateColorIdIsNotFound() {
+//      initialize
+        id = "12345";
         CarsColors color = car.getColor();
 
 //      action
