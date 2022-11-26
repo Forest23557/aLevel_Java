@@ -12,12 +12,15 @@ public class Engine {
     }
 
     public Engine(int power, EngineTypes type) {
-        this.type = type;
-
         if(power < 0 || power > 1000) {
             return;
         }
         this.power = power;
+
+        if (type == null) {
+            return;
+        }
+        this.type = type;
     }
 
     public void setPower(int power) {
