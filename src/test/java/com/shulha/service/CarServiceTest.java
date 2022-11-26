@@ -1,31 +1,25 @@
 package com.shulha.service;
 
-import com.shulha.model.Car;
-import com.shulha.model.CarsColors;
-import com.shulha.model.CarsManufacturers;
-import com.shulha.model.Engine;
+import com.shulha.model.*;
 import com.shulha.repository.CarArrayRepository;
 import com.shulha.util.RandomGenerator;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class CarServiceTest {
     private CarService target;
     private CarArrayRepository repository;
     private RandomGenerator randomGenerator;
-    private Car car;
+    private Car passengerCar;
 
     @BeforeEach
     void setUp() {
         repository = Mockito.mock(CarArrayRepository.class);
         randomGenerator = Mockito.mock(RandomGenerator.class);
         target = new CarService(repository);
-        car = new Car();
+        passengerCar = new PassengerCar();
     }
 
     @Test
@@ -36,7 +30,7 @@ class CarServiceTest {
 
 
 //      action
-        final int actual = target.create(randomGenerator);
+        final int actual = target.createPassengerCar(randomGenerator);
 
 
 //      checks
@@ -50,7 +44,7 @@ class CarServiceTest {
 
 
 //      action
-        final int actual = target.create(null);
+        final int actual = target.createPassengerCar(null);
 
 
 //      checks
@@ -65,7 +59,7 @@ class CarServiceTest {
 
 
 //      action
-        final int actual = target.create(randomGenerator);
+        final int actual = target.createPassengerCar(randomGenerator);
 
 
 //      checks
@@ -80,7 +74,7 @@ class CarServiceTest {
 
 
 //      action
-        final int actual = target.create(randomGenerator);
+        final int actual = target.createPassengerCar(randomGenerator);
 
 
 //      checks
@@ -92,7 +86,7 @@ class CarServiceTest {
 //      initialize
 
 //      action
-        final Car car = target.create();
+        final Car car = target.createPassengerCar();
 
 
 //      checks
@@ -108,7 +102,7 @@ class CarServiceTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> target.create(count));
+        Assertions.assertDoesNotThrow(() -> target.createPassengerCar(count));
     }
 
     @Test
@@ -119,7 +113,7 @@ class CarServiceTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> target.create(count));
+        Assertions.assertDoesNotThrow(() -> target.createPassengerCar(count));
     }
 
     @Test
@@ -130,8 +124,8 @@ class CarServiceTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> target.insert(count, car));
-        Mockito.verify(repository).insert(count, car);
+        Assertions.assertDoesNotThrow(() -> target.insert(count, passengerCar));
+        Mockito.verify(repository).insert(count, passengerCar);
     }
 
     @Test
@@ -142,8 +136,8 @@ class CarServiceTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> target.insert(count, car));
-        Mockito.verify(repository).insert(count, car);
+        Assertions.assertDoesNotThrow(() -> target.insert(count, passengerCar));
+        Mockito.verify(repository).insert(count, passengerCar);
     }
 
     @Test
@@ -183,7 +177,7 @@ class CarServiceTest {
     @Test
     void find() {
 //      initialize
-        final Car expected = new Car();
+        final Car expected = new PassengerCar();
         String id = "1234567890";
         Mockito.when(repository.getById(id)).thenReturn(expected);
 
@@ -202,10 +196,10 @@ class CarServiceTest {
         Mockito.when(repository.getById(id)).thenReturn(null);
 
 //      action
-        car = target.find(id);
+        passengerCar = target.find(id);
 
 //      checks
-        Assertions.assertNull(car);
+        Assertions.assertNull(passengerCar);
         Mockito.verify(repository).getById(id);
     }
 
@@ -215,10 +209,10 @@ class CarServiceTest {
         String id = null;
 
 //      action
-        car = target.find(id);
+        passengerCar = target.find(id);
 
 //      checks
-        Assertions.assertNull(car);
+        Assertions.assertNull(passengerCar);
         Mockito.verify(repository, Mockito.never()).getById(null);
     }
 
@@ -228,10 +222,10 @@ class CarServiceTest {
         String id = "";
 
 //      action
-        car = target.find(id);
+        passengerCar = target.find(id);
 
 //      checks
-        Assertions.assertNull(car);
+        Assertions.assertNull(passengerCar);
         Mockito.verify(repository, Mockito.never()).getById("");
     }
 
@@ -274,7 +268,7 @@ class CarServiceTest {
     @Test
     void changeRandomColor() {
 //      initialize
-        String id = car.getId();
+        String id = passengerCar.getId();
 
 //      action
 
@@ -291,7 +285,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.changeRandomColor(id));
-        Mockito.verify(repository, Mockito.never()).updateColor(car.getId(), CarsColors.BLACK);
+        Mockito.verify(repository, Mockito.never()).updateColor(passengerCar.getId(), CarColors.BLACK);
     }
 
     @Test
@@ -303,7 +297,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.changeRandomColor(id));
-        Mockito.verify(repository, Mockito.never()).updateColor(car.getId(), CarsColors.BLACK);
+        Mockito.verify(repository, Mockito.never()).updateColor(passengerCar.getId(), CarColors.BLACK);
     }
 
     @Test
@@ -311,22 +305,22 @@ class CarServiceTest {
 //      initialize
 
 //      action
-        car = target.create(null, null, null);
+        passengerCar = target.createPassengerCar(null, null, null, 0);
 
 //      checks
-        Assertions.assertNull(car);
+        Assertions.assertNull(passengerCar);
         Mockito.verify(repository, Mockito.never()).save(null);
     }
 
     @Test
     void createWithThreeParameters() {
 //      initialize
-        CarsManufacturers manufacturer = car.getManufacturer();
-        Engine engine = car.getEngine();
-        CarsColors color = car.getColor();
+        CarsManufacturers manufacturer = passengerCar.getManufacturer();
+        Engine engine = passengerCar.getEngine();
+        CarColors color = passengerCar.getColor();
 
 //      action
-        Car actual = target.create(manufacturer, engine, color);
+        Car actual = target.createPassengerCar(manufacturer, engine, color, 4);
 
 //      checks
         Assertions.assertNotNull(actual);
@@ -340,7 +334,7 @@ class CarServiceTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> target.print(car));
+        Assertions.assertDoesNotThrow(() -> target.print(passengerCar));
     }
 
     @Test
@@ -360,7 +354,7 @@ class CarServiceTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> CarService.check(car));
+        Assertions.assertDoesNotThrow(() -> CarService.check(passengerCar));
     }
 
     @Test

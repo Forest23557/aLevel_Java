@@ -1,0 +1,46 @@
+package com.shulha.model;
+
+import lombok.Getter;
+
+import java.util.Random;
+
+@Getter
+public class Truck extends Car implements CountRestore {
+    private static final Random RANDOM = new Random();
+    private int loadCapacity;
+
+    public Truck() {
+        this(CarsManufacturers.ROVER, new Engine(), CarColors.WHITE, 500);
+    }
+
+    public Truck (final CarsManufacturers manufacturer, final Engine engine, final CarColors color, final int loadCapacity) {
+        super(manufacturer, engine, color);
+        setType(CarTypes.TRUCK);
+        if (loadCapacity <= 0 || loadCapacity > 5000) {
+            this.loadCapacity = RANDOM.nextInt(1401) + 100;
+            return;
+        }
+        this.loadCapacity = loadCapacity;
+    }
+
+    public void setLoadCapacity(int loadCapacity) {
+        if (loadCapacity <= 0 || loadCapacity > 5000) {
+            this.loadCapacity = RANDOM.nextInt(1401) + 100;
+            return;
+        }
+        this.loadCapacity = loadCapacity;
+    }
+
+    @Override
+    public void restore() {
+        setCount(50);
+        System.out.println("The count of trucks " + getManufacturer()
+                + " with id " + getId() + " is " + getCount());
+        System.out.println();
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + String.format("The load capacity: %s%n", loadCapacity);
+    }
+}

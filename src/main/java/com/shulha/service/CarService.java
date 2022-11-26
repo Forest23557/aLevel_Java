@@ -20,7 +20,7 @@ public class CarService {
     }
 
 //  tested
-    public int create(final RandomGenerator randomGenerator) {
+    public int createPassengerCar(final RandomGenerator randomGenerator) {
         if (randomGenerator == null) {
             return -1;
         }
@@ -30,7 +30,24 @@ public class CarService {
             return -1;
         }
 
-        create(count);
+        createPassengerCar(count);
+        printAll();
+
+        return count;
+    }
+
+    //  tested
+    public int createTruck(final RandomGenerator randomGenerator) {
+        if (randomGenerator == null) {
+            return -1;
+        }
+
+        int count = randomGenerator.getRandomNumber();
+        if (count <= 0 || count > 10) {
+            return -1;
+        }
+
+        createTruck(count);
         printAll();
 
         return count;
@@ -50,27 +67,53 @@ public class CarService {
         return new Engine(randomPower, engineType);
     }
 
-    private CarsColors getRandomColor() {
-        CarsColors[] carsColors = CarsColors.values();
-        int randomIndex = RANDOM.nextInt(carsColors.length);
-        return carsColors[randomIndex];
+    private CarColors getRandomColor() {
+        CarColors[] carColors = CarColors.values();
+        int randomIndex = RANDOM.nextInt(carColors.length);
+        return carColors[randomIndex];
+    }
+
+    private int getRandomPassengerCount() {
+        return RANDOM.nextInt(4) + 2;
+    }
+
+    private int getRandomTruckCapacity() {
+        return RANDOM.nextInt(1401) + 100;
     }
 
 //  tested
-    public Car create() {
-        final Car car = new Car(getRandomManufacturer(), getRandomEngine(), getRandomColor());
-        carArrayRepository.save(car);
-        return car;
+    public PassengerCar createPassengerCar() {
+        final PassengerCar passengerCar = new PassengerCar(getRandomManufacturer(), getRandomEngine(), getRandomColor(), getRandomPassengerCount());
+        carArrayRepository.save(passengerCar);
+        return passengerCar;
     }
 
 //  tested
-    public void create(final int count) {
+    public Truck createTruck() {
+        final Truck truck = new Truck(getRandomManufacturer(), getRandomEngine(), getRandomColor(), getRandomTruckCapacity());
+        carArrayRepository.save(truck);
+        return truck;
+    }
+
+//  tested
+    public void createPassengerCar(final int count) {
         if (count <= 0) {
             return;
         }
 
         for (int i = 0; i < count; i++) {
-            create();
+            createPassengerCar();
+        }
+    }
+
+    //  tested
+    public void createTruck(final int count) {
+        if (count <= 0) {
+            return;
+        }
+
+        for (int i = 0; i < count; i++) {
+            createTruck();
         }
     }
 
@@ -128,8 +171,8 @@ public class CarService {
     }
 
     private void findAndChangeRandomColor(final Car car) {
-        final CarsColors color = car.getColor();
-        CarsColors randomColor;
+        final CarColors color = car.getColor();
+        CarColors randomColor;
 
         do {
             randomColor = getRandomColor();
@@ -138,13 +181,24 @@ public class CarService {
     }
 
 //  tested
-    public Car create(final CarsManufacturers manufacturer, final Engine engine, final CarsColors color) {
-        if (manufacturer == null || engine == null || color == null) {
+    public PassengerCar createPassengerCar(final CarsManufacturers manufacturer, final Engine engine, final CarColors color, final int passengerCount) {
+        if (manufacturer == null || engine == null || color == null || passengerCount <= 0) {
             return null;
         }
-        Car car = new Car(manufacturer, engine, color);
-        carArrayRepository.save(car);
-        return car;
+
+        PassengerCar passengerCar = new PassengerCar(manufacturer, engine, color, passengerCount);
+        carArrayRepository.save(passengerCar);
+        return passengerCar;
+    }
+
+//  tested
+    public Truck createTruck(final CarsManufacturers manufacturer, final Engine engine, final CarColors color, final int loadCapacity) {
+        if (manufacturer == null || engine == null || color == null || loadCapacity <= 100) {
+            return null;
+        }
+        Truck truck = new Truck(manufacturer, engine, color, loadCapacity);
+        carArrayRepository.save(truck);
+        return truck;
     }
 
 //  tested

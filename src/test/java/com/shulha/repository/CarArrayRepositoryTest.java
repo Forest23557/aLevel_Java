@@ -1,18 +1,15 @@
 package com.shulha.repository;
 
 import com.shulha.model.Car;
-import com.shulha.model.CarsColors;
+import com.shulha.model.CarColors;
+import com.shulha.model.PassengerCar;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class CarArrayRepositoryTest {
     private CarArrayRepository target;
-    private Car car;
+    private Car passengerCar;
     private String id;
 
 //      initialize
@@ -24,7 +21,7 @@ class CarArrayRepositoryTest {
     @BeforeEach
     void setUp() {
         target = new CarArrayRepository();
-        car = new Car();
+        passengerCar = new PassengerCar();
         target.removeAll();
     }
 
@@ -43,8 +40,8 @@ class CarArrayRepositoryTest {
     @Test
     void delete() {
 //      initialize
-        target.save(car);
-        id = car.getId();
+        target.save(passengerCar);
+        id = passengerCar.getId();
 
 //      action
 
@@ -82,7 +79,7 @@ class CarArrayRepositoryTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> target.save(car));
+        Assertions.assertDoesNotThrow(() -> target.save(passengerCar));
     }
 
     @Test
@@ -98,11 +95,11 @@ class CarArrayRepositoryTest {
     @Test
     void saveChecking() {
 //      initialize
-        id = car.getId();
-        Car expected = car;
+        id = passengerCar.getId();
+        Car expected = passengerCar;
 
 //      action
-        target.save(car);
+        target.save(passengerCar);
         Car actual = target.getById(id);
 
 //      checks
@@ -122,8 +119,8 @@ class CarArrayRepositoryTest {
     @Test
     void getAll() {
 //      initialize
-        target.save(car);
-        Car expected = car;
+        target.save(passengerCar);
+        Car expected = passengerCar;
         int expectedLength = 1;
 
 //      action
@@ -138,8 +135,8 @@ class CarArrayRepositoryTest {
     @Test
     void removeAll() {
 //      initialize
-        target.save(car);
-        target.save(car);
+        target.save(passengerCar);
+        target.save(passengerCar);
 
 //      action
 
@@ -161,9 +158,9 @@ class CarArrayRepositoryTest {
     @Test
     void getById() {
 //      initialize
-        target.save(car);
-        String id = car.getId();
-        Car expected = car;
+        target.save(passengerCar);
+        String id = passengerCar.getId();
+        Car expected = passengerCar;
 
 //      action
         Car actual = target.getById(id);
@@ -175,7 +172,7 @@ class CarArrayRepositoryTest {
     @Test
     void getByIdIsNotFound() {
 //      initialize
-        target.save(car);
+        target.save(passengerCar);
         String id = "12345";
 
 //      action
@@ -187,7 +184,7 @@ class CarArrayRepositoryTest {
     @Test
     void getByIdIncorrectIdNull() {
 //      initialize
-        target.save(car);
+        target.save(passengerCar);
         String id = null;
 
 //      action
@@ -199,7 +196,7 @@ class CarArrayRepositoryTest {
     @Test
     void getByIdIncorrectIdEmpty() {
 //      initialize
-        target.save(car);
+        target.save(passengerCar);
         String id = "";
 
 //      action
@@ -211,8 +208,8 @@ class CarArrayRepositoryTest {
     @Test
     void updateColor() {
 //      initialize
-        id = car.getId();
-        CarsColors color = car.getColor();
+        id = passengerCar.getId();
+        CarColors color = passengerCar.getColor();
 
 //      action
 
@@ -224,7 +221,7 @@ class CarArrayRepositoryTest {
     void updateColorIdIsNotFound() {
 //      initialize
         id = "12345";
-        CarsColors color = car.getColor();
+        CarColors color = passengerCar.getColor();
 
 //      action
 
@@ -236,7 +233,7 @@ class CarArrayRepositoryTest {
     void updateColorIncorrectIdNull() {
 //      initialize
         id = null;
-        CarsColors color = car.getColor();
+        CarColors color = passengerCar.getColor();
 
 //      action
 
@@ -248,7 +245,7 @@ class CarArrayRepositoryTest {
     void updateColorIncorrectIdEmpty() {
 //      initialize
         id = "";
-        CarsColors color = car.getColor();
+        CarColors color = passengerCar.getColor();
 
 //      action
 
@@ -259,8 +256,8 @@ class CarArrayRepositoryTest {
     @Test
     void updateColorIncorrectColorNull() {
 //      initialize
-        id = car.getId();
-        CarsColors color = null;
+        id = passengerCar.getId();
+        CarColors color = null;
 
 //      action
 
@@ -272,15 +269,15 @@ class CarArrayRepositoryTest {
     void insert() {
 //      initialize
         int index = 0;
-        Car expected = car;
+        Car expected = passengerCar;
 
 //      action
-        target.insert(index, car);
+        target.insert(index, passengerCar);
         Car actual = target.getAll()[index];
 
 //      checks
         Assertions.assertEquals(expected, actual);
-        Assertions.assertDoesNotThrow(() -> target.insert(index, car));
+        Assertions.assertDoesNotThrow(() -> target.insert(index, passengerCar));
     }
 
     @Test
@@ -291,18 +288,18 @@ class CarArrayRepositoryTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> target.insert(index, car));
+        Assertions.assertDoesNotThrow(() -> target.insert(index, passengerCar));
     }
 
     @Test
     void insertIncorrectCarNull() {
 //      initialize
         int index = 0;
-        car = null;
+        passengerCar = null;
 
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> target.insert(index, car));
+        Assertions.assertDoesNotThrow(() -> target.insert(index, passengerCar));
     }
 }

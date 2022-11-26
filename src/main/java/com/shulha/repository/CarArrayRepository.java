@@ -2,9 +2,7 @@ package com.shulha.repository;
 
 
 import com.shulha.model.Car;
-import com.shulha.model.CarsColors;
-
-import java.util.Arrays;
+import com.shulha.model.CarColors;
 
 //  CRUD
 //  Create
@@ -98,7 +96,7 @@ public class CarArrayRepository {
     }
 
 //  tested
-    public void updateColor(final String id, final CarsColors color) {
+    public void updateColor(final String id, final CarColors color) {
         if (id == null || id.isBlank() || color == null) {
             return;
         }
