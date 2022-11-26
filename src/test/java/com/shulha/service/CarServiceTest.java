@@ -50,7 +50,7 @@ class CarServiceTest {
 
 
 //      action
-        final int actual = target.create(randomGenerator);
+        final int actual = target.create(null);
 
 
 //      checks
@@ -97,6 +97,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertNotNull(car);
+        Mockito.verify(repository).save(car);
     }
 
     @Test
@@ -130,6 +131,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.insert(count, car));
+        Mockito.verify(repository).insert(count, car);
     }
 
     @Test
@@ -141,6 +143,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.insert(count, car));
+        Mockito.verify(repository).insert(count, car);
     }
 
     @Test
@@ -152,6 +155,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.insert(count, null));
+        Mockito.verify(repository).insert(count, null);
     }
 
     @Test
@@ -162,6 +166,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.printAll());
+        Mockito.verify(repository).getAll();
     }
 
     @Test
@@ -172,6 +177,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertNull(target.getAll());
+        Mockito.verify(repository).getAll();
     }
 
     @Test
@@ -186,6 +192,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertEquals(expected, actual);
+        Mockito.verify(repository).getById(id);
     }
 
     @Test
@@ -199,6 +206,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertNull(car);
+        Mockito.verify(repository).getById(id);
     }
 
     @Test
@@ -211,6 +219,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertNull(car);
+        Mockito.verify(repository, Mockito.never()).getById(null);
     }
 
     @Test
@@ -223,6 +232,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertNull(car);
+        Mockito.verify(repository, Mockito.never()).getById("");
     }
 
     @Test
@@ -234,6 +244,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.delete(id));
+        Mockito.verify(repository).delete(id);
     }
 
     @Test
@@ -245,6 +256,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.delete(id));
+        Mockito.verify(repository, Mockito.never()).delete(Mockito.anyString());
     }
 
     @Test
@@ -256,12 +268,13 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.delete(id));
+        Mockito.verify(repository, Mockito.never()).delete(Mockito.anyString());
     }
 
     @Test
     void changeRandomColor() {
 //      initialize
-        String id = "1234567890";
+        String id = car.getId();
 
 //      action
 
@@ -278,6 +291,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.changeRandomColor(id));
+        Mockito.verify(repository, Mockito.never()).updateColor(car.getId(), CarsColors.BLACK);
     }
 
     @Test
@@ -289,6 +303,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.changeRandomColor(id));
+        Mockito.verify(repository, Mockito.never()).updateColor(car.getId(), CarsColors.BLACK);
     }
 
     @Test
@@ -300,6 +315,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertNull(car);
+        Mockito.verify(repository, Mockito.never()).save(null);
     }
 
     @Test
@@ -310,10 +326,11 @@ class CarServiceTest {
         CarsColors color = car.getColor();
 
 //      action
+        Car actual = target.create(manufacturer, engine, color);
 
 //      checks
-        Assertions.assertNotNull(target.create(manufacturer, engine, color));
-        Assertions.assertNotEquals(car, target.create(manufacturer, engine, color));
+        Assertions.assertNotNull(actual);
+        Mockito.verify(repository).save(actual);
     }
 
     @Test
