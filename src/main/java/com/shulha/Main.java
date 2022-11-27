@@ -29,5 +29,6 @@ public class Main {
 //        carService.printAll();
         carService.insert(3, new Truck());
         carService.printAll();
+        System.out.println(carService.find(passengerCar.getId()).toString());
     }
 }

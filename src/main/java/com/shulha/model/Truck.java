@@ -16,16 +16,17 @@ public class Truck extends Car implements CountRestore {
     public Truck (final CarsManufacturers manufacturer, final Engine engine, final CarColors color, final int loadCapacity) {
         super(manufacturer, engine, color);
         setType(CarTypes.TRUCK);
-        if (loadCapacity <= 0 || loadCapacity > 5000) {
-            this.loadCapacity = RANDOM.nextInt(1401) + 100;
+
+        if (loadCapacity < 100 || loadCapacity > 4000) {
+            this.loadCapacity = RANDOM.nextInt(3901) + 100;
             return;
         }
         this.loadCapacity = loadCapacity;
     }
 
     public void setLoadCapacity(int loadCapacity) {
-        if (loadCapacity <= 0 || loadCapacity > 5000) {
-            this.loadCapacity = RANDOM.nextInt(1401) + 100;
+        if (loadCapacity < 100 || loadCapacity > 4000) {
+            this.loadCapacity = RANDOM.nextInt(3901) + 100;
             return;
         }
         this.loadCapacity = loadCapacity;
@@ -41,6 +42,6 @@ public class Truck extends Car implements CountRestore {
 
     @Override
     public String toString() {
-        return super.toString() + String.format("The load capacity: %s%n", loadCapacity);
+        return super.toString() + String.format("Load capacity: %s lbs%n", loadCapacity);
     }
 }

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class CarArrayRepositoryTest {
     private CarArrayRepository target;
-    private Car passengerCar;
+    private PassengerCar passengerCar;
     private String id;
 
 //      initialize

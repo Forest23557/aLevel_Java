@@ -36,7 +36,7 @@ public class CarService {
         return count;
     }
 
-    //  tested
+//  tested
     public int createTruck(final RandomGenerator randomGenerator) {
         if (randomGenerator == null) {
             return -1;
@@ -78,19 +78,21 @@ public class CarService {
     }
 
     private int getRandomTruckCapacity() {
-        return RANDOM.nextInt(1401) + 100;
+        return RANDOM.nextInt(3901) + 100;
     }
 
 //  tested
     public PassengerCar createPassengerCar() {
-        final PassengerCar passengerCar = new PassengerCar(getRandomManufacturer(), getRandomEngine(), getRandomColor(), getRandomPassengerCount());
+        final PassengerCar passengerCar = new PassengerCar(getRandomManufacturer(),
+                getRandomEngine(), getRandomColor(), getRandomPassengerCount());
         carArrayRepository.save(passengerCar);
         return passengerCar;
     }
 
 //  tested
     public Truck createTruck() {
-        final Truck truck = new Truck(getRandomManufacturer(), getRandomEngine(), getRandomColor(), getRandomTruckCapacity());
+        final Truck truck = new Truck(getRandomManufacturer(),
+                getRandomEngine(), getRandomColor(), getRandomTruckCapacity());
         carArrayRepository.save(truck);
         return truck;
     }
@@ -106,7 +108,7 @@ public class CarService {
         }
     }
 
-    //  tested
+//  tested
     public void createTruck(final int count) {
         if (count <= 0) {
             return;

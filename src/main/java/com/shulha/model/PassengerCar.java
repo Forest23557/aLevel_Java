@@ -13,7 +13,7 @@ public class PassengerCar extends Car implements CountRestore{
     public PassengerCar (final CarsManufacturers manufacturer, final Engine engine, final CarColors color, final int passengerCount) {
         super(manufacturer, engine, color);
         setType(CarTypes.CAR);
-        if (passengerCount <= 0 || passengerCount > 5) {
+        if (passengerCount <= 1 || passengerCount > 5) {
             this.passengerCount = 4;
             return;
         }
@@ -21,7 +21,7 @@ public class PassengerCar extends Car implements CountRestore{
     }
 
     public void setPassengerCount(int passengerCount) {
-        if (passengerCount <= 0 || passengerCount > 5) {
+        if (passengerCount <= 1 || passengerCount > 5) {
             this.passengerCount = 4;
             return;
         }
@@ -38,6 +38,6 @@ public class PassengerCar extends Car implements CountRestore{
 
     @Override
     public String toString() {
-        return super.toString() + String.format("The passenger count: %s%n", passengerCount);
+        return super.toString() + String.format("Passenger count: %s%n", passengerCount);
     }
 }

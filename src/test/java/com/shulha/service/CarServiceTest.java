@@ -12,7 +12,7 @@ class CarServiceTest {
     private CarService target;
     private CarArrayRepository repository;
     private RandomGenerator randomGenerator;
-    private Car passengerCar;
+    private PassengerCar passengerCar;
 
     @BeforeEach
     void setUp() {
@@ -196,10 +196,10 @@ class CarServiceTest {
         Mockito.when(repository.getById(id)).thenReturn(null);
 
 //      action
-        passengerCar = target.find(id);
+        final Car actual = target.find(id);
 
 //      checks
-        Assertions.assertNull(passengerCar);
+        Assertions.assertNull(actual);
         Mockito.verify(repository).getById(id);
     }
 
@@ -209,10 +209,10 @@ class CarServiceTest {
         String id = null;
 
 //      action
-        passengerCar = target.find(id);
+        final Car actual = target.find(id);
 
 //      checks
-        Assertions.assertNull(passengerCar);
+        Assertions.assertNull(actual);
         Mockito.verify(repository, Mockito.never()).getById(null);
     }
 
@@ -222,10 +222,10 @@ class CarServiceTest {
         String id = "";
 
 //      action
-        passengerCar = target.find(id);
+        final Car actual = target.find(id);
 
 //      checks
-        Assertions.assertNull(passengerCar);
+        Assertions.assertNull(actual);
         Mockito.verify(repository, Mockito.never()).getById("");
     }
 
