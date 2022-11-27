@@ -1,8 +1,14 @@
 package com.shulha.model;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Random;
 import java.util.UUID;
 
+@Setter
+@Getter
 public class Car {
     private final static Random RANDOM = new Random();
     private final static int UPPER_BOUND = 99_001;
@@ -11,7 +17,9 @@ public class Car {
     private CarsManufacturers manufacturer;
     private Engine engine;
     private CarsColors color;
+    @Setter(AccessLevel.NONE)
     private int count;
+    @Setter(AccessLevel.NONE)
     private int price;
 
     public Car() {
@@ -27,61 +35,22 @@ public class Car {
         this.id = UUID.randomUUID().toString();
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public CarsManufacturers getManufacturer() {
-        return manufacturer;
-    }
-
-    public void setManufacturer(final CarsManufacturers manufacturer) {
-        this.manufacturer = manufacturer;
-    }
-
-    public Engine getEngine() {
-        return engine;
-    }
-
-    public void setEngine(final Engine engine) {
-        this.engine = engine;
-    }
-
-    public CarsColors getColor() {
-        return color;
-    }
-
-    public void setColor(final CarsColors color) {
-        this.color = color;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
     public void setCount(final int count) {
         if (count <= 0) {
             return;
-        } else {
-            this.count = count;
         }
-    }
-
-    public int getPrice() {
-        return price;
+        this.count = count;
     }
 
     public void setPrice(final int price) {
         if (price <= 0) {
             return;
-        } else {
-            this.price = price;
         }
+        this.price = price;
     }
 
     @Override
     public String toString() {
-        return String.format("ID: %s%nManufacturer: %s%nEngine: %s%n" +
-                "Color: %s%nPrice: %s%nCount: %s%n", id, manufacturer, engine.toString(), color, price, count);
+        return String.format("ID: %s%nManufacturer: %s%nEngine: %s%n" + "Color: %s%nPrice: %s%nCount: %s%n", id, manufacturer, engine.toString(), color, price, count);
     }
 }

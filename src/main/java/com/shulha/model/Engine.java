@@ -1,5 +1,8 @@
 package com.shulha.model;
 
+import lombok.Getter;
+
+@Getter
 public class Engine {
     private int power;
     private EngineTypes type;
@@ -9,16 +12,15 @@ public class Engine {
     }
 
     public Engine(int power, EngineTypes type) {
-        this.type = type;
-
         if(power < 0 || power > 1000) {
             return;
         }
         this.power = power;
-    }
 
-    public int getPower() {
-        return power;
+        if (type == null) {
+            return;
+        }
+        this.type = type;
     }
 
     public void setPower(int power) {
@@ -28,11 +30,10 @@ public class Engine {
         this.power = power;
     }
 
-    public EngineTypes getType() {
-        return type;
-    }
-
     public void setType(EngineTypes type) {
+        if (type == null) {
+            return;
+        }
         this.type = type;
     }
 
