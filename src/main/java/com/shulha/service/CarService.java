@@ -190,8 +190,10 @@ public class CarService {
 
         if (firstCar.hashCode() != secondCar.hashCode()) {
             return false;
-        } else if (!firstCar.equals(secondCar)) {
-            return false;
+        } else {
+            if (!firstCar.equals(secondCar)) {
+                return false;
+            }
         }
 
         return true;
