@@ -221,13 +221,13 @@ public class CarService {
 
 //      checks
         if (car.getCount() > 0 && car.getEngine().getPower() > 200) {
-            System.out.println("The car is ready for sale");
+            System.out.println("The car is ready for sale. Car ID: " + car.getId());
         } else if (car.getCount() < 0) {
-            System.out.println("The count is wrong");
+            System.out.println("The count is wrong. Car ID: " + car.getId());
         } else if (car.getEngine().getPower() < 200) {
-            System.out.println("The power of the engine is wrong");
+            System.out.println("The power of the engine is wrong. Car ID: " + car.getId());
         } else {
-            System.out.println("The count and the power of the engine are wrong");
+            System.out.println("The count and the power of the engine are wrong. Car ID: " + car.getId());
         }
         System.out.println();
     }
