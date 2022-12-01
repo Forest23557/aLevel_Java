@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
@@ -67,7 +68,21 @@ public abstract class Car {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Car car = (Car) o;
+        return Objects.equals(id, car.id) && type == car.type && manufacturer == car.manufacturer;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type, manufacturer);
+    }
+
+    @Override
     public String toString() {
-        return String.format("ID: %s%nType of the car: %s%nManufacturer: %s%nEngine: %s%n" + "Color: %s%nPrice: %s%nCount: %s%n", id, type, manufacturer, engine.toString(), color, price, count);
+        return String.format("ID: %s%nType of the car: %s%nManufacturer: %s%nEngine: %s%n" +
+                "Color: %s%nPrice: %s%nCount: %s%n", id, type, manufacturer, engine.toString(), color, price, count);
     }
 }

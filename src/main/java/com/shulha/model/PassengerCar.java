@@ -3,7 +3,7 @@ package com.shulha.model;
 import lombok.Getter;
 
 @Getter
-public class PassengerCar extends Car implements CountRestore{
+public class PassengerCar extends Car implements CountRestore {
     private int passengerCount;
 
     public PassengerCar() {
