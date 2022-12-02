@@ -390,4 +390,41 @@ class CarServiceTest {
 //      checks
         Assertions.assertDoesNotThrow(() -> CarService.check(null));
     }
+
+    @Test
+    void carEquals() {
+//      initialize
+        final Car carCopy = car;
+
+//      action
+        final boolean answer = target.carEquals(car, carCopy);
+
+//      checks
+        Assertions.assertEquals(true, answer);
+    }
+
+    @Test
+    void carEqualsCarsAreNotEqual() {
+//      initialize
+        final Car anotherCar = new PassengerCar();
+
+//      action
+        final boolean answer = target.carEquals(car, anotherCar);
+
+//      checks
+        Assertions.assertNotEquals(true, answer);
+    }
+
+    @Test
+    void carEqualsIncorrectCarsNull() {
+//      initialize
+        final Car anotherCar = null;
+        car = null;
+
+//      action
+        final boolean answer = target.carEquals(car, anotherCar);
+
+//      checks
+        Assertions.assertEquals(false, answer);
+    }
 }

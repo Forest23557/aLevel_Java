@@ -184,6 +184,10 @@ public class CarService {
     }
 
     public boolean carEquals(final Car firstCar, final Car secondCar) {
+        if (firstCar == null || secondCar == null) {
+            return false;
+        }
+
         if (firstCar.getType() != secondCar.getType()) {
             return false;
         }

@@ -7,7 +7,7 @@ import com.shulha.util.RandomGenerator;
 import java.util.Objects;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws CloneNotSupportedException {
         final CarService carService = new CarService();
 
 //        final Car passengerCar = carService.createCar(CarTypes.CAR);
@@ -36,14 +36,30 @@ public class Main {
 //        carService.printAll();
 //        System.out.println(carService.find(passengerCar.getId()).toString());
 
-        final Car testCar = carService.createCar(CarTypes.CAR);
-        final Car testCar1 = carService.find(testCar.getId());
+        final PassengerCar testCar = (PassengerCar) carService.createCar(CarTypes.CAR);
+        final PassengerCar testCar1 = (PassengerCar) carService.createCar(testCar.getManufacturer(), testCar.getEngine(),
+                testCar.getColor(), testCar.getType());
+        testCar1.setPrice(testCar.getPrice());
+        testCar1.setCount(testCar.getCount());
+        testCar1.setPassengerCount(testCar.getPassengerCount());
+
         carService.print(testCar);
         carService.print(testCar1);
-        final Car testCar2 = carService.createCar(CarTypes.CAR);
+        final Car testCar2 = (Car) testCar;
+        carService.print(testCar2);
+
 
         System.out.println(carService.carEquals(testCar, testCar1));
         System.out.println(carService.carEquals(testCar1, testCar2));
         System.out.println(carService.carEquals(testCar, testCar2));
+        System.out.println(carService.carEquals(null, testCar2));
+        System.out.println();
+
+        System.out.println(testCar.hashCode());
+        testCar.setCount(3);
+        testCar.setColor(CarColors.AQUAMARINE);
+        System.out.println(testCar.hashCode());
+        testCar.setManufacturer(CarsManufacturers.BMW);
+        System.out.println(testCar.hashCode());
     }
 }

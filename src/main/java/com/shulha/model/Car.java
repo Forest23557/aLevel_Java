@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Setter
 @Getter
-public abstract class Car {
+public abstract class Car implements Cloneable {
     private final static Random RANDOM = new Random();
     private final static int UPPER_BOUND = 99_001;
 
