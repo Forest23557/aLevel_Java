@@ -392,9 +392,9 @@ class CarServiceTest {
     }
 
     @Test
-    void carEquals() {
+    void carEquals() throws CloneNotSupportedException {
 //      initialize
-        final Car carCopy = car;
+        final Car carCopy = car.clone();
 
 //      action
         final boolean answer = target.carEquals(car, carCopy);

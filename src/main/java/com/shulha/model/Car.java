@@ -85,4 +85,9 @@ public abstract class Car implements Cloneable {
         return String.format("ID: %s%nType of the car: %s%nManufacturer: %s%nEngine: %s%n" +
                 "Color: %s%nPrice: %s%nCount: %s%n", id, type, manufacturer, engine.toString(), color, price, count);
     }
+
+    @Override
+    public Car clone() throws CloneNotSupportedException {
+        return (Car) super.clone();
+    }
 }

@@ -45,20 +45,29 @@ public class Main {
 
         carService.print(testCar);
         carService.print(testCar1);
-        final Car testCar2 = (Car) testCar;
+
+        final Car testCar2 = testCar.clone();
         carService.print(testCar2);
+
+        final Car tesCar3 = testCar.clone();
+        tesCar3.setManufacturer(CarsManufacturers.FORD);
+        System.out.println(tesCar3.toString());
 
 
         System.out.println(carService.carEquals(testCar, testCar1));
-        System.out.println(carService.carEquals(testCar1, testCar2));
+//        System.out.println(carService.carEquals(testCar1, testCar2));
         System.out.println(carService.carEquals(testCar, testCar2));
+        System.out.println(carService.carEquals(testCar, tesCar3));
+
         System.out.println(carService.carEquals(null, testCar2));
         System.out.println();
 
         System.out.println(testCar.hashCode());
+
         testCar.setCount(3);
         testCar.setColor(CarColors.AQUAMARINE);
         System.out.println(testCar.hashCode());
+
         testCar.setManufacturer(CarsManufacturers.BMW);
         System.out.println(testCar.hashCode());
     }
