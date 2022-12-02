@@ -51,12 +51,13 @@ public class Main {
 
         final Car tesCar3 = testCar.clone();
         tesCar3.setManufacturer(CarsManufacturers.FORD);
+        System.out.println(testCar.toString());
         System.out.println(tesCar3.toString());
 
 
         System.out.println(carService.carEquals(testCar, testCar1));
 //        System.out.println(carService.carEquals(testCar1, testCar2));
-        System.out.println(carService.carEquals(testCar, testCar2));
+        System.out.println(carService.carEquals(testCar, testCar2)); // true
         System.out.println(carService.carEquals(testCar, tesCar3));
 
         System.out.println(carService.carEquals(null, testCar2));
