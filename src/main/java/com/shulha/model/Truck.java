@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.Random;
 
 @Getter
-public class Truck extends Car implements CountRestore {
+public class Truck extends Car {
     private static final Random RANDOM = new Random();
     private int loadCapacity;
 

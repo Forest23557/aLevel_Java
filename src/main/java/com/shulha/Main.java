@@ -10,17 +10,17 @@ public class Main {
     public static void main(String[] args) throws CloneNotSupportedException {
         final CarService carService = new CarService();
 
-//        final Car passengerCar = carService.createCar(CarTypes.CAR);
-//        final Car truck = carService.createCar(CarTypes.TRUCK);
-//
-//        CarService.check(passengerCar);
-//        CarService.check(truck);
-//
-//        final PassengerCar passengerCar1 = (PassengerCar) passengerCar;
-//        final Truck truck1 = (Truck) truck;
-//
-//        truck1.restore();
-//        passengerCar1.restore();
+        final Car passengerCar = carService.createCar(CarTypes.CAR);
+        final Car truck = carService.createCar(CarTypes.TRUCK);
+
+        CarService.check(passengerCar);
+        CarService.check(truck);
+
+        final PassengerCar passengerCar1 = (PassengerCar) passengerCar;
+        final Truck truck1 = (Truck) truck;
+
+        truck1.restore();
+        passengerCar1.restore();
 //
 //        carService.createRandomAmountOfCars(new RandomGenerator());
 //        carService.printAll();
