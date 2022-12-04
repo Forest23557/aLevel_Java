@@ -4,6 +4,7 @@ import com.shulha.model.*;
 import com.shulha.repository.CarArrayRepository;
 import com.shulha.util.RandomGenerator;
 
+import java.util.Optional;
 import java.util.Random;
 
 public class CarService {
@@ -17,6 +18,38 @@ public class CarService {
 
     public CarService(final CarArrayRepository carArrayRepository) {
         this.carArrayRepository = carArrayRepository;
+    }
+
+    public void printManufacturerAndCount(final Car car) {
+        final Optional<Car> optionalCar = Optional.ofNullable(car);
+
+        optionalCar.ifPresent(car1 -> {
+            System.out.println("The manufacturer of the car is: " + car1.getManufacturer());
+            System.out.println("The count of cars: " + car1.getCount());
+            System.out.println();
+        });
+    }
+
+    public void printColor(final Car car) {
+        final Car existOrNewCar = Optional.ofNullable(car).orElse(createCar(CarTypes.CAR));
+
+        System.out.println("The car with ID " + existOrNewCar.getId() + " has " + existOrNewCar.getColor() + " color");
+        System.out.println();
+    }
+
+    public void checkCount(final Car car) {
+        final Optional<Car> optionalCar = Optional.ofNullable(car);
+
+        if (optionalCar.isPresent()) {
+            final Car rightCar = optionalCar
+                    .filter(car1 -> car1.getCount() > 10)
+                    .orElseThrow(() -> new UserInputException(car.getId()));
+
+            System.out.println("The car with ID: " + rightCar.getId());
+            System.out.println("Manufacturer: " + rightCar.getManufacturer());
+            System.out.println("Count: " + rightCar.getCount());
+            System.out.println();
+        }
     }
 
     //  tested
