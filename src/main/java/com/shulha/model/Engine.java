@@ -39,6 +39,6 @@ public class Engine {
 
     @Override
     public String toString() {
-        return String.format("the power - %s hp, the type - %s", power, type);
+        return String.format("the power of the engine - %s hp, the type of the engine - %s", power, type);
     }
 }

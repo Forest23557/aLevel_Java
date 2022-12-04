@@ -1,6 +1,6 @@
 package com.shulha.model;
 
-public enum CarsColors {
+public enum CarColors {
     WHITE,
     YELLOW,
     BLUE,
