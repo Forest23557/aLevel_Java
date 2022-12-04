@@ -52,6 +52,26 @@ public class CarService {
         }
     }
 
+    public void printEngineInfo(final Car car) {
+        final Car existOrNewCar = Optional.ofNullable(car)
+                .orElseGet(() -> {
+                    System.out.println("A new car has just been created");
+                    return createCar(CarTypes.CAR);
+                });
+        System.out.println("ID of the car: " + existOrNewCar.getId());
+
+        final Engine engine = Optional.of(existOrNewCar)
+                .map(car1 -> car1.getEngine())
+                .get();
+
+        System.out.println("Power of the engine: " + engine.getPower());
+        System.out.println();
+    }
+
+    public void printInfo(final Car car) {
+        Optional.ofNullable(car).ifPresentOrElse(car1 -> print(car), () -> print(createCar(CarTypes.CAR)));
+    }
+
     //  tested
     public int createRandomAmountOfCars(final RandomGenerator randomGenerator) {
         if (randomGenerator == null) {

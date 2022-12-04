@@ -19,8 +19,14 @@ public class Main {
 
         car.setCount(11);
         carService.checkCount(car);
-        car.setCount(5);
-        carService.checkCount(car);
+//        car.setCount(5);
+//        carService.checkCount(car);
+
+        carService.printEngineInfo(car);
+        carService.printEngineInfo(null);
+
+        carService.printInfo(car);
+        carService.printInfo(null);
 
 //        final Car passengerCar = carService.createCar(CarTypes.CAR);
 //        final Car truck = carService.createCar(CarTypes.TRUCK);
