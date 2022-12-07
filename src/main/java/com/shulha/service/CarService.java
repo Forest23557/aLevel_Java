@@ -31,9 +31,9 @@ public class CarService {
     }
 
     public void printColor(final Car car) {
-        final Car existOrNewCar = Optional.ofNullable(car).orElse(createCar(CarTypes.CAR));
+        final Car existentOrNewCar = Optional.ofNullable(car).orElse(createCar(CarTypes.CAR));
 
-        System.out.println("The car with ID " + existOrNewCar.getId() + " has " + existOrNewCar.getColor() + " color");
+        System.out.println("The car with ID " + existentOrNewCar.getId() + " has " + existentOrNewCar.getColor() + " color");
         System.out.println();
     }
 
@@ -53,14 +53,14 @@ public class CarService {
     }
 
     public void printEngineInfo(final Car car) {
-        final Car existOrNewCar = Optional.ofNullable(car)
+        final Car existentOrNewCar = Optional.ofNullable(car)
                 .orElseGet(() -> {
                     System.out.println("A new car has just been created");
                     return createCar(CarTypes.CAR);
                 });
-        System.out.println("ID of the car: " + existOrNewCar.getId());
+        System.out.println("ID of the car: " + existentOrNewCar.getId());
 
-        final Engine engine = Optional.of(existOrNewCar)
+        final Engine engine = Optional.of(existentOrNewCar)
                 .map(car1 -> car1.getEngine())
                 .get();
 
