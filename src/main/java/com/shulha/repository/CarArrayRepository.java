@@ -4,6 +4,8 @@ package com.shulha.repository;
 import com.shulha.model.Car;
 import com.shulha.model.CarColors;
 
+import java.util.Optional;
+
 //  CRUD
 //  Create
 //  Read
@@ -11,6 +13,15 @@ import com.shulha.model.CarColors;
 //  Delete
 public class CarArrayRepository {
     private static Car[] cars = new Car[10];
+    private static CarArrayRepository instance;
+
+    private CarArrayRepository() {
+    }
+
+    public static CarArrayRepository getInstance() {
+        instance = Optional.ofNullable(instance).orElseGet(() -> new CarArrayRepository());
+        return instance;
+    }
 
 //  tested
     public void save(final Car car) {
@@ -158,5 +169,17 @@ public class CarArrayRepository {
         }
 
         cars[index] = car;
+    }
+
+    public void replaceCars(final int indexOfFirst, final int indexOfSecond) {
+        int lastNotNullIndex = findUsefulLength() - 1;
+        if ((indexOfFirst < 0 || indexOfFirst > lastNotNullIndex) ||
+                (indexOfSecond < 0 || indexOfSecond > lastNotNullIndex)) {
+            return;
+        }
+
+        Car temp = cars[indexOfFirst];
+        cars[indexOfFirst] = cars[indexOfSecond];
+        cars[indexOfSecond] = temp;
     }
 }

@@ -2,92 +2,44 @@ package com.shulha;
 
 import com.shulha.model.*;
 import com.shulha.service.CarService;
+import com.shulha.util.AlgorithmUtil;
 import com.shulha.util.RandomGenerator;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) throws CloneNotSupportedException {
-        final CarService carService = new CarService();
+        final CarService carService = CarService.getInstance();
 
         final Car car = carService.createCar(CarTypes.CAR);
-        carService.printManufacturerAndCount(car);
-        carService.printManufacturerAndCount(null);
+        carService.createCar(9, CarTypes.CAR);
 
-        carService.printColor(car);
-        carService.printColor(null);
+//        int[] array = {10, 4, 48, 32, 56, 60};
+//        System.out.println(Arrays.toString(array));
+//        AlgorithmUtil.bubbleSort(array);
+//        System.out.println(Arrays.toString(array));
 
-        car.setCount(11);
-        carService.checkCount(car);
+        carService.printAll();
+        AlgorithmUtil.bubbleSort(carService.getAll());
+        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        carService.printAll();
+
+//        carService.printManufacturerAndCount(car);
+//        carService.printManufacturerAndCount(null);
+//
+//        carService.printColor(car);
+//        carService.printColor(null);
+//
+//        car.setCount(11);
+//        carService.checkCount(car);
 //        car.setCount(5);
 //        carService.checkCount(car);
-
-        carService.printEngineInfo(car);
-        carService.printEngineInfo(null);
-
-        carService.printInfo(car);
-        carService.printInfo(null);
-
-//        final Car passengerCar = carService.createCar(CarTypes.CAR);
-//        final Car truck = carService.createCar(CarTypes.TRUCK);
 //
-//        CarService.check(passengerCar);
-//        CarService.check(truck);
+//        carService.printEngineInfo(car);
+//        carService.printEngineInfo(null);
 //
-//        final PassengerCar passengerCar1 = (PassengerCar) passengerCar;
-//        final Truck truck1 = (Truck) truck;
-//
-//        truck1.restore();
-//        passengerCar1.restore();
-//
-//        carService.createRandomAmountOfCars(new RandomGenerator());
-//        carService.printAll();
-
-//        carService.printAll();
-
-//        carService.print(passengerCar);
-//        carService.print(truck);
-
-//        carService.delete(passengerCar.getId());
-//        carService.printAll();
-//        carService.insert(3, new Truck());
-//        carService.printAll();
-//        System.out.println(carService.find(passengerCar.getId()).toString());
-
-//        final PassengerCar testCar = (PassengerCar) carService.createCar(CarTypes.CAR);
-//        final PassengerCar testCar1 = (PassengerCar) carService.createCar(testCar.getManufacturer(), testCar.getEngine(),
-//                testCar.getColor(), testCar.getType());
-//        testCar1.setPrice(testCar.getPrice());
-//        testCar1.setCount(testCar.getCount());
-//        testCar1.setPassengerCount(testCar.getPassengerCount());
-//
-//        carService.print(testCar);
-//        carService.print(testCar1);
-//
-//        final Car testCar2 = testCar.clone();
-//        carService.print(testCar2);
-//
-//        final Car tesCar3 = testCar.clone();
-//        tesCar3.setManufacturer(CarsManufacturers.FORD);
-//        System.out.println(testCar.toString());
-//        System.out.println(tesCar3.toString());
-//
-//
-//        System.out.println(carService.carEquals(testCar, testCar1));
-////        System.out.println(carService.carEquals(testCar1, testCar2));
-//        System.out.println(carService.carEquals(testCar, testCar2)); // true
-//        System.out.println(carService.carEquals(testCar, tesCar3));
-//
-//        System.out.println(carService.carEquals(null, testCar2));
-//        System.out.println();
-//
-//        System.out.println(testCar.hashCode());
-//
-//        testCar.setCount(3);
-//        testCar.setColor(CarColors.AQUAMARINE);
-//        System.out.println(testCar.hashCode());
-//
-//        testCar.setManufacturer(CarsManufacturers.BMW);
-//        System.out.println(testCar.hashCode());
+//        carService.printInfo(car);
+//        carService.printInfo(null);
     }
 }

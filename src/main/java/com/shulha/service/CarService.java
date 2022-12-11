@@ -11,13 +11,30 @@ public class CarService {
     private final static Random RANDOM = new Random();
 
     private final CarArrayRepository carArrayRepository;
+    private static CarService instance;
 
-    public CarService() {
-        this(new CarArrayRepository());
+    private CarService(final CarArrayRepository carArrayRepository) {
+        this.carArrayRepository = carArrayRepository;
     }
 
-    public CarService(final CarArrayRepository carArrayRepository) {
-        this.carArrayRepository = carArrayRepository;
+    public static CarService getInstance() {
+        instance = Optional
+                .ofNullable(instance)
+                .orElseGet(() -> new CarService(CarArrayRepository.getInstance()));
+        return instance;
+    }
+
+    public static CarService getInstance(final CarArrayRepository repository) {
+        instance = Optional
+                .ofNullable(instance)
+                .orElseGet(() -> new CarService(Optional
+                        .ofNullable(repository)
+                        .orElseGet(() -> CarArrayRepository.getInstance())));
+        return instance;
+    }
+
+    public void cleanRepository() {
+        carArrayRepository.removeAll();
     }
 
     public void printManufacturerAndCount(final Car car) {
@@ -123,6 +140,10 @@ public class CarService {
 
     private int getRandomTruckCapacity() {
         return RANDOM.nextInt(3901) + 100;
+    }
+
+    public void replaceCarsFromRepository(final int indexOfFirst, final int indexOfSecond) {
+        carArrayRepository.replaceCars(indexOfFirst, indexOfSecond);
     }
 
     //  tested
@@ -283,5 +304,9 @@ public class CarService {
             System.out.println("The count and the power of the engine are wrong. Car ID: " + car.getId());
         }
         System.out.println();
+    }
+
+    public int compareCar(final Car firstCar, final Car secondCar) {
+        return firstCar.getId().compareTo(secondCar.getId());
     }
 }

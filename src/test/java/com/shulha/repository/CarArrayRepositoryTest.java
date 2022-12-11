@@ -20,7 +20,7 @@ class CarArrayRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        target = new CarArrayRepository();
+        target = CarArrayRepository.getInstance();
         car = new PassengerCar();
         target.removeAll();
     }
