@@ -1,59 +1,72 @@
 package com.shulha;
 
+import com.shulha.action.Action;
+import com.shulha.action.Actions;
 import com.shulha.model.*;
 import com.shulha.service.CarService;
 import com.shulha.util.AlgorithmUtil;
 import com.shulha.util.RandomGenerator;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
 public class Main {
-    public static void main(String[] args) throws CloneNotSupportedException {
-        final CarService carService = CarService.getInstance();
+    private static BufferedReader reader =
+            new BufferedReader(new InputStreamReader(System.in));
 
-        final Car car = carService.createCar(CarTypes.CAR);
-        final String id = car.getId();
-        carService.createCar(9, CarTypes.CAR);
-
-//        int[] array = {10, 4, 48, 32, 56, 60};
-//        System.out.println(Arrays.toString(array));
-//        AlgorithmUtil.bubbleSort(array);
-//        System.out.println(Arrays.toString(array));
+    public static void main(String[] args) throws IOException {
+//        final CarService carService = CarService.getInstance();
 //
-//        System.out.println(AlgorithmUtil.binarySearch(array, 0, array.length - 1, 60));
-
-        carService.printAll();
-        final Car[] sortedCarArray = AlgorithmUtil.bubbleSort(carService.getAll());
-        System.out.println("~".repeat(20));
-        for (int i = 0; i < sortedCarArray.length; i++) {
-            carService.print(sortedCarArray[i]);
-        }
-
-        final Car car1 = AlgorithmUtil.binarySearch(sortedCarArray,
-                0, carService.getAll().length - 1, id);
-
-        System.out.println("~".repeat(20));
-        Optional.ofNullable(car1).ifPresent(car2 -> {
-            System.out.println(car2);
-        });
-
-//        carService.printManufacturerAndCount(car);
-//        carService.printManufacturerAndCount(null);
+//        final Car car = carService.createCar(CarTypes.CAR);
+//        final String id = car.getId();
+//        carService.createCar(9, CarTypes.CAR);
 //
-//        carService.printColor(car);
-//        carService.printColor(null);
+//        carService.printAll();
+//        final Car[] sortedCarArray = AlgorithmUtil.bubbleSort(carService.getAll());
+//        System.out.println("~".repeat(20));
+//        for (int i = 0; i < sortedCarArray.length; i++) {
+//            carService.print(sortedCarArray[i]);
+//        }
 //
-//        car.setCount(11);
-//        carService.checkCount(car);
-//        car.setCount(5);
-//        carService.checkCount(car);
+//        final Car car1 = AlgorithmUtil.binarySearch(sortedCarArray,
+//                0, carService.getAll().length - 1, id);
 //
-//        carService.printEngineInfo(car);
-//        carService.printEngineInfo(null);
-//
-//        carService.printInfo(car);
-//        carService.printInfo(null);
+//        System.out.println("~".repeat(20));
+//        Optional.ofNullable(car1).ifPresent(car2 -> {
+//            System.out.println(car2);
+//        });
+
+        final Actions[] values = Actions.values();
+
+        int userChoice = -1;
+        boolean condition = true;
+        do {
+            System.out.println("Choose your action: ");
+
+            for (int i = 0; i < values.length; i++) {
+                System.out.println(i + ". " + values[i].getName());
+            }
+
+            final String answer = reader.readLine();
+
+            if (!StringUtils.isNumeric(answer)) {
+                System.out.println("You wrote a wrong command! Enter an existing command from display, please.");
+                continue;
+            }
+            userChoice = Integer.parseInt(answer);
+
+            condition = userChoice < 0 || userChoice >= values.length;
+            if (condition) {
+                System.out.println("You wrote a wrong command! Enter an existing command from display, please.");
+                continue;
+            }
+        } while (condition);
+
+        values[userChoice].execute();
     }
 }
