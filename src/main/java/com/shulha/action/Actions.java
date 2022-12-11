@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum Actions {
     CREATE("Create cars", new CreateAction()),
     COMPARE("Compare cars", new CompareAction()),
+    SHOW_ALL("Show all cars", new ShowAllAction()),
     EXIT("Exit from the program", new ExitAction());
 
     private final String name;
