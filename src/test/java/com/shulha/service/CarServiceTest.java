@@ -12,14 +12,14 @@ class CarServiceTest {
     private CarService target;
     private CarArrayRepository repository;
     private RandomGenerator randomGenerator;
-    private PassengerCar passengerCar;
+    private Car car;
 
     @BeforeEach
     void setUp() {
         repository = Mockito.mock(CarArrayRepository.class);
         randomGenerator = Mockito.mock(RandomGenerator.class);
         target = new CarService(repository);
-        passengerCar = new PassengerCar();
+        car = new PassengerCar();
     }
 
     @Test
@@ -30,7 +30,7 @@ class CarServiceTest {
 
 
 //      action
-        final int actual = target.createPassengerCar(randomGenerator);
+        final int actual = target.createRandomAmountOfCars(randomGenerator);
 
 
 //      checks
@@ -44,7 +44,7 @@ class CarServiceTest {
 
 
 //      action
-        final int actual = target.createPassengerCar(null);
+        final int actual = target.createRandomAmountOfCars(null);
 
 
 //      checks
@@ -59,7 +59,7 @@ class CarServiceTest {
 
 
 //      action
-        final int actual = target.createPassengerCar(randomGenerator);
+        final int actual = target.createRandomAmountOfCars(randomGenerator);
 
 
 //      checks
@@ -74,7 +74,7 @@ class CarServiceTest {
 
 
 //      action
-        final int actual = target.createPassengerCar(randomGenerator);
+        final int actual = target.createRandomAmountOfCars(randomGenerator);
 
 
 //      checks
@@ -86,12 +86,25 @@ class CarServiceTest {
 //      initialize
 
 //      action
-        final Car car = target.createPassengerCar();
+        final Car car = target.createCar(CarTypes.CAR);
 
 
 //      checks
         Assertions.assertNotNull(car);
         Mockito.verify(repository).save(car);
+    }
+
+    @Test
+    void createIncorrectTypeNull() {
+//      initialize
+
+//      action
+        final Car car = target.createCar(null);
+
+
+//      checks
+        Assertions.assertNull(car);
+        Mockito.verify(repository, Mockito.never()).save(car);
     }
 
     @Test
@@ -102,7 +115,7 @@ class CarServiceTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> target.createPassengerCar(count));
+        Assertions.assertDoesNotThrow(() -> target.createCar(count, CarTypes.CAR));
     }
 
     @Test
@@ -113,7 +126,18 @@ class CarServiceTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> target.createPassengerCar(count));
+        Assertions.assertDoesNotThrow(() -> target.createCar(count, CarTypes.CAR));
+    }
+
+    @Test
+    void createWithCountIncorrectTypeNull() {
+//      initialize
+        int count = -8;
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.createCar(count, null));
     }
 
     @Test
@@ -124,8 +148,8 @@ class CarServiceTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> target.insert(count, passengerCar));
-        Mockito.verify(repository).insert(count, passengerCar);
+        Assertions.assertDoesNotThrow(() -> target.insert(count, car));
+        Mockito.verify(repository).insert(count, car);
     }
 
     @Test
@@ -136,8 +160,8 @@ class CarServiceTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> target.insert(count, passengerCar));
-        Mockito.verify(repository).insert(count, passengerCar);
+        Assertions.assertDoesNotThrow(() -> target.insert(count, car));
+        Mockito.verify(repository).insert(count, car);
     }
 
     @Test
@@ -268,7 +292,7 @@ class CarServiceTest {
     @Test
     void changeRandomColor() {
 //      initialize
-        String id = passengerCar.getId();
+        String id = car.getId();
 
 //      action
 
@@ -285,7 +309,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.changeRandomColor(id));
-        Mockito.verify(repository, Mockito.never()).updateColor(passengerCar.getId(), CarColors.BLACK);
+        Mockito.verify(repository, Mockito.never()).updateColor(car.getId(), CarColors.BLACK);
     }
 
     @Test
@@ -297,7 +321,7 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.changeRandomColor(id));
-        Mockito.verify(repository, Mockito.never()).updateColor(passengerCar.getId(), CarColors.BLACK);
+        Mockito.verify(repository, Mockito.never()).updateColor(car.getId(), CarColors.BLACK);
     }
 
     @Test
@@ -305,22 +329,22 @@ class CarServiceTest {
 //      initialize
 
 //      action
-        passengerCar = target.createPassengerCar(null, null, null, 0);
+        car = target.createCar(null, null, null, null);
 
 //      checks
-        Assertions.assertNull(passengerCar);
+        Assertions.assertNull(car);
         Mockito.verify(repository, Mockito.never()).save(null);
     }
 
     @Test
     void createWithThreeParameters() {
 //      initialize
-        CarsManufacturers manufacturer = passengerCar.getManufacturer();
-        Engine engine = passengerCar.getEngine();
-        CarColors color = passengerCar.getColor();
+        CarsManufacturers manufacturer = car.getManufacturer();
+        Engine engine = car.getEngine();
+        CarColors color = car.getColor();
 
 //      action
-        Car actual = target.createPassengerCar(manufacturer, engine, color, 4);
+        Car actual = target.createCar(manufacturer, engine, color, CarTypes.CAR);
 
 //      checks
         Assertions.assertNotNull(actual);
@@ -334,7 +358,7 @@ class CarServiceTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> target.print(passengerCar));
+        Assertions.assertDoesNotThrow(() -> target.print(car));
     }
 
     @Test
@@ -354,7 +378,7 @@ class CarServiceTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> CarService.check(passengerCar));
+        Assertions.assertDoesNotThrow(() -> CarService.check(car));
     }
 
     @Test
@@ -365,5 +389,42 @@ class CarServiceTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> CarService.check(null));
+    }
+
+    @Test
+    void carEquals() throws CloneNotSupportedException {
+//      initialize
+        final Car carCopy = car.clone();
+
+//      action
+        final boolean answer = target.carEquals(car, carCopy);
+
+//      checks
+        Assertions.assertEquals(true, answer);
+    }
+
+    @Test
+    void carEqualsCarsAreNotEqual() {
+//      initialize
+        final Car anotherCar = new PassengerCar();
+
+//      action
+        final boolean answer = target.carEquals(car, anotherCar);
+
+//      checks
+        Assertions.assertNotEquals(true, answer);
+    }
+
+    @Test
+    void carEqualsIncorrectCarsNull() {
+//      initialize
+        final Car anotherCar = null;
+        car = null;
+
+//      action
+        final boolean answer = target.carEquals(car, anotherCar);
+
+//      checks
+        Assertions.assertEquals(false, answer);
     }
 }

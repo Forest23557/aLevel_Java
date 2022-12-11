@@ -19,8 +19,8 @@ public class CarService {
         this.carArrayRepository = carArrayRepository;
     }
 
-//  tested
-    public int createPassengerCar(final RandomGenerator randomGenerator) {
+    //  tested
+    public int createRandomAmountOfCars(final RandomGenerator randomGenerator) {
         if (randomGenerator == null) {
             return -1;
         }
@@ -30,24 +30,15 @@ public class CarService {
             return -1;
         }
 
-        createPassengerCar(count);
-        printAll();
+        for (int i = 0; i < count; i++) {
+            int carTypeNumber = RANDOM.nextInt(2);
 
-        return count;
-    }
-
-//  tested
-    public int createTruck(final RandomGenerator randomGenerator) {
-        if (randomGenerator == null) {
-            return -1;
+            if (carTypeNumber == 0) {
+                createCar(CarTypes.CAR);
+            } else {
+                createCar(CarTypes.TRUCK);
+            }
         }
-
-        int count = randomGenerator.getRandomNumber();
-        if (count <= 0 || count > 10) {
-            return -1;
-        }
-
-        createTruck(count);
         printAll();
 
         return count;
@@ -81,50 +72,42 @@ public class CarService {
         return RANDOM.nextInt(3901) + 100;
     }
 
-//  tested
-    public PassengerCar createPassengerCar() {
-        final PassengerCar passengerCar = new PassengerCar(getRandomManufacturer(),
-                getRandomEngine(), getRandomColor(), getRandomPassengerCount());
-        carArrayRepository.save(passengerCar);
-        return passengerCar;
+    //  tested
+    public Car createCar(final CarTypes carType) {
+        Car car;
+
+        if (carType == null) {
+            return null;
+        }
+
+        if (carType == CarTypes.CAR) {
+            car = new PassengerCar(getRandomManufacturer(), getRandomEngine(), getRandomColor(), getRandomPassengerCount());
+        } else {
+            car = new Truck(getRandomManufacturer(), getRandomEngine(), getRandomColor(), getRandomTruckCapacity());
+        }
+
+        carArrayRepository.save(car);
+
+        return car;
     }
 
-//  tested
-    public Truck createTruck() {
-        final Truck truck = new Truck(getRandomManufacturer(),
-                getRandomEngine(), getRandomColor(), getRandomTruckCapacity());
-        carArrayRepository.save(truck);
-        return truck;
-    }
-
-//  tested
-    public void createPassengerCar(final int count) {
-        if (count <= 0) {
+    //  tested
+    public void createCar(final int count, final CarTypes carType) {
+        if (count <= 0 || carType == null) {
             return;
         }
 
         for (int i = 0; i < count; i++) {
-            createPassengerCar();
+            createCar(carType);
         }
     }
 
-//  tested
-    public void createTruck(final int count) {
-        if (count <= 0) {
-            return;
-        }
-
-        for (int i = 0; i < count; i++) {
-            createTruck();
-        }
-    }
-
-//  tested
+    //  tested
     public void insert(int index, final Car car) {
         carArrayRepository.insert(index, car);
     }
 
-//  tested
+    //  tested
     public void printAll() {
         final Car[] allCars = carArrayRepository.getAll();
 
@@ -137,12 +120,12 @@ public class CarService {
         }
     }
 
-//  tested
+    //  tested
     public Car[] getAll() {
         return carArrayRepository.getAll();
     }
 
-//  tested
+    //  tested
     public Car find(final String id) {
         if (id == null || id.isBlank()) {
             return null;
@@ -150,7 +133,7 @@ public class CarService {
         return carArrayRepository.getById(id);
     }
 
-//  tested
+    //  tested
     public void delete(final String id) {
         if (id == null || id.isBlank()) {
             return;
@@ -158,7 +141,7 @@ public class CarService {
         carArrayRepository.delete(id);
     }
 
-//  tested
+    //  tested
     public void changeRandomColor(final String id) {
         if (id == null || id.isBlank()) {
             return;
@@ -182,28 +165,45 @@ public class CarService {
         carArrayRepository.updateColor(car.getId(), randomColor);
     }
 
-//  tested
-    public PassengerCar createPassengerCar(final CarsManufacturers manufacturer, final Engine engine, final CarColors color, final int passengerCount) {
-        if (manufacturer == null || engine == null || color == null || passengerCount <= 0) {
+    //  tested
+    public Car createCar(final CarsManufacturers manufacturer, final Engine engine, final CarColors color, final CarTypes carType) {
+        Car car;
+
+        if (manufacturer == null || engine == null || color == null || carType == null) {
             return null;
         }
 
-        PassengerCar passengerCar = new PassengerCar(manufacturer, engine, color, passengerCount);
-        carArrayRepository.save(passengerCar);
-        return passengerCar;
-    }
-
-//  tested
-    public Truck createTruck(final CarsManufacturers manufacturer, final Engine engine, final CarColors color, final int loadCapacity) {
-        if (manufacturer == null || engine == null || color == null || loadCapacity <= 100) {
-            return null;
+        if (carType == CarTypes.CAR) {
+            car = new PassengerCar(manufacturer, engine, color, getRandomPassengerCount());
+        } else {
+            car = new PassengerCar(manufacturer, engine, color, getRandomTruckCapacity());
         }
-        Truck truck = new Truck(manufacturer, engine, color, loadCapacity);
-        carArrayRepository.save(truck);
-        return truck;
+
+        carArrayRepository.save(car);
+        return car;
     }
 
-//  tested
+    public boolean carEquals(final Car firstCar, final Car secondCar) {
+        if (firstCar == null || secondCar == null) {
+            return false;
+        }
+
+        if (firstCar.getType() != secondCar.getType()) {
+            return false;
+        }
+
+        if (firstCar.hashCode() != secondCar.hashCode()) {
+            return false;
+        } else {
+            if (!firstCar.equals(secondCar)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    //  tested
     public void print(Car car) {
         if (car == null) {
             System.out.println("Error! Car isn't delivered");
@@ -212,7 +212,7 @@ public class CarService {
         System.out.println(car.toString());
     }
 
-//  tested
+    //  tested
     public static void check(Car car) {
         if (car == null) {
             System.out.println("Error! Car isn't delivered");
