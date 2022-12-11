@@ -1,25 +1,12 @@
 package com.shulha;
 
-import com.shulha.action.Action;
 import com.shulha.action.Actions;
-import com.shulha.model.*;
-import com.shulha.service.CarService;
-import com.shulha.util.AlgorithmUtil;
-import com.shulha.util.RandomGenerator;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
+import com.shulha.util.UserInput;
+import lombok.SneakyThrows;
 
 public class Main {
-    private static BufferedReader reader =
-            new BufferedReader(new InputStreamReader(System.in));
-
-    public static void main(String[] args) throws IOException {
+    @SneakyThrows
+    public static void main(String[] args) {
 //        final CarService carService = CarService.getInstance();
 //
 //        final Car car = carService.createCar(CarTypes.CAR);
@@ -42,31 +29,19 @@ public class Main {
 //        });
 
         final Actions[] values = Actions.values();
+        String[] names = mapActionToName(values);
 
-        int userChoice = -1;
-        boolean condition = true;
-        do {
-            System.out.println("Choose your action: ");
+        while (true) {
+            final int userChoice = UserInput.menu(names);
+            values[userChoice].execute();
+        }
+    }
 
-            for (int i = 0; i < values.length; i++) {
-                System.out.println(i + ". " + values[i].getName());
-            }
-
-            final String answer = reader.readLine();
-
-            if (!StringUtils.isNumeric(answer)) {
-                System.out.println("You wrote a wrong command! Enter an existing command from display, please.");
-                continue;
-            }
-            userChoice = Integer.parseInt(answer);
-
-            condition = userChoice < 0 || userChoice >= values.length;
-            if (condition) {
-                System.out.println("You wrote a wrong command! Enter an existing command from display, please.");
-                continue;
-            }
-        } while (condition);
-
-        values[userChoice].execute();
+    private static String[] mapActionToName(final Actions[] values) {
+        String[] names = new String[values.length];
+        for (int i = 0; i < values.length; i++) {
+            names[i] = values[i].getName();
+        }
+        return names;
     }
 }
