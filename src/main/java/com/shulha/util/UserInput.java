@@ -41,23 +41,23 @@ public class UserInput {
     }
 
     @SneakyThrows
-    public static int count() {
+    public static int count(final String option, final String error) {
         int userCount = -1;
         boolean condition = true;
         do {
-            System.out.println("Enter your count(1-999): ");
+            System.out.println(option);
 
             final String answer = READER.readLine();
 
             if (!StringUtils.isNumeric(answer)) {
-                System.out.println("You wrote a wrong type of data!");
+                System.out.println(error);
                 continue;
             }
             userCount = Integer.parseInt(answer);
 
             condition = userCount < 0 || userCount > 999;
             if (condition) {
-                System.out.println("You wrote a wrong count!");
+                System.out.println(error);
             }
         } while (condition);
 
