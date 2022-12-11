@@ -35,7 +35,9 @@ public class Main {
                 0, carService.getAll().length - 1, id);
 
         System.out.println("~".repeat(20));
-        System.out.println(car1);
+        Optional.ofNullable(car1).ifPresent(car2 -> {
+            System.out.println(car2);
+        });
 
 //        carService.printManufacturerAndCount(car);
 //        carService.printManufacturerAndCount(null);
