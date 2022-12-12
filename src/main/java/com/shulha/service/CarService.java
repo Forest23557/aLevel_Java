@@ -57,16 +57,14 @@ public class CarService {
     public void checkCount(final Car car) {
         final Optional<Car> optionalCar = Optional.ofNullable(car);
 
-        if (optionalCar.isPresent()) {
-            final Car rightCar = optionalCar
-                    .filter(car1 -> car1.getCount() > 10)
-                    .orElseThrow(() -> new UserInputException(car.getId()));
+        final Car rightCar = optionalCar
+                .filter(car1 -> car1.getCount() > 10)
+                .orElseThrow(() -> new UserInputException(car.getId()));
 
-            System.out.println("The car with ID: " + rightCar.getId());
-            System.out.println("Manufacturer: " + rightCar.getManufacturer());
-            System.out.println("Count: " + rightCar.getCount());
-            System.out.println();
-        }
+        System.out.println("The car with ID: " + rightCar.getId());
+        System.out.println("Manufacturer: " + rightCar.getManufacturer());
+        System.out.println("Count: " + rightCar.getCount());
+        System.out.println();
     }
 
     public void printEngineInfo(final Car car) {
