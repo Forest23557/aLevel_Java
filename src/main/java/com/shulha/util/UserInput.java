@@ -55,7 +55,7 @@ public class UserInput {
             }
             userCount = Integer.parseInt(answer);
 
-            condition = userCount < 1 || userCount > 999;
+            condition = userCount < 1;
             if (condition) {
                 System.out.println(error);
             }

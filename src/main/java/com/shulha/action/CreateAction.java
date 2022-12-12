@@ -17,7 +17,7 @@ public class CreateAction implements Action {
 
         int count;
         if (userChoice == 0) {
-            count = UserInput.count("Enter your count(1-999): ", "You wrote a wrong count!");
+            count = UserInput.count("Enter your count: ", "You wrote a wrong count!");
             CAR_SERVICE.createCar(count, CarTypes.CAR);
         } else {
             CAR_SERVICE.createCar(DEFAULT_COUNT, CarTypes.CAR);
