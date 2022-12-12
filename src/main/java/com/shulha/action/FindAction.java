@@ -31,11 +31,12 @@ public class FindAction implements Action {
             }
         }
 
-        final Car finalCar = car;
-        Optional.ofNullable(car)
-                .ifPresent(car1 -> {
-                    System.out.println("The car has been found: ");
-                    CAR_SERVICE.print(finalCar);
-                });
+        Optional<Car> optionalCar = Optional.ofNullable(car);
+        if (optionalCar.isPresent()) {
+            System.out.println("The car has been found: ");
+            CAR_SERVICE.print(car);
+        } else {
+            System.out.println("A car with your ID is not found!");
+        }
     }
 }
