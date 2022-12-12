@@ -427,4 +427,117 @@ class CarServiceTest {
 //      checks
         Assertions.assertEquals(false, answer);
     }
+
+    @Test
+    void printManufacturerAndCount() {
+//      initialize
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.printManufacturerAndCount(car));
+    }
+
+    @Test
+    void printManufacturerAndCountIncorrectCarNull() {
+//      initialize
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.printManufacturerAndCount(null));
+    }
+
+    @Test
+    void printColor() {
+//      initialize
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.printColor(car));
+    }
+
+    @Test
+    void printColorIncorrectCarNull() {
+//      initialize
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.printColor(null));
+    }
+
+    @Test
+    void checkCount() {
+//      initialize
+        car.setCount(11);
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.checkCount(car));
+    }
+
+    @Test
+    void checkCountIncorrectNumber() {
+//      initialize
+        car.setCount(0);
+
+//      action
+
+//      checks
+        Assertions.assertThrows(UserInputException.class, () -> target.checkCount(car));
+    }
+
+    @Test
+    void checkCountIncorrectCarNull() {
+//      initialize
+        car.setCount(0);
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.checkCount(null));
+    }
+
+    @Test
+    void printEngineInfo() {
+//      initialize
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.printEngineInfo(car));
+    }
+
+    @Test
+    void printEngineInfoIncorrectCarNull() {
+//      initialize
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.printEngineInfo(null));
+    }
+
+    @Test
+    void printInfo() {
+//      initialize
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.printInfo(car));
+    }
+
+    @Test
+    void printInfoIncorrectCarNull() {
+//      initialize
+
+//      action
+
+//      checks
+        Assertions.assertDoesNotThrow(() -> target.printInfo(null));
+    }
 }
