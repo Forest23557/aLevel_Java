@@ -276,16 +276,23 @@ public class CarService {
     }
 
     //  tested
-    public void print(Car car) {
+    public void print(final Car car) {
         if (car == null) {
             System.out.println("Error! Car isn't delivered");
             return;
         }
-        System.out.println(car.toString());
+
+        if(car.getType() == CarTypes.CAR) {
+            final PassengerCar passengerCar = (PassengerCar) car;
+            System.out.println(passengerCar);
+        } else {
+            final Truck truck = (Truck) car;
+            System.out.println(truck);
+        }
     }
 
     //  tested
-    public static void check(Car car) {
+    public static void check(final Car car) {
         if (car == null) {
             System.out.println("Error! Car isn't delivered");
             return;

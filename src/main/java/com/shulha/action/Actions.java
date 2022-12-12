@@ -7,6 +7,7 @@ public enum Actions {
     CREATE("Create cars", new CreateAction()),
     COMPARE("Compare cars", new CompareAction()),
     SHOW_ALL("Show all cars", new ShowAllAction()),
+    FIND("Find a car by ID", new FindAction()),
     EXIT("Exit from the program", new ExitAction());
 
     private final String name;

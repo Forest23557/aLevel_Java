@@ -63,4 +63,25 @@ public class UserInput {
 
         return userCount;
     }
+
+    @SneakyThrows
+    public static String find(final String option, final String error) {
+        String userId = null;
+        boolean condition = true;
+        do {
+            System.out.println(option);
+
+            final String answer = READER.readLine();
+
+            condition = StringUtils.isBlank(answer);
+            if (condition) {
+                System.out.println(error);
+                continue;
+            }
+            userId = answer;
+
+        } while (condition);
+
+        return userId;
+    }
 }

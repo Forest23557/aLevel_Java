@@ -4,8 +4,6 @@ import com.shulha.model.CarTypes;
 import com.shulha.util.UserInput;
 import lombok.SneakyThrows;
 
-import java.io.IOException;
-
 public class CreateAction implements Action {
     private static final int DEFAULT_COUNT = 10;
 
