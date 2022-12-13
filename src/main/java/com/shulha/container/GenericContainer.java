@@ -5,6 +5,7 @@ import com.shulha.model.PassengerCar;
 import com.shulha.model.Truck;
 import com.shulha.service.CarService;
 
+import java.util.Optional;
 import java.util.Random;
 
 public class GenericContainer<T extends Car> {
@@ -24,7 +25,9 @@ public class GenericContainer<T extends Car> {
     }
 
     public <N extends Number> void increaseCount(final N count) {
-        car.setCount(count.intValue());
+        if(Optional.ofNullable(count).isPresent()) {
+            car.setCount(count.intValue());
+        }
     }
 
     public static void main(String[] args) {
@@ -35,7 +38,7 @@ public class GenericContainer<T extends Car> {
         System.out.printf("~_~ ".repeat(15) + "%n%n");
         passengerCarGen.print();
 
-        passengerCarGen.increaseCount(534.4536734);
+        passengerCarGen.increaseCount(342.69967);
         System.out.printf("~_~ ".repeat(15) + "%n%n");
         passengerCarGen.print();
     }
