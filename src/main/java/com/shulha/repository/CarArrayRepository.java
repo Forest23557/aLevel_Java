@@ -11,21 +11,21 @@ import java.util.Optional;
 //  Read
 //  Update
 //  Delete
-public class CarArrayRepository implements Repository<Integer, Car, String> {
+public class CarArrayRepository<V extends Car> implements Repository<Number, V, String> {
     private static Car[] cars = new Car[10];
-    private static CarArrayRepository instance;
+    private static CarArrayRepository<Car> instance;
 
     private CarArrayRepository() {
     }
 
     public static CarArrayRepository getInstance() {
-        instance = Optional.ofNullable(instance).orElseGet(() -> new CarArrayRepository());
+        instance = Optional.ofNullable(instance).orElseGet(() -> new CarArrayRepository<>());
         return instance;
     }
 
 //  tested
     @Override
-    public void save(final Car car) {
+    public void save(final V car) {
         if (Optional.ofNullable(car).isPresent()) {
             final int index = put(car);
             if (index == cars.length) {
@@ -84,26 +84,26 @@ public class CarArrayRepository implements Repository<Integer, Car, String> {
 
 //  tested
     @Override
-    public Car[] getAll() {
+    public V[] getAll() {
         final int newLength = findUsefulLength();
 
         if (newLength == 0) {
             return null;
         }
 
-        final Car[] newCarsArray = new Car[newLength];
+        final V[] newCarsArray = (V[]) new Car[newLength];
         System.arraycopy(cars, 0, newCarsArray, 0, newLength);
         return newCarsArray;
     }
 
 //  tested
     @Override
-    public Car getById(final String id) {
+    public V getById(final String id) {
         for (Car car : cars) {
             if (car == null) {
                 return null;
             } else if (car.getId().equals(id)) {
-                return car;
+                return (V) car;
             }
         }
         return null;
@@ -141,10 +141,10 @@ public class CarArrayRepository implements Repository<Integer, Car, String> {
 
     //  tested
     @Override
-    public void insert(Integer index, final Car car) {
+    public void insert(Number index, final V car) {
 //      checking
         if (Optional.ofNullable(index).isPresent() && Optional.ofNullable(car).isPresent()) {
-            int indexInt = index;
+            int indexInt = (int) index;
 
             if (indexInt < 0) {
                 return;

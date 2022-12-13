@@ -10,10 +10,10 @@ import java.util.Random;
 public class CarService {
     private final static Random RANDOM = new Random();
 
-    private final CarArrayRepository carArrayRepository;
+    private final CarArrayRepository<Car> carArrayRepository;
     private static CarService instance;
 
-    private CarService(final CarArrayRepository carArrayRepository) {
+    private CarService(final CarArrayRepository<Car> carArrayRepository) {
         this.carArrayRepository = carArrayRepository;
     }
 
@@ -24,7 +24,7 @@ public class CarService {
         return instance;
     }
 
-    public static CarService getInstance(final CarArrayRepository repository) {
+    public static CarService getInstance(final CarArrayRepository<Car> repository) {
         instance = Optional
                 .ofNullable(instance)
                 .orElseGet(() -> new CarService(Optional
