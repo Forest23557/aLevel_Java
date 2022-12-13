@@ -144,7 +144,7 @@ public class CarArrayRepository<V extends Car> implements Repository<Number, V, 
     public void insert(Number index, final V car) {
 //      checking
         if (Optional.ofNullable(index).isPresent() && Optional.ofNullable(car).isPresent()) {
-            int indexInt = (int) index;
+            int indexInt = index.intValue();
 
             if (indexInt < 0) {
                 return;
