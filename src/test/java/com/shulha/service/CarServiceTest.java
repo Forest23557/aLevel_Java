@@ -498,7 +498,7 @@ class CarServiceTest {
 //      action
 
 //      checks
-        Assertions.assertDoesNotThrow(() -> target.checkCount(null));
+        Assertions.assertThrows(UserInputException.class, () -> target.checkCount(null));
     }
 
     @Test
