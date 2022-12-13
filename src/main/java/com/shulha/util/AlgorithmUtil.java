@@ -36,9 +36,7 @@ public class AlgorithmUtil {
     }
 
     public static Car binarySearch(final Car[] carArray, final int start, final int end, final String id) {
-        Optional<Car[]> safeCarArray = Optional.ofNullable(carArray);
-
-        if (safeCarArray.isPresent()) {
+        if (Optional.ofNullable(carArray).isPresent() && Optional.ofNullable(id).isPresent() && !id.isBlank()) {
             if (end >= start) {
                 int middleElement = (end + start) / 2;
 
