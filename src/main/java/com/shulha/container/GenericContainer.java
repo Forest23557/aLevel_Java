@@ -1,16 +1,18 @@
 package com.shulha.container;
 
 import com.shulha.model.Car;
-import com.shulha.model.PassengerCar;
 import com.shulha.model.Truck;
-import com.shulha.service.CarService;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Optional;
 import java.util.Random;
 
+@Getter
+@Setter
 public class GenericContainer<T extends Car> {
     private static final Random RANDOM = new Random();
-    private final T car;
+    private T car;
 
     public GenericContainer(final T car) {
         this.car = car;
