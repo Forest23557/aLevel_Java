@@ -71,7 +71,7 @@ public class CarArrayRepository<V extends Car> implements Repository<Number, V, 
         }
     }
 
-    private int put(final Car car) {
+    private int put(final V car) {
         int i = 0;
         for (; i < cars.length; i++) {
             if (cars[i] == null) {
