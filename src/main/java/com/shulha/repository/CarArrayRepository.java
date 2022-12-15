@@ -11,21 +11,21 @@ import java.util.Optional;
 //  Read
 //  Update
 //  Delete
-public class CarArrayRepository<V extends Car> implements Repository<Number, V, String> {
+public class CarArrayRepository implements Repository<Number, Car, String> {
     private static Car[] cars = new Car[10];
-    private static CarArrayRepository<Car> instance;
+    private static CarArrayRepository instance;
 
     private CarArrayRepository() {
     }
 
     public static CarArrayRepository getInstance() {
-        instance = Optional.ofNullable(instance).orElseGet(() -> new CarArrayRepository<>());
+        instance = Optional.ofNullable(instance).orElseGet(() -> new CarArrayRepository());
         return instance;
     }
 
 //  tested
     @Override
-    public void save(final V car) {
+    public void save(final Car car) {
         if (Optional.ofNullable(car).isPresent()) {
             final int index = put(car);
             if (index == cars.length) {
@@ -71,7 +71,7 @@ public class CarArrayRepository<V extends Car> implements Repository<Number, V, 
         }
     }
 
-    private int put(final V car) {
+    private int put(final Car car) {
         int i = 0;
         for (; i < cars.length; i++) {
             if (cars[i] == null) {
@@ -84,26 +84,26 @@ public class CarArrayRepository<V extends Car> implements Repository<Number, V, 
 
 //  tested
     @Override
-    public V[] getAll() {
+    public Car[] getAll() {
         final int newLength = findUsefulLength();
 
         if (newLength == 0) {
             return null;
         }
 
-        final V[] newCarsArray = (V[]) new Car[newLength];
+        final Car[] newCarsArray = new Car[newLength];
         System.arraycopy(cars, 0, newCarsArray, 0, newLength);
         return newCarsArray;
     }
 
 //  tested
     @Override
-    public V getById(final String id) {
+    public Car getById(final String id) {
         for (Car car : cars) {
             if (car == null) {
                 return null;
             } else if (car.getId().equals(id)) {
-                return (V) car;
+                return car;
             }
         }
         return null;
@@ -141,7 +141,7 @@ public class CarArrayRepository<V extends Car> implements Repository<Number, V, 
 
     //  tested
     @Override
-    public void insert(Number index, final V car) {
+    public void insert(Number index, final Car car) {
 //      checking
         if (Optional.ofNullable(index).isPresent() && Optional.ofNullable(car).isPresent()) {
             int indexInt = index.intValue();
