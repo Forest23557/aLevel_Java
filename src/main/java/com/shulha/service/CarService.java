@@ -274,19 +274,13 @@ public class CarService {
     }
 
     //  tested
-    public void print(final Car car) {
+    public <T extends Car> void print(final T car) {
         if (car == null) {
             System.out.println("Error! Car isn't delivered");
             return;
         }
 
-        if(car.getType() == CarTypes.CAR) {
-            final PassengerCar passengerCar = (PassengerCar) car;
-            System.out.println(passengerCar);
-        } else {
-            final Truck truck = (Truck) car;
-            System.out.println(truck);
-        }
+        System.out.println(car);
     }
 
     //  tested
