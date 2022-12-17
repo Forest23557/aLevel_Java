@@ -3,6 +3,7 @@ package com.shulha.service;
 import com.shulha.model.*;
 import com.shulha.repository.CarArrayRepository;
 import com.shulha.util.RandomGenerator;
+import lombok.SneakyThrows;
 
 import java.util.Optional;
 import java.util.Random;
@@ -254,53 +255,47 @@ public class CarService {
     }
 
     public boolean carEquals(final Car firstCar, final Car secondCar) {
-        if (firstCar == null || secondCar == null) {
-            return false;
+
+        if (Optional.ofNullable(secondCar).isPresent()) {
+            Optional<Boolean> optionalAnswer = Optional.ofNullable(firstCar)
+                    .filter(car1 -> car1.getType() == secondCar.getType())
+                    .filter(car1 -> car1.hashCode() == secondCar.hashCode())
+                    .filter(car1 -> car1.equals(secondCar))
+                    .map(car -> true);
+
+            return optionalAnswer.isPresent() ? optionalAnswer.get() : false;
         }
 
-        if (firstCar.getType() != secondCar.getType()) {
-            return false;
-        }
-
-        if (firstCar.hashCode() != secondCar.hashCode()) {
-            return false;
-        } else {
-            if (!firstCar.equals(secondCar)) {
-                return false;
-            }
-        }
-
-        return true;
+        return false;
     }
 
     //  tested
     public <T extends Car> void print(final T car) {
-        if (car == null) {
-            System.out.println("Error! Car isn't delivered");
-            return;
-        }
-
-        System.out.println(car);
+        Optional.ofNullable(car)
+                .ifPresentOrElse(
+                        car1 -> System.out.println(car1),
+                        () -> System.out.printf("Error! Car isn't delivered.%n%n")
+                );
     }
 
     //  tested
     public static void check(final Car car) {
-        if (car == null) {
-            System.out.println("Error! Car isn't delivered");
-            return;
-        }
-
-//      checks
-        if (car.getCount() > 0 && car.getEngine().getPower() > 200) {
-            System.out.println("The car is ready for sale. Car ID: " + car.getId());
-        } else if (car.getCount() < 0) {
-            System.out.println("The count is wrong. Car ID: " + car.getId());
-        } else if (car.getEngine().getPower() < 200) {
-            System.out.println("The power of the engine is wrong. Car ID: " + car.getId());
+        if (Optional.ofNullable(car).isEmpty()) {
+            System.out.printf("Error! Car isn't delivered.%n%n");
         } else {
-            System.out.println("The count and the power of the engine are wrong. Car ID: " + car.getId());
+
+//          checks
+            if (car.getCount() > 0 && car.getEngine().getPower() > 200) {
+                System.out.println("The car is ready for sale. Car ID: " + car.getId());
+            } else if (car.getCount() < 0) {
+                System.out.println("The count is wrong. Car ID: " + car.getId());
+            } else if (car.getEngine().getPower() < 200) {
+                System.out.println("The power of the engine is wrong. Car ID: " + car.getId());
+            } else {
+                System.out.println("The count and the power of the engine are wrong. Car ID: " + car.getId());
+            }
+            System.out.println();
         }
-        System.out.println();
     }
 
     public int compareCar(final Car firstCar, final Car secondCar) {
