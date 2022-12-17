@@ -11,13 +11,30 @@ public class CarService {
     private final static Random RANDOM = new Random();
 
     private final CarArrayRepository carArrayRepository;
+    private static CarService instance;
 
-    public CarService() {
-        this(new CarArrayRepository());
+    private CarService(final CarArrayRepository carArrayRepository) {
+        this.carArrayRepository = carArrayRepository;
     }
 
-    public CarService(final CarArrayRepository carArrayRepository) {
-        this.carArrayRepository = carArrayRepository;
+    public static CarService getInstance() {
+        instance = Optional
+                .ofNullable(instance)
+                .orElseGet(() -> new CarService(CarArrayRepository.getInstance()));
+        return instance;
+    }
+
+    public static CarService getInstance(final CarArrayRepository repository) {
+        instance = Optional
+                .ofNullable(instance)
+                .orElseGet(() -> new CarService(Optional
+                        .ofNullable(repository)
+                        .orElseGet(() -> CarArrayRepository.getInstance())));
+        return instance;
+    }
+
+    public void cleanRepository() {
+        carArrayRepository.removeAll();
     }
 
     public void printManufacturerAndCount(final Car car) {
@@ -40,16 +57,14 @@ public class CarService {
     public void checkCount(final Car car) {
         final Optional<Car> optionalCar = Optional.ofNullable(car);
 
-        if (optionalCar.isPresent()) {
-            final Car rightCar = optionalCar
-                    .filter(car1 -> car1.getCount() > 10)
-                    .orElseThrow(() -> new UserInputException(car.getId()));
+        final Car rightCar = optionalCar
+                .filter(car1 -> car1.getCount() > 10)
+                .orElseThrow(() -> new UserInputException(car.getId()));
 
-            System.out.println("The car with ID: " + rightCar.getId());
-            System.out.println("Manufacturer: " + rightCar.getManufacturer());
-            System.out.println("Count: " + rightCar.getCount());
-            System.out.println();
-        }
+        System.out.println("The car with ID: " + rightCar.getId());
+        System.out.println("Manufacturer: " + rightCar.getManufacturer());
+        System.out.println("Count: " + rightCar.getCount());
+        System.out.println();
     }
 
     public void printEngineInfo(final Car car) {
@@ -123,6 +138,10 @@ public class CarService {
 
     private int getRandomTruckCapacity() {
         return RANDOM.nextInt(3901) + 100;
+    }
+
+    public void replaceCarsFromRepository(final int indexOfFirst, final int indexOfSecond) {
+        carArrayRepository.replaceCars(indexOfFirst, indexOfSecond);
     }
 
     //  tested
@@ -257,16 +276,23 @@ public class CarService {
     }
 
     //  tested
-    public void print(Car car) {
+    public void print(final Car car) {
         if (car == null) {
             System.out.println("Error! Car isn't delivered");
             return;
         }
-        System.out.println(car.toString());
+
+        if(car.getType() == CarTypes.CAR) {
+            final PassengerCar passengerCar = (PassengerCar) car;
+            System.out.println(passengerCar);
+        } else {
+            final Truck truck = (Truck) car;
+            System.out.println(truck);
+        }
     }
 
     //  tested
-    public static void check(Car car) {
+    public static void check(final Car car) {
         if (car == null) {
             System.out.println("Error! Car isn't delivered");
             return;
@@ -283,5 +309,9 @@ public class CarService {
             System.out.println("The count and the power of the engine are wrong. Car ID: " + car.getId());
         }
         System.out.println();
+    }
+
+    public int compareCar(final Car firstCar, final Car secondCar) {
+        return firstCar.getId().compareTo(secondCar.getId());
     }
 }
