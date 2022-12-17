@@ -9,6 +9,7 @@ public class CarList<E extends Car> {
     private int size = 0;
     private Node<E> first;
     private Node<E> last;
+    private int count;
 
     private void linkFirst(final E element) {
         if (Optional.ofNullable(element).isPresent()) {
@@ -22,6 +23,7 @@ public class CarList<E extends Car> {
                 first.previous = newNode;
             }
             size++;
+            count += element.getCount();
         }
     }
 
@@ -37,29 +39,44 @@ public class CarList<E extends Car> {
                 last.next = newNode;
             }
             size++;
+            count += element.getCount();
         }
     }
 
     private void unlinkElement(final Node<E> node) {
         final Node<E> next = node.next;
         final Node<E> prev = node.previous;
+        count -= node.element.getCount();
 
-        if (prev == null && next == null && size == 1) {
+        Optional<Node<E>> nextOptional = Optional.ofNullable(next);
+        Optional<Node<E>> prevOptional = Optional.ofNullable(prev);
+
+        if (nextOptional.isEmpty() && prevOptional.isEmpty() && size == 1) {
             this.first = null;
             this.last = null;
 
-        } else if (prev == null) {
-            next.previous = null;
-            this.first = next;
-
-        } else if (next == null) {
-            prev.next = null;
-            this.last = prev;
-
-        } else {
-            prev.next = next;
-            next.previous = prev;
         }
+
+        prevOptional.ifPresentOrElse(
+                prev1 -> {
+                    prev.next = next;
+                },
+                () -> {
+                    next.previous = null;
+                    this.first = next;
+                }
+        );
+
+        nextOptional.ifPresentOrElse(
+                next1 -> {
+                    next.previous = prev;
+                },
+                () -> {
+                    prev.next = null;
+                    this.last = prev;
+                }
+        );
+
         size--;
     }
 
@@ -74,6 +91,7 @@ public class CarList<E extends Car> {
                 prev.next = newInsertionNode;
             }
             size++;
+            count += insertionElement.getCount();
         }
     }
 
@@ -85,7 +103,7 @@ public class CarList<E extends Car> {
         int indexE;
         Node<E> currentNode;
 
-        if ((size - index) > (size >> 1)) {
+        if (index < size >> 1) {
             indexE = 0;
             currentNode = this.first;
 
@@ -105,40 +123,34 @@ public class CarList<E extends Car> {
     }
 
     private int searchIndex(final E element) {
+
         if (Optional.ofNullable(element).isPresent()) {
-            int index = 0;
-            Node<E> currentNode = first;
 
-            while (currentNode.element != element && index < size) {
-                if (currentNode.next == null) {
-                    return -1;
-                }
-                currentNode = currentNode.next;
-                index++;
-            }
+            Optional<Integer> foundIndex = Optional.ofNullable(first)
+                    .map(current -> {
+                        Node<E> currentNode = first;
+                        int index = 0;
 
-            if (index >= size) {
-                return -1;
-            }
+                        while (currentNode.element != element && index < size) {
+                            currentNode = currentNode.next;
+                            index++;
 
-            return index;
+                            if (currentNode == null || index >= size) {
+                                return -1;
+                            }
+                        }
+
+                        return index;
+                    });
+
+            return foundIndex.isPresent() ? foundIndex.get() : -1;
         }
 
         return -1;
     }
 
-    private int totalCountOfCars() {
-        int totalCount = 0;
-
-        for (int i = 0; i < size; i++) {
-            totalCount += pointer(i).element.getCount();
-        }
-
-        return totalCount;
-    }
-
     public int totalCount() {
-        return totalCountOfCars();
+        return count;
     }
 
     public void printAll() {
@@ -253,7 +265,7 @@ public class CarList<E extends Car> {
 //        System.out.println("Index of null in the CarList: " + carList.getIndex(null));
 //        carService.createCar(CarTypes.CAR);
 //        System.out.println("Index of an existing car but it is not in the CarList: " + carList.getIndex(carService.getAll()[6]));
-
+//
 //        carList.printAll();
 //        System.out.println("Size of the CarList: " + carList.size());
 //        carList.remove(5);
@@ -261,7 +273,11 @@ public class CarList<E extends Car> {
 //        carList.printAll();
 //        System.out.println("Size of the CarList: " + carList.size());
 //        System.out.println("Total count of cars in the CarList: " + carList.totalCount());
-
+//        carList.remove(4);
+//        carList.remove(3);
+//        carList.remove(2);
+//        System.out.println("Total count of cars in the CarList: " + carList.totalCount());
+//
 //        System.out.println("~_~ ".repeat(15));
 //        while (carList.hasNext()) {
 //            System.out.println(carList.next());
