@@ -1,11 +1,13 @@
 package com.shulha.container;
 
 import com.shulha.model.Car;
+import com.shulha.model.CarTypes;
+import com.shulha.service.CarService;
 
+import java.util.Iterator;
 import java.util.Optional;
 
-public class CarList<E extends Car> {
-    private final Iterator iterator = new Iterator();
+public class CarList<E extends Car> implements Iterable {
     private int size = 0;
     private Node<E> first;
     private Node<E> last;
@@ -190,19 +192,12 @@ public class CarList<E extends Car> {
         return size;
     }
 
-    public boolean hasNext() {
-        return iterator.hasNext();
+    @Override
+    public java.util.Iterator iterator() {
+        return new Iterator();
     }
 
-    public E next() {
-        return iterator.next();
-    }
-
-    public void resetIterator() {
-        iterator.reset();
-    }
-
-    private class Iterator {
+    private class Iterator implements java.util.Iterator {
         private Node<E> currentNode;
         private int index;
 
@@ -210,6 +205,10 @@ public class CarList<E extends Car> {
             if (index == 0) {
                 currentNode = first;
                 return (currentNode != null) ? true : false;
+
+            } else if (index == -1) {
+                index++;
+                return false;
             }
             return (currentNode.next != null) ? true : false;
         }
@@ -222,11 +221,16 @@ public class CarList<E extends Car> {
             }
 
             index++;
+
+            if (index >= size) {
+                reset();
+            }
+
             return currentNode.element;
         }
 
         public void reset() {
-            index = 0;
+            index = -1;
         }
     }
 
@@ -265,7 +269,7 @@ public class CarList<E extends Car> {
 //        System.out.println("Index of null in the CarList: " + carList.getIndex(null));
 //        carService.createCar(CarTypes.CAR);
 //        System.out.println("Index of an existing car but it is not in the CarList: " + carList.getIndex(carService.getAll()[6]));
-//
+
 //        carList.printAll();
 //        System.out.println("Size of the CarList: " + carList.size());
 //        carList.remove(5);
@@ -277,19 +281,21 @@ public class CarList<E extends Car> {
 //        carList.remove(3);
 //        carList.remove(2);
 //        System.out.println("Total count of cars in the CarList: " + carList.totalCount());
-//
+
 //        System.out.println("~_~ ".repeat(15));
-//        while (carList.hasNext()) {
-//            System.out.println(carList.next());
+
+//        final java.util.Iterator iterator = carList.iterator();
+//
+//        while (iterator.hasNext()) {
+//            System.out.println(iterator.next());
 //        }
 //
 //        carList.add(carService.createCar(CarTypes.CAR));
 //        carList.add(carService.createCar(CarTypes.CAR));
 //
-//        carList.resetIterator();
 //        System.out.println("~_~ ".repeat(15));
-//        while (carList.hasNext()) {
-//            System.out.println(carList.next());
+//        while (iterator.hasNext()) {
+//            System.out.println(iterator.next());
 //        }
 //    }
 }
