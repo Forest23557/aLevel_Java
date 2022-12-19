@@ -193,11 +193,11 @@ public class CarList<E extends Car> implements Iterable {
     }
 
     @Override
-    public java.util.Iterator iterator() {
-        return new Iterator();
+    public Iterator iterator() {
+        return new CarIterator();
     }
 
-    private class Iterator implements java.util.Iterator {
+    private class CarIterator implements Iterator {
         private Node<E> currentNode;
         private int index;
 
@@ -283,8 +283,8 @@ public class CarList<E extends Car> implements Iterable {
 //        System.out.println("Total count of cars in the CarList: " + carList.totalCount());
 
 //        System.out.println("~_~ ".repeat(15));
-
-//        final java.util.Iterator iterator = carList.iterator();
+//
+//        final Iterator iterator = carList.iterator();
 //
 //        while (iterator.hasNext()) {
 //            System.out.println(iterator.next());
