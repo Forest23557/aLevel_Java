@@ -2,6 +2,8 @@ package com.shulha.model;
 
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Getter
 public class Engine {
     private int power;
@@ -35,6 +37,19 @@ public class Engine {
             return;
         }
         this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Engine engine = (Engine) o;
+        return power == engine.power && type == engine.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(power, type);
     }
 
     @Override

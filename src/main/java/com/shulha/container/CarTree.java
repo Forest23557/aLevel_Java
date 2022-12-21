@@ -66,7 +66,7 @@ public class CarTree<E extends Car> {
     }
 
     public void add(final E car) {
-        if (Optional.ofNullable(car).isPresent()) {
+        if (car != null) {
             if (root == null) {
                 root = new Node<>(null, car, null);
 
