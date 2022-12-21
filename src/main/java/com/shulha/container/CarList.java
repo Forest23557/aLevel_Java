@@ -202,15 +202,20 @@ public class CarList<E extends Car> implements Iterable {
         private int index;
 
         public boolean hasNext() {
+            Node<E> temp;
+
             if (index == 0) {
-                currentNode = first;
-                return (currentNode != null) ? true : false;
+                temp = first;
 
             } else if (index == -1) {
                 index++;
                 return false;
+
+            } else {
+                temp = currentNode.next;
             }
-            return (currentNode.next != null) ? true : false;
+
+            return (temp != null) ? true : false;
         }
 
         public E next() {
@@ -245,57 +250,4 @@ public class CarList<E extends Car> implements Iterable {
             this.next = next;
         }
     }
-
-//    public static void main(String[] args) {
-//        final CarList<Car> carList = new CarList<>();
-//        CarService carService = CarService.getInstance();
-//        carList.add(carService.createCar(CarTypes.CAR));
-//        carList.add(null);
-//        final Car car = carService.createCar(CarTypes.TRUCK);
-//        car.setCount(10);
-//        carList.add(car);
-//        carList.add(carService.createCar(CarTypes.CAR));
-//        carList.add(carService.createCar(CarTypes.CAR));
-//        carList.addToTheBeginning(carService.createCar(CarTypes.CAR));
-//        carList.insertByIndex(4, carService.createCar(CarTypes.CAR));
-//        System.out.println(carList.get(0));
-//        System.out.println(carList.get(5));
-//        System.out.println("Size of the CarList: " + carList.size());
-//        System.out.println("~_~ ".repeat(15));
-//        carService.printAll();
-//        carService.print(carList.get(0));
-//        System.out.println("~_~ ".repeat(15));
-//        System.out.println("Index of an existing car in the CarList: " + carList.getIndex(carService.getAll()[5]));
-//        System.out.println("Index of null in the CarList: " + carList.getIndex(null));
-//        carService.createCar(CarTypes.CAR);
-//        System.out.println("Index of an existing car but it is not in the CarList: " + carList.getIndex(carService.getAll()[6]));
-
-//        carList.printAll();
-//        System.out.println("Size of the CarList: " + carList.size());
-//        carList.remove(5);
-//        System.out.println("~_~ ".repeat(15));
-//        carList.printAll();
-//        System.out.println("Size of the CarList: " + carList.size());
-//        System.out.println("Total count of cars in the CarList: " + carList.totalCount());
-//        carList.remove(4);
-//        carList.remove(3);
-//        carList.remove(2);
-//        System.out.println("Total count of cars in the CarList: " + carList.totalCount());
-
-//        System.out.println("~_~ ".repeat(15));
-//
-//        final Iterator iterator = carList.iterator();
-//
-//        while (iterator.hasNext()) {
-//            System.out.println(iterator.next());
-//        }
-//
-//        carList.add(carService.createCar(CarTypes.CAR));
-//        carList.add(carService.createCar(CarTypes.CAR));
-//
-//        System.out.println("~_~ ".repeat(15));
-//        while (iterator.hasNext()) {
-//            System.out.println(iterator.next());
-//        }
-//    }
 }

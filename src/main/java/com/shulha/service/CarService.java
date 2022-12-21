@@ -1,10 +1,13 @@
 package com.shulha.service;
 
+import com.shulha.container.CarTree;
 import com.shulha.model.*;
 import com.shulha.repository.CarArrayRepository;
 import com.shulha.util.RandomGenerator;
 import lombok.SneakyThrows;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -33,6 +36,10 @@ public class CarService {
                         .orElseGet(() -> CarArrayRepository.getInstance())));
         return instance;
     }
+
+//    public <T extends Car> Map<CarsManufacturers, Integer> getManufacturersMap(final T[] cars) {
+//        final Map<CarsManufacturers, Integer> carsManufacturersMap = new HashMap<>();
+//    }
 
     public void cleanRepository() {
         carArrayRepository.removeAll();
@@ -137,6 +144,18 @@ public class CarService {
 
     private int getRandomTruckCapacity() {
         return RANDOM.nextInt(3901) + 100;
+    }
+
+    private int getRandomCountOfCars() {
+        return RANDOM.nextInt(100) + 1;
+    }
+
+    public <T extends Car> void setRandomCount(final T[] cars) {
+        if (Optional.ofNullable(cars).isPresent()) {
+            for (T car : cars) {
+                car.setCount(getRandomCountOfCars());
+            }
+        }
     }
 
     public void replaceCarsFromRepository(final int indexOfFirst, final int indexOfSecond) {
@@ -300,5 +319,32 @@ public class CarService {
 
     public int compareCar(final Car firstCar, final Car secondCar) {
         return firstCar.getId().compareTo(secondCar.getId());
+    }
+
+    public static void main(String[] args) {
+        final CarService carService = CarService.getInstance();
+        carService.createRandomAmountOfCars(new RandomGenerator());
+        carService.setRandomCount(carService.getAll());
+        System.out.println("~_~ ".repeat(20));
+        carService.printAll();
+
+        final CarTree<Car> carTree = new CarTree<>();
+        for (int i = 0; i < carService.getAll().length; i++) {
+            carTree.add(carService.getAll()[i]);
+        }
+        System.out.println("~_~ ".repeat(20));
+        System.out.println("Expected size: " + carService.getAll().length);
+        System.out.println("CarTree size: " + carTree.size());
+        carTree.printAll();
+        System.out.println("~_~ ".repeat(20));
+        for (int i = 0; i < carService.getAll().length; i++) {
+            System.out.println(carTree.get(carService.getAll()[i].getCount(), carService.getAll()[i].getId()));
+        }
+        int count = 0;
+        for (int i = 0; i < carService.getAll().length; i++) {
+            count += carService.getAll()[i].getCount();
+        }
+        System.out.println("CarService count: " + count);
+        System.out.println("CarTree count: " + carTree.getCount());
     }
 }
