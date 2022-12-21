@@ -55,11 +55,9 @@ public class CarService {
     }
 
     public void checkCount(final Car car) {
-        final Optional<Car> optionalCar = Optional.ofNullable(car);
-
-        final Car rightCar = optionalCar
+        final Car rightCar = Optional.ofNullable(car)
                 .filter(car1 -> car1.getCount() > 10)
-                .orElseThrow(() -> new UserInputException(car.getId()));
+                .orElseThrow(() -> new UserInputException("Your car isn't exist or it isn't suitable for condition!"));
 
         System.out.println("The car with ID: " + rightCar.getId());
         System.out.println("Manufacturer: " + rightCar.getManufacturer());
