@@ -36,6 +36,9 @@ public class CarService {
     }
 
     public <T extends Car> Map<CarsManufacturers, CountContainer> getManufacturersMap(final T[] cars) {
+        Optional.ofNullable(cars)
+                .orElseThrow(() -> new NullPointerException("Your list of cars is empty!"));
+
         final Map<CarsManufacturers, CountContainer> carsManufacturersMap = new HashMap<>();
 
         for (int i = 0; i < cars.length; i++) {
@@ -50,6 +53,9 @@ public class CarService {
     }
 
     public <T extends Car> Map<Engine, List<T>> getEnginesMap(final T[] cars) {
+        Optional.ofNullable(cars)
+                .orElseThrow(() -> new NullPointerException("Your list of cars is empty!"));
+
         final Map<Engine, List<T>> enginesMap = new HashMap<>();
 
         for (int i = 0; i < cars.length; i++) {
