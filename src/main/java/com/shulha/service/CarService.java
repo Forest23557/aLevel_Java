@@ -1,13 +1,17 @@
 package com.shulha.service;
 
-import com.shulha.container.CarTree;
+import com.shulha.container.CarComparator;
 import com.shulha.container.CountContainer;
 import com.shulha.model.*;
 import com.shulha.repository.CarArrayRepository;
 import com.shulha.util.RandomGenerator;
-import lombok.SneakyThrows;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static java.util.function.Function.*;
 
 public class CarService {
     private final static Random RANDOM = new Random();
@@ -34,6 +38,141 @@ public class CarService {
                         .orElseGet(() -> CarArrayRepository.getInstance())));
         return instance;
     }
+
+    public <T extends Car> void findManufacturerByPrice(final T[] cars, final int lowerBoundOfPrice) {
+        Optional.ofNullable(cars)
+                .orElseThrow(NullPointerException::new);
+        if (lowerBoundOfPrice <= 0) {
+            throw new IndexOutOfBoundsException("Your bound is less than or equal to 0!");
+        }
+
+        final Predicate<Car> pricePredicate = car -> car.getPrice() > lowerBoundOfPrice;
+
+        System.out.printf("Manufacturers whose cars cost more than %d$: %n", lowerBoundOfPrice);
+        Arrays.asList(cars)
+                .stream()
+                .filter(pricePredicate)
+                .map(car -> car.getManufacturer())
+                .forEach(System.out::println);
+    }
+
+    public <T extends Car> int countSum(final T[] cars) {
+        Optional.ofNullable(cars)
+                .orElseThrow(NullPointerException::new);
+
+        final Integer carCount = Arrays.asList(cars)
+                .stream()
+                .map(car -> car.getCount())
+                .reduce(0, (sum, next) -> sum + next);
+
+        return carCount;
+    }
+
+    public <T extends Car> Map<String, CarTypes> mapToMap(final T[] cars) {
+        Optional.ofNullable(cars)
+                .orElseThrow(NullPointerException::new);
+
+        final CarComparator<T> comparator = new CarComparator<>() {
+            @Override
+            public int compare(final T firstCar, final T secondCar) {
+                return firstCar.getManufacturer().compareTo(secondCar.getManufacturer());
+            }
+        };
+
+        Map<String, CarTypes> sortedCarMap = Arrays.asList(cars)
+                .stream()
+                .sorted(comparator)
+                .distinct()
+                .peek(System.out::println)
+                .collect(Collectors.toMap(Car::getId, Car::getType, (first, second) -> first, LinkedHashMap::new));
+
+        return sortedCarMap;
+    }
+
+    public <T extends Car> IntSummaryStatistics statistic(final T[] cars) {
+        Optional.ofNullable(cars)
+                .orElseThrow(NullPointerException::new);
+
+        final IntSummaryStatistics statistics = Arrays.asList(cars)
+                .stream()
+                .mapToInt(Car::getPrice)
+                .summaryStatistics();
+
+        System.out.printf("Price statistics: %nCount: %d%nSum: %d%nMin: %d%nAverage: %,.2f%nMax: %d%n",
+                statistics.getCount(), statistics.getSum(), statistics.getMin(), statistics.getAverage(),
+                statistics.getMax());
+
+        return statistics;
+    }
+
+    public <T extends Car> boolean checkPrice(final T[] cars, final int lowerBoundOfPrice) {
+        Optional.ofNullable(cars)
+                .orElseThrow(NullPointerException::new);
+        if (lowerBoundOfPrice <= 0) {
+            throw new IndexOutOfBoundsException("Your bound is less than or equal to 0!");
+        }
+
+        final Predicate<Car> pricePredicate = car -> car.getPrice() > lowerBoundOfPrice;
+
+        final boolean answer = Arrays.asList(cars)
+                .stream()
+                .allMatch(pricePredicate);
+
+        System.out.printf("Are all the car prices more than %d$? - %b%n", lowerBoundOfPrice, answer);
+
+        return answer;
+    }
+
+    public void mapToObject(final Map<String, Object> carLinesMap) {
+        Optional.ofNullable(carLinesMap)
+                .orElseThrow(NullPointerException::new);
+
+        final Function<Map, Car> changingFunction = map -> getInstance().createCar((CarTypes) map.get("type"));
+
+        final Car newCar = changingFunction.andThen(car -> {
+            car.setManufacturer((CarsManufacturers) carLinesMap.get("manufacturer"));
+            return car;
+        }).andThen(car -> {
+            car.setEngine((Engine) carLinesMap.get("engine"));
+            return car;
+        }).andThen(car -> {
+            car.setColor((CarColors) carLinesMap.get("color"));
+            return car;
+        }).andThen(car -> {
+            car.setPrice((int) carLinesMap.get("price"));
+            return car;
+        }).andThen(car -> {
+            car.setCount((int) carLinesMap.get("count"));
+            return car;
+        }).apply(carLinesMap);
+
+        System.out.println(newCar);
+    }
+
+    public Map<CarColors, Long> innerList(final List<List<Car>> listOfCarLists, final int lowerBoundOfPrice) {
+        Optional.ofNullable(listOfCarLists)
+                .orElseThrow(NullPointerException::new);
+        if (lowerBoundOfPrice <= 0) {
+            throw new IndexOutOfBoundsException("Your bound is less than or equal to 0!");
+        }
+        final CarComparator<Car> colorComparator = new CarComparator<>() {
+            @Override
+            public int compare(final Car firstCar, final Car secondCar) {
+                return firstCar.getColor().compareTo(secondCar.getColor());
+            }
+        };
+
+        Map<CarColors, Long> colorMap = listOfCarLists.stream()
+                .flatMap(list -> list.stream())
+                .sorted(colorComparator)
+                .peek(System.out::println)
+                .filter(car -> car.getPrice() > lowerBoundOfPrice)
+                .map(Car::getColor)
+                .collect(Collectors.groupingBy(identity(), Collectors.counting()));
+
+        return colorMap;
+    }
+
 
     public <T extends Car> Map<CarsManufacturers, CountContainer> getManufacturersMap(final T[] cars) {
         Optional.ofNullable(cars)
@@ -375,17 +514,58 @@ public class CarService {
 //        System.out.println("CarService count: " + count);
 //        System.out.println("CarTree count: " + carTree.getCount());
 
-        System.out.println(carService.getAll().length);
-        System.out.println("The map of manufacturers: ");
-        System.out.println("~_~ ".repeat(20));
-        Map<CarsManufacturers, CountContainer> manufacturersMap = carService.getManufacturersMap(carService.getAll());
-        System.out.println(manufacturersMap);
-        System.out.println(manufacturersMap.size());
+//        System.out.println(carService.getAll().length);
+//        System.out.println("The map of manufacturers: ");
+//        System.out.println("~_~ ".repeat(20));
+//        Map<CarsManufacturers, CountContainer> manufacturersMap = carService.getManufacturersMap(carService.getAll());
+//        System.out.println(manufacturersMap);
+//        System.out.println(manufacturersMap.size());
+//
+//        System.out.println("~_~ ".repeat(20));
+//        System.out.println("The map of engines: ");
+//        Map<Engine, List<Car>> enginesMap = carService.getEnginesMap(carService.getAll());
+//        System.out.println(enginesMap);
+//        System.out.println(enginesMap.size());
+
+        carService.findManufacturerByPrice(carService.getAll(), 30_000);
 
         System.out.println("~_~ ".repeat(20));
-        System.out.println("The map of engines: ");
-        Map<Engine, List<Car>> enginesMap = carService.getEnginesMap(carService.getAll());
-        System.out.println(enginesMap);
-        System.out.println(enginesMap.size());
+        System.out.println("The car count: " + carService.countSum(carService.getAll()));
+
+        System.out.println("~_~ ".repeat(20));
+        System.out.println(carService.mapToMap(carService.getAll()));
+
+        System.out.println("~_~ ".repeat(20));
+        carService.statistic(carService.getAll());
+
+        System.out.println("~_~ ".repeat(20));
+        carService.checkPrice(carService.getAll(), 20_000);
+
+        System.out.println("~_~ ".repeat(20));
+        final Map<String, Object> map = new LinkedHashMap<>();
+        carService.cleanRepository();
+        carService.createCar(CarTypes.CAR);
+        final PassengerCar car = (PassengerCar) carService.getAll()[0];
+        map.put("type", car.getType());
+        map.put("manufacturer", car.getManufacturer());
+        map.put("engine", car.getEngine());
+        map.put("color", car.getColor());
+        map.put("price", car.getPrice());
+        map.put("count", car.getCount());
+        System.out.println(car);
+        carService.mapToObject(map);
+
+        System.out.println("~_~ ".repeat(20));
+        carService.cleanRepository();
+        carService.createCar(8, CarTypes.CAR);
+        final List<Car> list1 = Arrays.asList(carService.getAll());
+        carService.cleanRepository();
+        carService.createCar(8, CarTypes.TRUCK);
+        final List<Car> list2 = Arrays.asList(carService.getAll());
+        carService.cleanRepository();
+        carService.createCar(8, CarTypes.CAR);
+        final List<Car> list3 = Arrays.asList(carService.getAll());
+        final List<List<Car>> listOfCarLists = Arrays.asList(list1, list2, list3);
+        System.out.println(carService.innerList(listOfCarLists, 20_000));
     }
 }
