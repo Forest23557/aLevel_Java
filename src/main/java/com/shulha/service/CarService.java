@@ -123,30 +123,49 @@ public class CarService {
         return answer;
     }
 
-    public void mapToObject(final Map<String, Object> carLinesMap) {
+    public Car mapToObject(final Map<String, Object> carLinesMap) {
         Optional.ofNullable(carLinesMap)
                 .orElseThrow(NullPointerException::new);
 
-        final Function<Map, Car> changingFunction = map -> getInstance().createCar((CarTypes) map.get("type"));
+        final Function<Map, Car> changingFunction = map -> {
+            final CarTypes carType = (CarTypes) map.get("type");
+            Car car;
 
-        final Car newCar = changingFunction.andThen(car -> {
+            if (carType == CarTypes.CAR) {
+                car = createCar(map);
+            } else {
+                car = createTruck(map);
+            }
+
+            return car;
+        };
+
+        final Car newCar = changingFunction
+                .andThen(car -> {
             car.setManufacturer((CarsManufacturers) carLinesMap.get("manufacturer"));
-            return car;
-        }).andThen(car -> {
             car.setEngine((Engine) carLinesMap.get("engine"));
-            return car;
-        }).andThen(car -> {
             car.setColor((CarColors) carLinesMap.get("color"));
-            return car;
-        }).andThen(car -> {
             car.setPrice((int) carLinesMap.get("price"));
-            return car;
-        }).andThen(car -> {
             car.setCount((int) carLinesMap.get("count"));
+
             return car;
         }).apply(carLinesMap);
 
         System.out.println(newCar);
+
+        return newCar;
+    }
+
+    private Car createCar(final Map<String, Object> carLinesMap) {
+        final PassengerCar car = new PassengerCar();
+        car.setPassengerCount((int) carLinesMap.get("passenger count or load capacity"));
+        return car;
+    }
+
+    private Car createTruck(final Map<String, Object> carLinesMap) {
+        final Truck car = new Truck();
+        car.setLoadCapacity((int) carLinesMap.get("passenger count or load capacity"));
+        return car;
     }
 
     public Map<CarColors, Long> innerList(final List<List<Car>> listOfCarLists, final int lowerBoundOfPrice) {
@@ -545,6 +564,7 @@ public class CarService {
         map.put("color", car.getColor());
         map.put("price", car.getPrice());
         map.put("count", car.getCount());
+        map.put("passenger count or load capacity", car.getPassengerCount());
         System.out.println(car);
         carService.mapToObject(map);
 
