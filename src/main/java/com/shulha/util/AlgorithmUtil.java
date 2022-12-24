@@ -1,6 +1,7 @@
 package com.shulha.util;
 
 import com.shulha.model.Car;
+import com.shulha.model.UserInputException;
 import com.shulha.service.CarService;
 
 import java.util.Optional;
@@ -9,30 +10,24 @@ public class AlgorithmUtil {
     private static final CarService CAR_SERVICE = CarService.getInstance();
 
     public static Car[] bubbleSort(final Car[] carArray) {
-        if (Optional.ofNullable(carArray).isPresent()) {
-            int length = carArray.length;
-            final Car[] sortedCarArray = carArray.clone();
+        Optional.ofNullable(carArray)
+                .orElseThrow(() -> new NullPointerException("Your array is null"));
 
-            for (int i = length - 1; i > 0; i--) {
-                for (int j = 0; j < i; j++) {
-                    if (sortedCarArray[j].getId().compareTo(sortedCarArray[j + 1].getId()) > 0) {
-//                        CAR_SERVICE.replaceCarsFromRepository(j, j + 1);
-                        Car temp = sortedCarArray[j];
-                        sortedCarArray[j] = sortedCarArray[j + 1];
-                        sortedCarArray[j + 1] = temp;
-                    }
-//                    if (carArray[j] > carArray[j + 1]) {
-//                        int temp = carArray[j];
-//                        carArray[j] = carArray[j + 1];
-//                        carArray[j + 1] = temp;
-//                    }
+        int length = carArray.length;
+        final Car[] sortedCarArray = carArray.clone();
+
+        for (int i = length - 1; i > 0; i--) {
+            for (int j = 0; j < i; j++) {
+                if (CAR_SERVICE.compareCar(sortedCarArray[j], sortedCarArray[j + 1]) > 0) {
+
+                    Car temp = sortedCarArray[j];
+                    sortedCarArray[j] = sortedCarArray[j + 1];
+                    sortedCarArray[j + 1] = temp;
                 }
             }
-
-            return sortedCarArray;
         }
 
-        return null;
+        return sortedCarArray;
     }
 
     public static Car binarySearch(final Car[] carArray, final int start, final int end, final String id) {
