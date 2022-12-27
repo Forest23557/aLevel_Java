@@ -339,7 +339,7 @@ class CarServiceTest {
     @Test
     void createWithThreeParameters() {
 //      initialize
-        CarsManufacturers manufacturer = car.getManufacturer();
+        CarManufacturers manufacturer = car.getManufacturer();
         Engine engine = car.getEngine();
         CarColors color = car.getColor();
 

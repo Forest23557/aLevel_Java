@@ -7,10 +7,10 @@ public class PassengerCar extends Car {
     private int passengerCount;
 
     public PassengerCar() {
-        this(CarsManufacturers.AUDI, new Engine(), CarColors.BLACK, 4);
+        this(CarManufacturers.AUDI, new Engine(), CarColors.BLACK, 4);
     }
 
-    public PassengerCar (final CarsManufacturers manufacturer, final Engine engine, final CarColors color, final int passengerCount) {
+    public PassengerCar (final CarManufacturers manufacturer, final Engine engine, final CarColors color, final int passengerCount) {
         super(manufacturer, engine, color);
         setType(CarTypes.CAR);
         if (passengerCount <= 1 || passengerCount > 5) {

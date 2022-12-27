@@ -17,7 +17,7 @@ public abstract class Car implements CountRestore, Cloneable {
     private final String id;
     @Setter(AccessLevel.PROTECTED)
     private CarTypes type;
-    private CarsManufacturers manufacturer;
+    private CarManufacturers manufacturer;
     private Engine engine;
     private CarColors color;
     @Setter(AccessLevel.NONE)
@@ -26,16 +26,16 @@ public abstract class Car implements CountRestore, Cloneable {
     private int price;
 
     public Car() {
-        this(CarsManufacturers.AUDI, new Engine(), CarColors.BLACK);
+        this(CarManufacturers.AUDI, new Engine(), CarColors.BLACK);
     }
 
-    public Car(final CarsManufacturers manufacturer, final Engine engine, final CarColors color) {
+    public Car(final CarManufacturers manufacturer, final Engine engine, final CarColors color) {
         count = 1;
         price = RANDOM.nextInt(UPPER_BOUND + 1_000);
         this.id = UUID.randomUUID().toString();
 
         if (manufacturer == null) {
-            this.manufacturer = CarsManufacturers.AUDI;
+            this.manufacturer = CarManufacturers.AUDI;
         } else {
             this.manufacturer = manufacturer;
         }

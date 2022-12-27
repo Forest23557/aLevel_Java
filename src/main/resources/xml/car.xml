@@ -1,0 +1,12 @@
+<car>
+    <type>CAR</type>
+    <manufacturer>BMW</manufacturer>
+    <engine>
+        <power>427</power>
+        <engineType>NATURALLY_ASPIRATED</engineType>
+    </engine>
+    <color>CYAN</color>
+    <price>61001</price>
+    <count>1</count>
+    <passenger_count_or_load_capacity>4</passenger_count_or_load_capacity>
+</car>
