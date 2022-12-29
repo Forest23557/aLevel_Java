@@ -1,7 +1,6 @@
 package com.shulha.service;
 
 import com.shulha.container.CarComparator;
-import com.shulha.container.CountContainer;
 import com.shulha.model.*;
 import com.shulha.repository.CarArrayRepository;
 import com.shulha.util.RandomGenerator;
@@ -275,29 +274,37 @@ public class CarService {
         return colorMap;
     }
 
-    public <T extends Car> Map<CarManufacturers, CountContainer> getManufacturersMap(final T[] cars) {
-        final Map<CarManufacturers, CountContainer> carsManufacturersMap = new HashMap<>();
+    public <T extends Car> Map<CarManufacturers, Integer> getManufacturersMap(final T[] cars) {
+        Optional.ofNullable(cars)
+                .orElseThrow(() -> new NullPointerException("Our repository is empty!"));
+
+        final Map<CarManufacturers, Integer> carsManufacturersMap = new HashMap<>();
 
         for (int i = 0; i < cars.length; i++) {
-            carsManufacturersMap.put(cars[i].getManufacturer(), new CountContainer());
-        }
-
-        for (int i = 0; i < cars.length; i++) {
-            carsManufacturersMap.get(cars[i].getManufacturer()).increase(cars[i].getCount());
+            carsManufacturersMap.computeIfPresent(cars[i].getManufacturer(), (k, v) -> ++v);
+            carsManufacturersMap.computeIfAbsent(cars[i].getManufacturer(), k -> 1);
         }
 
         return carsManufacturersMap;
     }
 
     public <T extends Car> Map<Engine, List<T>> getEnginesMap(final T[] cars) {
+        Optional.ofNullable(cars)
+                .orElseThrow(() -> new NullPointerException("Our repository is empty!"));
+
         final Map<Engine, List<T>> enginesMap = new HashMap<>();
 
-        for (int i = 0; i < cars.length; i++) {
-            enginesMap.put(cars[i].getEngine(), new ArrayList<>());
-        }
+        for (final int[] i = {0}; i[0] < cars.length; i[0]++) {
+            enginesMap.computeIfPresent(cars[i[0]].getEngine(), (k, v) -> {
+                v.add(cars[i[0]]);
+                return v;
+            });
 
-        for (int i = 0; i < cars.length; i++) {
-            enginesMap.get(cars[i].getEngine()).add(cars[i]);
+            enginesMap.computeIfAbsent(cars[i[0]].getEngine(), k -> {
+                final List <T> engineCars = new ArrayList<>();
+                engineCars.add(cars[i[0]]);
+                return engineCars;
+            });
         }
 
         return enginesMap;
@@ -587,6 +594,13 @@ public class CarService {
         final CarService carService = CarService.getInstance();
         carService.createRandomAmountOfCars(new RandomGenerator());
 
+        System.out.println("~_~ ".repeat(20));
+        System.out.println(carService.getManufacturersMap(carService.getAll()));
+
+        System.out.println("~_~ ".repeat(20));
+        System.out.println(carService.getEnginesMap(carService.getAll()));
+
+        System.out.println("~_~ ".repeat(20));
         carService.mapToObject(carService.carXmlToMap("xml/car.xml"));
         carService.mapToObject(carService.carJsonToMap("json/car.json"));
     }
