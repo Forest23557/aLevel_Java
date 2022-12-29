@@ -280,9 +280,9 @@ public class CarService {
 
         final Map<CarManufacturers, Integer> carsManufacturersMap = new HashMap<>();
 
-        for (int i = 0; i < cars.length; i++) {
-            carsManufacturersMap.computeIfPresent(cars[i].getManufacturer(), (k, v) -> ++v);
-            carsManufacturersMap.computeIfAbsent(cars[i].getManufacturer(), k -> 1);
+        for (T car : cars) {
+            carsManufacturersMap.computeIfPresent(car.getManufacturer(), (k, v) -> ++v);
+            carsManufacturersMap.computeIfAbsent(car.getManufacturer(), k -> 1);
         }
 
         return carsManufacturersMap;
@@ -294,15 +294,15 @@ public class CarService {
 
         final Map<Engine, List<T>> enginesMap = new HashMap<>();
 
-        for (final int[] i = {0}; i[0] < cars.length; i[0]++) {
-            enginesMap.computeIfPresent(cars[i[0]].getEngine(), (k, v) -> {
-                v.add(cars[i[0]]);
+        for (T car : cars) {
+            enginesMap.computeIfPresent(car.getEngine(), (k, v) -> {
+                v.add(car);
                 return v;
             });
 
-            enginesMap.computeIfAbsent(cars[i[0]].getEngine(), k -> {
+            enginesMap.computeIfAbsent(car.getEngine(), k -> {
                 final List <T> engineCars = new ArrayList<>();
-                engineCars.add(cars[i[0]]);
+                engineCars.add(car);
                 return engineCars;
             });
         }
