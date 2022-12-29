@@ -1,12 +1,17 @@
 package com.shulha.service;
 
+import com.shulha.container.CarComparator;
+import com.shulha.container.CountContainer;
 import com.shulha.model.*;
 import com.shulha.repository.CarArrayRepository;
 import com.shulha.util.RandomGenerator;
-import lombok.SneakyThrows;
 
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static java.util.function.Function.*;
 
 public class CarService {
     private final static Random RANDOM = new Random();
@@ -32,6 +37,34 @@ public class CarService {
                         .ofNullable(repository)
                         .orElseGet(() -> CarArrayRepository.getInstance())));
         return instance;
+    }
+
+    public <T extends Car> Map<CarsManufacturers, CountContainer> getManufacturersMap(final T[] cars) {
+        final Map<CarsManufacturers, CountContainer> carsManufacturersMap = new HashMap<>();
+
+        for (int i = 0; i < cars.length; i++) {
+            carsManufacturersMap.put(cars[i].getManufacturer(), new CountContainer());
+        }
+
+        for (int i = 0; i < cars.length; i++) {
+            carsManufacturersMap.get(cars[i].getManufacturer()).increase(cars[i].getCount());
+        }
+
+        return carsManufacturersMap;
+    }
+
+    public <T extends Car> Map<Engine, List<T>> getEnginesMap(final T[] cars) {
+        final Map<Engine, List<T>> enginesMap = new HashMap<>();
+
+        for (int i = 0; i < cars.length; i++) {
+            enginesMap.put(cars[i].getEngine(), new ArrayList<>());
+        }
+
+        for (int i = 0; i < cars.length; i++) {
+            enginesMap.get(cars[i].getEngine()).add(cars[i]);
+        }
+
+        return enginesMap;
     }
 
     public void cleanRepository() {
@@ -137,6 +170,18 @@ public class CarService {
 
     private int getRandomTruckCapacity() {
         return RANDOM.nextInt(3901) + 100;
+    }
+
+    private int getRandomCountOfCars() {
+        return RANDOM.nextInt(100) + 1;
+    }
+
+    public <T extends Car> void setRandomCount(final T[] cars) {
+        if (Optional.ofNullable(cars).isPresent()) {
+            for (T car : cars) {
+                car.setCount(getRandomCountOfCars());
+            }
+        }
     }
 
     public void replaceCarsFromRepository(final int indexOfFirst, final int indexOfSecond) {
@@ -300,5 +345,45 @@ public class CarService {
 
     public int compareCar(final Car firstCar, final Car secondCar) {
         return firstCar.getId().compareTo(secondCar.getId());
+    }
+
+    public static void main(String[] args) {
+        final CarService carService = CarService.getInstance();
+        carService.createRandomAmountOfCars(new RandomGenerator());
+//        carService.setRandomCount(carService.getAll());
+//        System.out.println("~_~ ".repeat(20));
+//        carService.printAll();
+//
+//        final CarTree<Car> carTree = new CarTree<>();
+//        for (int i = 0; i < carService.getAll().length; i++) {
+//            carTree.add(carService.getAll()[i]);
+//        }
+//        System.out.println("~_~ ".repeat(20));
+//        System.out.println("Expected size: " + carService.getAll().length);
+//        System.out.println("CarTree size: " + carTree.size());
+//        carTree.printAll();
+//        System.out.println("~_~ ".repeat(20));
+//        for (int i = 0; i < carService.getAll().length; i++) {
+//            System.out.println(carTree.get(carService.getAll()[i].getCount(), carService.getAll()[i].getId()));
+//        }
+//        int count = 0;
+//        for (int i = 0; i < carService.getAll().length; i++) {
+//            count += carService.getAll()[i].getCount();
+//        }
+//        System.out.println("CarService count: " + count);
+//        System.out.println("CarTree count: " + carTree.getCount());
+
+//        System.out.println(carService.getAll().length);
+//        System.out.println("The map of manufacturers: ");
+//        System.out.println("~_~ ".repeat(20));
+//        Map<CarsManufacturers, CountContainer> manufacturersMap = carService.getManufacturersMap(carService.getAll());
+//        System.out.println(manufacturersMap);
+//        System.out.println(manufacturersMap.size());
+//
+//        System.out.println("~_~ ".repeat(20));
+//        System.out.println("The map of engines: ");
+//        Map<Engine, List<Car>> enginesMap = carService.getEnginesMap(carService.getAll());
+//        System.out.println(enginesMap);
+//        System.out.println(enginesMap.size());
     }
 }
