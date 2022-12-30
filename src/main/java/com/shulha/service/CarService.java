@@ -41,7 +41,7 @@ public class CarService {
         return instance;
     }
 
-    public Map<String, Object> carXmlToMap(final String path) {
+    public Car carXmlToCarObject(final String path) {
         final Map<String, Object> mapCar = new LinkedHashMap<>();
 
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -76,10 +76,10 @@ public class CarService {
             System.out.println(ex.getMessage());
         }
 
-        return mapCar;
+        return mapToObject(mapCar);
     }
 
-    public Map<String, Object> carJsonToMap(final String path) {
+    public Car carJsonToCarObject(final String path) {
         final Map<String, Object> mapCar = new LinkedHashMap<>();
 
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -113,7 +113,7 @@ public class CarService {
             System.out.println(ex.getMessage());
         }
 
-        return mapCar;
+        return mapToObject(mapCar);
     }
 
     public <T extends Car> void findManufacturerByPrice(final T[] cars, final int lowerBoundOfPrice) {
@@ -601,7 +601,7 @@ public class CarService {
         System.out.println(carService.getEnginesMap(carService.getAll()));
 
         System.out.println("~_~ ".repeat(20));
-        carService.mapToObject(carService.carXmlToMap("xml/car.xml"));
-        carService.mapToObject(carService.carJsonToMap("json/car.json"));
+        carService.carXmlToCarObject("xml/car.xml");
+        carService.carJsonToCarObject("json/car.json");
     }
 }
