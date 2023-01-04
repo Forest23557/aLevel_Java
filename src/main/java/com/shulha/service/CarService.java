@@ -242,12 +242,8 @@ public class CarService {
         if (lowerBoundOfPrice <= 0) {
             throw new IndexOutOfBoundsException("Your bound is less than or equal to 0!");
         }
-        final CarComparator<Car> colorComparator = new CarComparator<>() {
-            @Override
-            public int compare(final Car firstCar, final Car secondCar) {
-                return firstCar.getColor().compareTo(secondCar.getColor());
-            }
-        };
+        final Comparator<Car> colorComparator = (firstCar, secondCar) -> firstCar.getColor()
+                .compareTo(secondCar.getColor());
 
         Map<CarColors, Long> colorMap = listOfCarLists.stream()
                 .flatMap(list -> list.stream())
