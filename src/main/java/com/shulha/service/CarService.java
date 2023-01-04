@@ -471,7 +471,8 @@ public class CarService {
         if (id == null || id.isBlank()) {
             return null;
         }
-        return carArrayRepository.getById(id);
+        return carArrayRepository.getById(id)
+                .get();
     }
 
     //  tested
