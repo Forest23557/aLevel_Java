@@ -200,44 +200,39 @@ public class CarService {
         Optional.ofNullable(carLinesMap)
                 .orElseThrow(NullPointerException::new);
 
-        final Function<Map, Car> changingFunction = map -> {
-            final CarTypes carType = Enum.valueOf(CarTypes.class, (String) map.get("type"));
-            final Engine engine = new Engine(Integer.parseInt((String) carLinesMap.get("power")),
-                    Enum.valueOf(EngineTypes.class, (String) carLinesMap.get("engineType")));
-            Car car;
-
-            if (carType == CarTypes.CAR) {
-                car = createCar(map);
-            } else {
-                car = createTruck(map);
-            }
-
-            car.setManufacturer(Enum.valueOf(CarManufacturers.class,
-                    (String) carLinesMap.get("manufacturer")));
-            car.setEngine(engine);
-            car.setColor(Enum.valueOf(CarColors.class, (String) carLinesMap.get("color")));
-            car.setPrice(Integer.parseInt((String) carLinesMap.get("price")));
-            car.setCount(Integer.parseInt((String) carLinesMap.get("count")));
-
-            return car;
-        };
-
+        final Function<Map, Car> changingFunction = this::createCar;
         final Car newCar = changingFunction.apply(carLinesMap);
 
         return newCar;
     }
 
     private Car createCar(final Map<String, Object> carLinesMap) {
-        final PassengerCar car = new PassengerCar();
-        car.setPassengerCount(Integer.parseInt(
-                (String) carLinesMap.get("passenger_count_or_load_capacity")));
-        return car;
-    }
+        final CarTypes carType = Enum.valueOf(CarTypes.class, (String) carLinesMap.get("type"));
+        final Engine engine = new Engine(Integer.parseInt((String) carLinesMap.get("power")),
+                Enum.valueOf(EngineTypes.class, (String) carLinesMap.get("engineType")));
+        final Car car;
 
-    private Car createTruck(final Map<String, Object> carLinesMap) {
-        final Truck car = new Truck();
-        car.setLoadCapacity(Integer.parseInt(
-                (String) carLinesMap.get("passenger_count_or_load_capacity")));
+        if (carType == CarTypes.CAR) {
+            final PassengerCar passengerCar = new PassengerCar();
+
+            passengerCar.setPassengerCount(Integer.parseInt(
+                    (String) carLinesMap.get("passenger_count_or_load_capacity")));
+            car = passengerCar;
+        } else {
+            final Truck truck = new Truck();
+
+            truck.setLoadCapacity(Integer.parseInt(
+                    (String) carLinesMap.get("passenger_count_or_load_capacity")));
+            car = truck;
+        }
+
+        car.setManufacturer(Enum.valueOf(CarManufacturers.class,
+                (String) carLinesMap.get("manufacturer")));
+        car.setEngine(engine);
+        car.setColor(Enum.valueOf(CarColors.class, (String) carLinesMap.get("color")));
+        car.setPrice(Integer.parseInt((String) carLinesMap.get("price")));
+        car.setCount(Integer.parseInt((String) carLinesMap.get("count")));
+
         return car;
     }
 
