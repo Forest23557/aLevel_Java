@@ -149,12 +149,8 @@ public class CarService {
         Optional.ofNullable(cars)
                 .orElseThrow(NullPointerException::new);
 
-        final CarComparator<T> comparator = new CarComparator<>() {
-            @Override
-            public int compare(final T firstCar, final T secondCar) {
-                return firstCar.getManufacturer().compareTo(secondCar.getManufacturer());
-            }
-        };
+        final Comparator<T> comparator = (firstCar, secondCar) -> firstCar.getManufacturer()
+                .compareTo(secondCar.getManufacturer());
 
         Map<String, CarTypes> sortedCarMap = Arrays.asList(cars)
                 .stream()
@@ -206,6 +202,8 @@ public class CarService {
 
         final Function<Map, Car> changingFunction = map -> {
             final CarTypes carType = Enum.valueOf(CarTypes.class, (String) map.get("type"));
+            final Engine engine = new Engine(Integer.parseInt((String) carLinesMap.get("power")),
+                    Enum.valueOf(EngineTypes.class, (String) carLinesMap.get("engineType")));
             Car car;
 
             if (carType == CarTypes.CAR) {
@@ -214,24 +212,17 @@ public class CarService {
                 car = createTruck(map);
             }
 
-            return car;
-        };
-
-        final Car newCar = changingFunction
-                .andThen(car -> {
             car.setManufacturer(Enum.valueOf(CarManufacturers.class,
                     (String) carLinesMap.get("manufacturer")));
-            final Engine engine = new Engine(Integer.parseInt((String) carLinesMap.get("power")),
-                    Enum.valueOf(EngineTypes.class, (String) carLinesMap.get("engineType")));
             car.setEngine(engine);
             car.setColor(Enum.valueOf(CarColors.class, (String) carLinesMap.get("color")));
             car.setPrice(Integer.parseInt((String) carLinesMap.get("price")));
             car.setCount(Integer.parseInt((String) carLinesMap.get("count")));
 
             return car;
-        }).apply(carLinesMap);
+        };
 
-        System.out.println(newCar);
+        final Car newCar = changingFunction.apply(carLinesMap);
 
         return newCar;
     }
@@ -601,7 +592,7 @@ public class CarService {
         System.out.println(carService.getEnginesMap(carService.getAll()));
 
         System.out.println("~_~ ".repeat(20));
-        carService.carXmlToCarObject("xml/car.xml");
-        carService.carJsonToCarObject("json/car.json");
+        System.out.println(carService.carXmlToCarObject("xml/car.xml"));
+        System.out.println(carService.carJsonToCarObject("json/car.json"));
     }
 }
