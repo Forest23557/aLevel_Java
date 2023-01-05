@@ -47,7 +47,7 @@ class CarArrayRepositoryTest {
 
 //      checks
         Assertions.assertDoesNotThrow(() -> target.delete(id));
-        Assertions.assertNull(target.getById(id));
+        Assertions.assertNull(target.getById(id).orElseGet(() -> null));
     }
 
     @Test
@@ -178,7 +178,7 @@ class CarArrayRepositoryTest {
 //      action
 
 //      checks
-        Assertions.assertNull(target.getById(id));
+        Assertions.assertNull(target.getById(id).orElseGet(() -> null));
     }
 
     @Test
@@ -190,7 +190,7 @@ class CarArrayRepositoryTest {
 //      action
 
 //      checks
-        Assertions.assertNull(target.getById(id));
+        Assertions.assertNull(target.getById(id).orElseGet(() -> null));
     }
 
     @Test
@@ -202,7 +202,7 @@ class CarArrayRepositoryTest {
 //      action
 
 //      checks
-        Assertions.assertNull(target.getById(id));
+        Assertions.assertNull(target.getById(id).orElseGet(() -> null));
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.shulha.model.Car;
 import com.shulha.model.UserInputException;
 import com.shulha.service.CarService;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class AlgorithmUtil {
@@ -31,7 +32,7 @@ public class AlgorithmUtil {
     }
 
     public static Car binarySearch(final Car[] carArray, final int start, final int end, final String id) {
-        if (Optional.ofNullable(carArray).isPresent() && Optional.ofNullable(id).isPresent() && !id.isBlank()) {
+        if (Objects.nonNull(carArray) && Objects.nonNull(id) && !id.isBlank()) {
             if (end >= start) {
                 int middleElement = (end + start) / 2;
 

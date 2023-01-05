@@ -3,6 +3,7 @@ package com.shulha.service;
 import com.shulha.model.*;
 import com.shulha.repository.CarArrayRepository;
 import com.shulha.repository.CarListRepository;
+import com.shulha.repository.CarMapRepository;
 import com.shulha.repository.Repository;
 import com.shulha.util.RandomGenerator;
 
@@ -29,7 +30,7 @@ public class CarService {
     public static CarService getInstance() {
         instance = Optional
                 .ofNullable(instance)
-                .orElseGet(() -> new CarService(CarListRepository.getInstance()));
+                .orElseGet(() -> new CarService(CarMapRepository.getInstance()));
         return instance;
     }
 
@@ -38,7 +39,7 @@ public class CarService {
                 .ofNullable(instance)
                 .orElseGet(() -> new CarService(Optional
                         .ofNullable(repository)
-                        .orElseGet(() -> CarListRepository.getInstance())));
+                        .orElseGet(() -> CarMapRepository.getInstance())));
         return instance;
     }
 
