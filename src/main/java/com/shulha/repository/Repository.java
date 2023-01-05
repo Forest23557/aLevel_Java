@@ -2,14 +2,14 @@ package com.shulha.repository;
 
 import java.util.Optional;
 
-public interface Repository<K, V, I> {
-    void delete(I object);
+public interface Repository<K, V> {
+    void delete(V object);
 
-    void save(V value);
+    void save(K value);
 
     void removeAll();
 
-    V[] getAll();
+    K[] getAll();
 
-    Optional<V> getById(I object);
+    Optional<K> getById(V object);
 }

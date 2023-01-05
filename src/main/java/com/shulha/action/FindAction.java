@@ -17,26 +17,23 @@ public class FindAction implements Action {
         String[] menu = {"Enter car ID", "Random car"};
         final int userChoice = UserInput.menu(menu);
 
-        Car car = null;
+        Optional<Car> optionalCar;
         if (userChoice == 0) {
             final String id = UserInput.find("Write ID of your car: ", "You wrote an empty line!");
-            car = CAR_SERVICE.find(id);
+            optionalCar = CAR_SERVICE.find(id);
         } else {
-            Optional<Car[]> optionalCars = Optional.ofNullable(CAR_SERVICE.getAll());
-            if (optionalCars.isPresent()) {
-                final Car[] cars = optionalCars.get();
-                car = cars[RANDOM.nextInt(cars.length)];
-            } else {
-                System.out.println("You haven't created any cars! Our repository is empty!");
-            }
+            final Car[] cars = Optional.ofNullable(CAR_SERVICE.getAll())
+                    .orElseThrow(
+                            () -> new NullPointerException("You haven't created any cars! Our repository is empty!"));
+            optionalCar = Optional.ofNullable(cars[RANDOM.nextInt(cars.length)]);
         }
 
-        Optional<Car> optionalCar = Optional.ofNullable(car);
-        if (optionalCar.isPresent()) {
-            System.out.println("The car has been found: ");
-            CAR_SERVICE.print(car);
-        } else {
-            System.out.println("A car with your ID is not found!");
-        }
+        optionalCar.ifPresentOrElse(
+                checkingCar -> {
+                    System.out.println("The car has been found: ");
+                    CAR_SERVICE.print(checkingCar);
+                },
+                () -> System.out.println("A car with your ID is not found!")
+        );
     }
 }

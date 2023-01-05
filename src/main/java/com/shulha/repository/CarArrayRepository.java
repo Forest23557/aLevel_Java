@@ -12,7 +12,7 @@ import java.util.Optional;
 //  Read
 //  Update
 //  Delete
-public class CarArrayRepository implements Repository<Number, Car, String> {
+public class CarArrayRepository implements Repository<Car, String> {
     private static Car[] cars = new Car[10];
     private static CarArrayRepository instance;
 

@@ -100,7 +100,7 @@ class CarArrayRepositoryTest {
 
 //      action
         target.save(car);
-        Car actual = target.getById(id);
+        Car actual = target.getById(id).get();
 
 //      checks
         Assertions.assertEquals(expected, actual);
@@ -163,7 +163,7 @@ class CarArrayRepositoryTest {
         Car expected = car;
 
 //      action
-        Car actual = target.getById(id);
+        Car actual = target.getById(id).get();
 
 //      checks
         Assertions.assertEquals(expected, actual);
