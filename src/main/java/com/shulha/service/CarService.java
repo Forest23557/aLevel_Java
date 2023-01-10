@@ -1,8 +1,10 @@
 package com.shulha.service;
 
-import com.shulha.container.CarComparator;
 import com.shulha.model.*;
 import com.shulha.repository.CarArrayRepository;
+import com.shulha.repository.CarListRepository;
+import com.shulha.repository.CarMapRepository;
+import com.shulha.repository.Repository;
 import com.shulha.util.RandomGenerator;
 
 import java.io.*;
@@ -18,26 +20,26 @@ import static java.util.function.Function.*;
 public class CarService {
     private final static Random RANDOM = new Random();
 
-    private final CarArrayRepository carArrayRepository;
+    private final Repository<Car, String> carRepository;
     private static CarService instance;
 
-    private CarService(final CarArrayRepository carArrayRepository) {
-        this.carArrayRepository = carArrayRepository;
+    private CarService(final Repository<Car, String> carRepository) {
+        this.carRepository = carRepository;
     }
 
     public static CarService getInstance() {
         instance = Optional
                 .ofNullable(instance)
-                .orElseGet(() -> new CarService(CarArrayRepository.getInstance()));
+                .orElseGet(() -> new CarService(CarMapRepository.getInstance()));
         return instance;
     }
 
-    public static CarService getInstance(final CarArrayRepository repository) {
+    public static CarService getInstance(final Repository<Car, String> repository) {
         instance = Optional
                 .ofNullable(instance)
                 .orElseGet(() -> new CarService(Optional
                         .ofNullable(repository)
-                        .orElseGet(() -> CarArrayRepository.getInstance())));
+                        .orElseGet(() -> CarMapRepository.getInstance())));
         return instance;
     }
 
@@ -48,12 +50,13 @@ public class CarService {
         try(final BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(classLoader.getResourceAsStream(path)))) {
 
+            final Pattern pattern2 = Pattern.compile("(?<=>)\\w*");
+            final Pattern pattern1 = Pattern.compile("(?<=<)\\w*");
             String line;
 
             while ((line = bufferedReader.readLine()) != null) {
-                final Pattern pattern1 = Pattern.compile("(?<=<)\\w*");
+
                 final Matcher matcher1 = pattern1.matcher(line);
-                final Pattern pattern2 = Pattern.compile("(?<=>)\\w*");
                 final Matcher matcher2 = pattern2.matcher(line);
                 String key = "";
                 String value = "";
@@ -81,15 +84,16 @@ public class CarService {
 
     public Car carJsonToCarObject(final String path) {
         final Map<String, Object> mapCar = new LinkedHashMap<>();
-
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
         try (final BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(classLoader.getResourceAsStream(path)))) {
 
+            final Pattern pattern = Pattern.compile("(?<=\")\\w+");
             String line;
 
             while ((line = bufferedReader.readLine()) != null) {
-                final Pattern pattern = Pattern.compile("(?<=\")\\w+");
+
                 final Matcher matcher = pattern.matcher(line);
                 String key = "";
                 String value = "";
@@ -293,7 +297,7 @@ public class CarService {
     }
 
     public void cleanRepository() {
-        carArrayRepository.removeAll();
+        carRepository.removeAll();
     }
 
     public void printManufacturerAndCount(final Car car) {
@@ -409,10 +413,6 @@ public class CarService {
         }
     }
 
-    public void replaceCarsFromRepository(final int indexOfFirst, final int indexOfSecond) {
-        carArrayRepository.replaceCars(indexOfFirst, indexOfSecond);
-    }
-
     //  tested
     public Car createCar(final CarTypes carType) {
         Car car;
@@ -427,7 +427,7 @@ public class CarService {
             car = new Truck(getRandomManufacturer(), getRandomEngine(), getRandomColor(), getRandomTruckCapacity());
         }
 
-        carArrayRepository.save(car);
+        carRepository.save(car);
 
         return car;
     }
@@ -444,13 +444,13 @@ public class CarService {
     }
 
     //  tested
-    public void insert(int index, final Car car) {
-        carArrayRepository.insert(index, car);
-    }
+//    public void insert(int index, final Car car) {
+//        carRepository.insert(index, car);
+//    }
 
     //  tested
     public void printAll() {
-        final Car[] allCars = carArrayRepository.getAll();
+        final Car[] allCars = carRepository.getAll();
 
         if (allCars == null) {
             return;
@@ -463,15 +463,15 @@ public class CarService {
 
     //  tested
     public Car[] getAll() {
-        return carArrayRepository.getAll();
+        return carRepository.getAll();
     }
 
     //  tested
-    public Car find(final String id) {
+    public Optional<Car> find(final String id) {
         if (id == null || id.isBlank()) {
             return null;
         }
-        return carArrayRepository.getById(id);
+        return carRepository.getById(id);
     }
 
     //  tested
@@ -479,7 +479,7 @@ public class CarService {
         if (id == null || id.isBlank()) {
             return;
         }
-        carArrayRepository.delete(id);
+        carRepository.delete(id);
     }
 
     //  tested
@@ -488,12 +488,11 @@ public class CarService {
             return;
         }
 
-        final Car car = find(id);
-        if (car == null) {
-            return;
-        }
-
-        findAndChangeRandomColor(car);
+        find(id)
+                .ifPresentOrElse(
+                        checkingCar -> findAndChangeRandomColor(checkingCar),
+                        () -> System.out.println("Any car with your ID is not found!")
+                );
     }
 
     private void findAndChangeRandomColor(final Car car) {
@@ -503,7 +502,8 @@ public class CarService {
         do {
             randomColor = getRandomColor();
         } while (randomColor == color);
-        carArrayRepository.updateColor(car.getId(), randomColor);
+
+        car.setColor(color);
     }
 
     //  tested
@@ -520,7 +520,7 @@ public class CarService {
             car = new PassengerCar(manufacturer, engine, color, getRandomTruckCapacity());
         }
 
-        carArrayRepository.save(car);
+        carRepository.save(car);
         return car;
     }
 

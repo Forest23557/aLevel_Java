@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.Optional;
+
 class CarServiceTest {
     private CarService target;
     private CarArrayRepository repository;
@@ -142,42 +144,6 @@ class CarServiceTest {
     }
 
     @Test
-    void insert() {
-//      initialize
-        final int count = 7;
-
-//      action
-
-//      checks
-        Assertions.assertDoesNotThrow(() -> target.insert(count, car));
-        Mockito.verify(repository, Mockito.never()).insert(count, car);
-    }
-
-    @Test
-    void insertIncorrectCount() {
-//      initialize
-        final int count = -8;
-
-//      action
-
-//      checks
-        Assertions.assertDoesNotThrow(() -> target.insert(count, car));
-        Mockito.verify(repository, Mockito.never()).insert(count, car);
-    }
-
-    @Test
-    void insertIncorrectCarNull() {
-//      initialize
-        final int count = -8;
-
-//      action
-
-//      checks
-        Assertions.assertDoesNotThrow(() -> target.insert(count, null));
-        Mockito.verify(repository, Mockito.never()).insert(count, null);
-    }
-
-    @Test
     void printAll() {
 //      initialize
 
@@ -195,7 +161,7 @@ class CarServiceTest {
 //      action
 
 //      checks
-        Assertions.assertNull(target.getAll());
+        Assertions.assertNotNull(target.getAll());
         Mockito.verify(repository, Mockito.never()).getAll();
     }
 
@@ -206,7 +172,7 @@ class CarServiceTest {
         String id = expected.getId();
 
 //      action
-        final Car actual = target.find(id);
+        final Car actual = target.find(id).get();
 
 //      checks
         Assertions.assertEquals(expected, actual);
@@ -220,10 +186,10 @@ class CarServiceTest {
         Mockito.when(repository.getById(id)).thenReturn(null);
 
 //      action
-        final Car actual = target.find(id);
+        final Optional<Car> actual = target.find(id);
 
 //      checks
-        Assertions.assertNull(actual);
+        Assertions.assertNull(actual.orElseGet(() -> null));
         Mockito.verify(repository, Mockito.never()).getById(id);
     }
 
@@ -233,7 +199,7 @@ class CarServiceTest {
         String id = null;
 
 //      action
-        final Car actual = target.find(id);
+        final Optional<Car> actual = target.find(id);
 
 //      checks
         Assertions.assertNull(actual);
@@ -246,7 +212,7 @@ class CarServiceTest {
         String id = "";
 
 //      action
-        final Car actual = target.find(id);
+        final Optional<Car> actual = target.find(id);
 
 //      checks
         Assertions.assertNull(actual);

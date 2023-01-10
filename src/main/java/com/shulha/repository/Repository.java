@@ -1,15 +1,15 @@
 package com.shulha.repository;
 
-public interface Repository<K, V, I> {
-    void delete(I object);
+import java.util.Optional;
 
-    void save(V value);
+public interface Repository<K, V> {
+    void delete(V object);
+
+    void save(K value);
 
     void removeAll();
 
-    V[] getAll();
+    K[] getAll();
 
-    V getById(I object);
-
-    void insert(K key, V value);
+    Optional<K> getById(V object);
 }

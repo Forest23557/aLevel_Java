@@ -4,6 +4,7 @@ package com.shulha.repository;
 import com.shulha.model.Car;
 import com.shulha.model.CarColors;
 
+import java.util.Objects;
 import java.util.Optional;
 
 //  CRUD
@@ -11,7 +12,7 @@ import java.util.Optional;
 //  Read
 //  Update
 //  Delete
-public class CarArrayRepository implements Repository<Number, Car, String> {
+public class CarArrayRepository implements Repository<Car, String> {
     private static Car[] cars = new Car[10];
     private static CarArrayRepository instance;
 
@@ -98,15 +99,18 @@ public class CarArrayRepository implements Repository<Number, Car, String> {
 
 //  tested
     @Override
-    public Car getById(final String id) {
+    public Optional<Car> getById(final String id) {
+        Optional<Car> carOptional = Optional.ofNullable(null);
+
         for (Car car : cars) {
             if (car == null) {
-                return null;
+                return carOptional;
             } else if (car.getId().equals(id)) {
-                return car;
+                return Optional.of(car);
             }
         }
-        return null;
+
+        return carOptional;
     }
 
 //  tested
@@ -115,10 +119,7 @@ public class CarArrayRepository implements Repository<Number, Car, String> {
             return;
         }
 
-        final Car car = getById(id);
-        if (car != null) {
-            car.setColor(color);
-        }
+        getById(id).ifPresent(car -> car.setColor(color));
     }
 
     private void increase() {
@@ -140,13 +141,11 @@ public class CarArrayRepository implements Repository<Number, Car, String> {
     }
 
     //  tested
-    @Override
-    public void insert(Number index, final Car car) {
+    public void insert(int index, final Car car) {
 //      checking
-        if (Optional.ofNullable(index).isPresent() && Optional.ofNullable(car).isPresent()) {
-            int indexInt = index.intValue();
+        if (!Objects.isNull(car)) {
 
-            if (indexInt < 0) {
+            if (index < 0) {
                 return;
             }
 
@@ -156,26 +155,26 @@ public class CarArrayRepository implements Repository<Number, Car, String> {
             }
 
 //      looking for a place for an insertion
-            if (indexInt >= cars.length) {
+            if (index >= cars.length) {
                 for (int i = 0; i < cars.length; i++) {
                     if (cars[i] == null) {
-                        indexInt = i;
+                        index = i;
                         break;
                     }
                 }
-            } else if (cars[indexInt] != null) {
-                System.arraycopy(cars, indexInt, cars, indexInt + 1,
-                        cars.length - (indexInt + 1));
+            } else if (cars[index] != null) {
+                System.arraycopy(cars, index, cars, index + 1,
+                        cars.length - (index + 1));
             } else {
-                for (int i = 0; i < indexInt; i++) {
+                for (int i = 0; i < index; i++) {
                     if (cars[i] == null) {
-                        indexInt = i;
+                        index = i;
                         break;
                     }
                 }
             }
 
-            cars[indexInt] = car;
+            cars[index] = car;
         }
     }
 
