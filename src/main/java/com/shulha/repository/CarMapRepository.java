@@ -29,18 +29,19 @@ public class CarMapRepository implements Repository<Car, String> {
 
     @Override
     public void save(final Car car) {
-        Optional.ofNullable(car)
-                .orElseThrow(NullPointerException::new);
-
-        CARS.entrySet()
-                .stream()
-                .filter(entry -> CHECK_ID.test(entry.getKey(), car.getId()))
-                .findAny()
-                .ifPresentOrElse(
-                        checkingEntry -> checkingEntry.getValue()
-                                .setCount(checkingEntry.getValue().getCount() + car.getCount()),
-                        () -> CARS.put(car.getId(), car)
-                );
+        if (Objects.nonNull(car)) {
+            CARS.entrySet()
+                    .stream()
+                    .filter(entry -> CHECK_ID.test(entry.getKey(), car.getId()))
+                    .findAny()
+                    .ifPresentOrElse(
+                            checkingEntry -> checkingEntry.getValue()
+                                    .setCount(checkingEntry.getValue().getCount() + car.getCount()),
+                            () -> CARS.put(car.getId(), car)
+                    );
+        } else {
+            System.out.println("Your car is null! It won't be saved!");
+        }
     }
 
     @Override
