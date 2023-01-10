@@ -50,12 +50,13 @@ public class CarService {
         try(final BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(classLoader.getResourceAsStream(path)))) {
 
+            final Pattern pattern2 = Pattern.compile("(?<=>)\\w*");
+            final Pattern pattern1 = Pattern.compile("(?<=<)\\w*");
             String line;
 
             while ((line = bufferedReader.readLine()) != null) {
-                final Pattern pattern1 = Pattern.compile("(?<=<)\\w*");
+
                 final Matcher matcher1 = pattern1.matcher(line);
-                final Pattern pattern2 = Pattern.compile("(?<=>)\\w*");
                 final Matcher matcher2 = pattern2.matcher(line);
                 String key = "";
                 String value = "";
@@ -83,15 +84,16 @@ public class CarService {
 
     public Car carJsonToCarObject(final String path) {
         final Map<String, Object> mapCar = new LinkedHashMap<>();
-
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
         try (final BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(classLoader.getResourceAsStream(path)))) {
 
+            final Pattern pattern = Pattern.compile("(?<=\")\\w+");
             String line;
 
             while ((line = bufferedReader.readLine()) != null) {
-                final Pattern pattern = Pattern.compile("(?<=\")\\w+");
+
                 final Matcher matcher = pattern.matcher(line);
                 String key = "";
                 String value = "";
