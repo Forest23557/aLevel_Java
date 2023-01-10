@@ -1,6 +1,6 @@
 package com.shulha.model;
 
-public enum CarsManufacturers {
+public enum CarManufacturers {
     TOYOTA,
     VOLKSWAGEN,
     HYUNDAI,

@@ -10,10 +10,10 @@ public class Truck extends Car {
     private int loadCapacity;
 
     public Truck() {
-        this(CarsManufacturers.ROVER, new Engine(), CarColors.WHITE, 500);
+        this(CarManufacturers.ROVER, new Engine(), CarColors.WHITE, 500);
     }
 
-    public Truck (final CarsManufacturers manufacturer, final Engine engine, final CarColors color, final int loadCapacity) {
+    public Truck (final CarManufacturers manufacturer, final Engine engine, final CarColors color, final int loadCapacity) {
         super(manufacturer, engine, color);
         setType(CarTypes.TRUCK);
 

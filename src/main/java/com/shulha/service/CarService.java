@@ -1,14 +1,16 @@
 package com.shulha.service;
 
 import com.shulha.container.CarComparator;
-import com.shulha.container.CountContainer;
 import com.shulha.model.*;
 import com.shulha.repository.CarArrayRepository;
 import com.shulha.util.RandomGenerator;
 
+import java.io.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.function.Function.*;
@@ -37,6 +39,81 @@ public class CarService {
                         .ofNullable(repository)
                         .orElseGet(() -> CarArrayRepository.getInstance())));
         return instance;
+    }
+
+    public Car carXmlToCarObject(final String path) {
+        final Map<String, Object> mapCar = new LinkedHashMap<>();
+
+        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        try(final BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(classLoader.getResourceAsStream(path)))) {
+
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                final Pattern pattern1 = Pattern.compile("(?<=<)\\w*");
+                final Matcher matcher1 = pattern1.matcher(line);
+                final Pattern pattern2 = Pattern.compile("(?<=>)\\w*");
+                final Matcher matcher2 = pattern2.matcher(line);
+                String key = "";
+                String value = "";
+
+
+                if (matcher1.find()) {
+                    key = matcher1.group();
+                }
+
+                if (matcher2.find()) {
+                    value = matcher2.group();
+                }
+
+                if (!key.isBlank() && !value.isBlank()) {
+                    mapCar.put(key, value);
+                }
+            }
+
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return mapToObject(mapCar);
+    }
+
+    public Car carJsonToCarObject(final String path) {
+        final Map<String, Object> mapCar = new LinkedHashMap<>();
+
+        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        try (final BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(classLoader.getResourceAsStream(path)))) {
+
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                final Pattern pattern = Pattern.compile("(?<=\")\\w+");
+                final Matcher matcher = pattern.matcher(line);
+                String key = "";
+                String value = "";
+                int i = 0;
+
+                while (matcher.find()) {
+                    if (i == 0) {
+                        key = matcher.group();
+                    } else {
+                        value = matcher.group();
+                    }
+                    i++;
+                }
+
+                if (!key.isBlank() && !value.isBlank()) {
+                    mapCar.put(key, value);
+                }
+            }
+
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return mapToObject(mapCar);
     }
 
     public <T extends Car> void findManufacturerByPrice(final T[] cars, final int lowerBoundOfPrice) {
@@ -72,12 +149,8 @@ public class CarService {
         Optional.ofNullable(cars)
                 .orElseThrow(NullPointerException::new);
 
-        final CarComparator<T> comparator = new CarComparator<>() {
-            @Override
-            public int compare(final T firstCar, final T secondCar) {
-                return firstCar.getManufacturer().compareTo(secondCar.getManufacturer());
-            }
-        };
+        final Comparator<T> comparator = (firstCar, secondCar) -> firstCar.getManufacturer()
+                .compareTo(secondCar.getManufacturer());
 
         Map<String, CarTypes> sortedCarMap = Arrays.asList(cars)
                 .stream()
@@ -127,44 +200,39 @@ public class CarService {
         Optional.ofNullable(carLinesMap)
                 .orElseThrow(NullPointerException::new);
 
-        final Function<Map, Car> changingFunction = map -> {
-            final CarTypes carType = (CarTypes) map.get("type");
-            Car car;
-
-            if (carType == CarTypes.CAR) {
-                car = createCar(map);
-            } else {
-                car = createTruck(map);
-            }
-
-            return car;
-        };
-
-        final Car newCar = changingFunction
-                .andThen(car -> {
-            car.setManufacturer((CarsManufacturers) carLinesMap.get("manufacturer"));
-            car.setEngine((Engine) carLinesMap.get("engine"));
-            car.setColor((CarColors) carLinesMap.get("color"));
-            car.setPrice((int) carLinesMap.get("price"));
-            car.setCount((int) carLinesMap.get("count"));
-
-            return car;
-        }).apply(carLinesMap);
-
-        System.out.println(newCar);
+        final Function<Map, Car> changingFunction = this::createCar;
+        final Car newCar = changingFunction.apply(carLinesMap);
 
         return newCar;
     }
 
     private Car createCar(final Map<String, Object> carLinesMap) {
-        final PassengerCar car = new PassengerCar();
-        car.setPassengerCount((int) carLinesMap.get("passenger count or load capacity"));
-        return car;
-    }
+        final CarTypes carType = Enum.valueOf(CarTypes.class, (String) carLinesMap.get("type"));
+        final Engine engine = new Engine(Integer.parseInt((String) carLinesMap.get("power")),
+                Enum.valueOf(EngineTypes.class, (String) carLinesMap.get("engineType")));
+        final Car car;
 
-    private Car createTruck(final Map<String, Object> carLinesMap) {
-        final Truck car = new Truck();
-        car.setLoadCapacity((int) carLinesMap.get("passenger count or load capacity"));
+        if (carType == CarTypes.CAR) {
+            final PassengerCar passengerCar = new PassengerCar();
+
+            passengerCar.setPassengerCount(Integer.parseInt(
+                    (String) carLinesMap.get("passenger_count_or_load_capacity")));
+            car = passengerCar;
+        } else {
+            final Truck truck = new Truck();
+
+            truck.setLoadCapacity(Integer.parseInt(
+                    (String) carLinesMap.get("passenger_count_or_load_capacity")));
+            car = truck;
+        }
+
+        car.setManufacturer(Enum.valueOf(CarManufacturers.class,
+                (String) carLinesMap.get("manufacturer")));
+        car.setEngine(engine);
+        car.setColor(Enum.valueOf(CarColors.class, (String) carLinesMap.get("color")));
+        car.setPrice(Integer.parseInt((String) carLinesMap.get("price")));
+        car.setCount(Integer.parseInt((String) carLinesMap.get("count")));
+
         return car;
     }
 
@@ -174,12 +242,8 @@ public class CarService {
         if (lowerBoundOfPrice <= 0) {
             throw new IndexOutOfBoundsException("Your bound is less than or equal to 0!");
         }
-        final CarComparator<Car> colorComparator = new CarComparator<>() {
-            @Override
-            public int compare(final Car firstCar, final Car secondCar) {
-                return firstCar.getColor().compareTo(secondCar.getColor());
-            }
-        };
+        final Comparator<Car> colorComparator = (firstCar, secondCar) -> firstCar.getColor()
+                .compareTo(secondCar.getColor());
 
         Map<CarColors, Long> colorMap = listOfCarLists.stream()
                 .flatMap(list -> list.stream())
@@ -192,29 +256,37 @@ public class CarService {
         return colorMap;
     }
 
-    public <T extends Car> Map<CarsManufacturers, CountContainer> getManufacturersMap(final T[] cars) {
-        final Map<CarsManufacturers, CountContainer> carsManufacturersMap = new HashMap<>();
+    public <T extends Car> Map<CarManufacturers, Integer> getManufacturersMap(final T[] cars) {
+        Optional.ofNullable(cars)
+                .orElseThrow(() -> new NullPointerException("Our repository is empty!"));
 
-        for (int i = 0; i < cars.length; i++) {
-            carsManufacturersMap.put(cars[i].getManufacturer(), new CountContainer());
-        }
+        final Map<CarManufacturers, Integer> carsManufacturersMap = new HashMap<>();
 
-        for (int i = 0; i < cars.length; i++) {
-            carsManufacturersMap.get(cars[i].getManufacturer()).increase(cars[i].getCount());
+        for (T car : cars) {
+            carsManufacturersMap.computeIfPresent(car.getManufacturer(), (k, v) -> ++v);
+            carsManufacturersMap.computeIfAbsent(car.getManufacturer(), k -> 1);
         }
 
         return carsManufacturersMap;
     }
 
     public <T extends Car> Map<Engine, List<T>> getEnginesMap(final T[] cars) {
+        Optional.ofNullable(cars)
+                .orElseThrow(() -> new NullPointerException("Our repository is empty!"));
+
         final Map<Engine, List<T>> enginesMap = new HashMap<>();
 
-        for (int i = 0; i < cars.length; i++) {
-            enginesMap.put(cars[i].getEngine(), new ArrayList<>());
-        }
+        for (T car : cars) {
+            enginesMap.computeIfPresent(car.getEngine(), (k, v) -> {
+                v.add(car);
+                return v;
+            });
 
-        for (int i = 0; i < cars.length; i++) {
-            enginesMap.get(cars[i].getEngine()).add(cars[i]);
+            enginesMap.computeIfAbsent(car.getEngine(), k -> {
+                final List <T> engineCars = new ArrayList<>();
+                engineCars.add(car);
+                return engineCars;
+            });
         }
 
         return enginesMap;
@@ -297,10 +369,10 @@ public class CarService {
         return count;
     }
 
-    private CarsManufacturers getRandomManufacturer() {
-        CarsManufacturers[] carsManufacturers = CarsManufacturers.values();
-        int randomIndex = RANDOM.nextInt(carsManufacturers.length);
-        return carsManufacturers[randomIndex];
+    private CarManufacturers getRandomManufacturer() {
+        CarManufacturers[] carManufacturers = CarManufacturers.values();
+        int randomIndex = RANDOM.nextInt(carManufacturers.length);
+        return carManufacturers[randomIndex];
     }
 
     private Engine getRandomEngine() {
@@ -435,7 +507,7 @@ public class CarService {
     }
 
     //  tested
-    public Car createCar(final CarsManufacturers manufacturer, final Engine engine, final CarColors color, final CarTypes carType) {
+    public Car createCar(final CarManufacturers manufacturer, final Engine engine, final CarColors color, final CarTypes carType) {
         Car car;
 
         if (manufacturer == null || engine == null || color == null || carType == null) {
@@ -503,82 +575,15 @@ public class CarService {
     public static void main(String[] args) {
         final CarService carService = CarService.getInstance();
         carService.createRandomAmountOfCars(new RandomGenerator());
-//        carService.setRandomCount(carService.getAll());
-//        System.out.println("~_~ ".repeat(20));
-//        carService.printAll();
-//
-//        final CarTree<Car> carTree = new CarTree<>();
-//        for (int i = 0; i < carService.getAll().length; i++) {
-//            carTree.add(carService.getAll()[i]);
-//        }
-//        System.out.println("~_~ ".repeat(20));
-//        System.out.println("Expected size: " + carService.getAll().length);
-//        System.out.println("CarTree size: " + carTree.size());
-//        carTree.printAll();
-//        System.out.println("~_~ ".repeat(20));
-//        for (int i = 0; i < carService.getAll().length; i++) {
-//            System.out.println(carTree.get(carService.getAll()[i].getCount(), carService.getAll()[i].getId()));
-//        }
-//        int count = 0;
-//        for (int i = 0; i < carService.getAll().length; i++) {
-//            count += carService.getAll()[i].getCount();
-//        }
-//        System.out.println("CarService count: " + count);
-//        System.out.println("CarTree count: " + carTree.getCount());
-
-//        System.out.println(carService.getAll().length);
-//        System.out.println("The map of manufacturers: ");
-//        System.out.println("~_~ ".repeat(20));
-//        Map<CarsManufacturers, CountContainer> manufacturersMap = carService.getManufacturersMap(carService.getAll());
-//        System.out.println(manufacturersMap);
-//        System.out.println(manufacturersMap.size());
-//
-//        System.out.println("~_~ ".repeat(20));
-//        System.out.println("The map of engines: ");
-//        Map<Engine, List<Car>> enginesMap = carService.getEnginesMap(carService.getAll());
-//        System.out.println(enginesMap);
-//        System.out.println(enginesMap.size());
-
-        carService.findManufacturerByPrice(carService.getAll(), 30_000);
 
         System.out.println("~_~ ".repeat(20));
-        System.out.println("The car count: " + carService.countSum(carService.getAll()));
+        System.out.println(carService.getManufacturersMap(carService.getAll()));
 
         System.out.println("~_~ ".repeat(20));
-        System.out.println(carService.mapToMap(carService.getAll()));
+        System.out.println(carService.getEnginesMap(carService.getAll()));
 
         System.out.println("~_~ ".repeat(20));
-        carService.statistic(carService.getAll());
-
-        System.out.println("~_~ ".repeat(20));
-        carService.checkPrice(carService.getAll(), 20_000);
-
-        System.out.println("~_~ ".repeat(20));
-        final Map<String, Object> map = new LinkedHashMap<>();
-        carService.cleanRepository();
-        carService.createCar(CarTypes.CAR);
-        final PassengerCar car = (PassengerCar) carService.getAll()[0];
-        map.put("type", car.getType());
-        map.put("manufacturer", car.getManufacturer());
-        map.put("engine", car.getEngine());
-        map.put("color", car.getColor());
-        map.put("price", car.getPrice());
-        map.put("count", car.getCount());
-        map.put("passenger count or load capacity", car.getPassengerCount());
-        System.out.println(car);
-        carService.mapToObject(map);
-
-        System.out.println("~_~ ".repeat(20));
-        carService.cleanRepository();
-        carService.createCar(8, CarTypes.CAR);
-        final List<Car> list1 = Arrays.asList(carService.getAll());
-        carService.cleanRepository();
-        carService.createCar(8, CarTypes.TRUCK);
-        final List<Car> list2 = Arrays.asList(carService.getAll());
-        carService.cleanRepository();
-        carService.createCar(8, CarTypes.CAR);
-        final List<Car> list3 = Arrays.asList(carService.getAll());
-        final List<List<Car>> listOfCarLists = Arrays.asList(list1, list2, list3);
-        System.out.println(carService.innerList(listOfCarLists, 20_000));
+        System.out.println(carService.carXmlToCarObject("xml/car.xml"));
+        System.out.println(carService.carJsonToCarObject("json/car.json"));
     }
 }

@@ -14,6 +14,7 @@ public class CarTree<E extends Car> {
     private int count;
 
     public CarTree() {
+        this(new CarComparator<>());
     }
 
     public CarTree(final Comparator<E> carComparator) {
@@ -35,8 +36,6 @@ public class CarTree<E extends Car> {
     private void insert(final Node<E> currentNode, final E insertion) {
 //      if the number is positive or equals 0 inserting element will go to the left side of the current element
 //      and if the number is negative inserting element will go to the right side of the current element
-        carComparator = Optional.ofNullable(carComparator)
-                .orElseGet(() -> new CarComparator<>());
         final int compare = carComparator.compare(currentNode.element, insertion);
 
         if (compare == 0) {

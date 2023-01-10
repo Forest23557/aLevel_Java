@@ -1,0 +1,14 @@
+{
+  "car": {
+    "type": "CAR",
+    "manufacturer": "BMW",
+    "engine": {
+      "power": "427",
+      "engineType": "NATURALLY_ASPIRATED"
+    },
+    "color": "CYAN",
+    "price": "61001",
+    "count": "1",
+    "passenger_count_or_load_capacity": "4"
+  }
+}
