@@ -6,7 +6,7 @@ import com.shulha.util.AnnotationProcessor;
 import java.io.IOException;
 
 public interface Action {
-    CarService CAR_SERVICE = (CarService) AnnotationProcessor.getCachedObject("CarService");
+    CarService CAR_SERVICE = (CarService) AnnotationProcessor.getCachedObject(CarService.class.getSimpleName());
 
     void execute();
 }
