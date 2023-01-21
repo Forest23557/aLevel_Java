@@ -104,7 +104,7 @@ public class AnnotationProcessor {
                                 () -> {
                                     CACHE.put(mapRepositoryName,
                                             CarMapRepository.getInstance());
-                                    repositoryConsumer.accept(objectRepository);
+                                    repositoryConsumer.accept(CACHE.get(mapRepositoryName));
                                 }
                         );
                 break;
@@ -117,7 +117,7 @@ public class AnnotationProcessor {
                                 () -> {
                                     CACHE.put(listRepositoryName,
                                             CarListRepository.getInstance());
-                                    repositoryConsumer.accept(objectRepository);
+                                    repositoryConsumer.accept(CACHE.get(listRepositoryName));
                                 }
                         );
                 break;
@@ -130,7 +130,7 @@ public class AnnotationProcessor {
                                 () -> {
                                     CACHE.put(arrayRepositoryName,
                                             CarArrayRepository.getInstance());
-                                    repositoryConsumer.accept(objectRepository);
+                                    repositoryConsumer.accept(CACHE.get(arrayRepositoryName));
                                 }
                         );
                 break;
@@ -144,9 +144,5 @@ public class AnnotationProcessor {
         return Arrays.stream(declaredMethods)
                 .filter(m -> Objects.nonNull(m.getDeclaredAnnotation(Autowired.class)))
                 .findAny();
-    }
-
-    public static void main(String[] args) {
-        final AnnotationProcessor annotationProcessor = new AnnotationProcessor();
     }
 }
