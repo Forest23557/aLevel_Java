@@ -2,18 +2,15 @@ package com.shulha.util;
 
 import com.shulha.annotation.Autowired;
 import com.shulha.annotation.Singleton;
-import com.shulha.model.Car;
 import com.shulha.repository.CarArrayRepository;
 import com.shulha.repository.CarListRepository;
 import com.shulha.repository.CarMapRepository;
-import com.shulha.repository.Repository;
 import lombok.SneakyThrows;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -95,38 +92,45 @@ public class AnnotationProcessor {
                 throw new RuntimeException(e);
             }
         };
+        final Object objectRepository;
 
         switch (declaredAnnotation.set()) {
             case CAR_MAP_REPOSITORY:
-                Optional.ofNullable(CACHE.get(CarMapRepository.class.getSimpleName()))
+                final String mapRepositoryName = CarMapRepository.class.getSimpleName();
+                objectRepository = CACHE.get(mapRepositoryName);
+                Optional.ofNullable(objectRepository)
                         .ifPresentOrElse(
                                 repository -> repositoryConsumer.accept(repository),
                                 () -> {
-                                    CACHE.put(CarMapRepository.class.getSimpleName(),
+                                    CACHE.put(mapRepositoryName,
                                             CarMapRepository.getInstance());
-                                    repositoryConsumer.accept(CACHE.get(CarMapRepository.class.getSimpleName()));
+                                    repositoryConsumer.accept(objectRepository);
                                 }
                         );
                 break;
             case CAR_LIST_REPOSITORY:
-                Optional.ofNullable(CACHE.get(CarListRepository.class.getSimpleName()))
+                final String listRepositoryName = CarListRepository.class.getSimpleName();
+                objectRepository = CACHE.get(listRepositoryName);
+                Optional.ofNullable(objectRepository)
                         .ifPresentOrElse(
                                 repository -> repositoryConsumer.accept(repository),
                                 () -> {
-                                    CACHE.put(CarListRepository.class.getSimpleName(),
+                                    CACHE.put(listRepositoryName,
                                             CarListRepository.getInstance());
-                                    repositoryConsumer.accept(CACHE.get(CarListRepository.class.getSimpleName()));
+                                    repositoryConsumer.accept(objectRepository);
                                 }
                         );
                 break;
             case CAR_ARRAY_REPOSITORY:
-                Optional.ofNullable(CACHE.get(CarArrayRepository.class.getSimpleName()))
+                final String arrayRepositoryName = CarArrayRepository.class.getSimpleName();
+                objectRepository = CACHE.get(arrayRepositoryName);
+                Optional.ofNullable(objectRepository)
                         .ifPresentOrElse(
                                 repository -> repositoryConsumer.accept(repository),
                                 () -> {
-                                    CACHE.put(CarArrayRepository.class.getSimpleName(),
+                                    CACHE.put(arrayRepositoryName,
                                             CarArrayRepository.getInstance());
-                                    repositoryConsumer.accept(CACHE.get(CarArrayRepository.class.getSimpleName()));
+                                    repositoryConsumer.accept(objectRepository);
                                 }
                         );
                 break;
