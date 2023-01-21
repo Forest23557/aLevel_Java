@@ -54,15 +54,11 @@ public class AnnotationProcessor {
                 .findAny();
     }
 
-    private Optional<Method> hasGetInstanceWithOneParameter(final Method[] declaredMethods) {
-        return Arrays.stream(declaredMethods)
-                .filter(method1 -> method1.getName() == "getInstance" && method1.getParameterCount() == 1)
-                .findAny();
-    }
-
     private void handleClass(final Class<?> someClass) {
-        if (hasAutowired(someClass)) {
-            handleAutowired(someClass);
+        final Optional<Method> optionalMethodAutowired = hasAutowired(someClass);
+
+        if (optionalMethodAutowired.isPresent()) {
+            handleAutowired(someClass, optionalMethodAutowired.get());
         } else {
             handleSingleton(someClass);
         }
@@ -74,7 +70,7 @@ public class AnnotationProcessor {
 
         if (optionalMethod.isPresent()) {
             final Method method = optionalMethod.get();
-            CACHE.put(someClass.getSimpleName(), method.invoke(someClass));
+            CACHE.putIfAbsent(someClass.getSimpleName(), method.invoke(someClass));
         } else {
             final Constructor<?>[] constructors = someClass.getDeclaredConstructors();
             final Constructor<?> constructor = Arrays.stream(constructors)
@@ -88,70 +84,65 @@ public class AnnotationProcessor {
     }
 
     @SneakyThrows
-    private void handleAutowired(final Class<?> someClass) {
-        Optional<Method> optionalMethod = hasGetInstanceWithOneParameter(someClass.getDeclaredMethods());
-
-        if (optionalMethod.isPresent()) {
-            final Method method = optionalMethod.get();
-            final Autowired declaredAnnotation = method.getDeclaredAnnotation(Autowired.class);
-            final Consumer<Object> repositoryConsumer = repository -> {
-                try {
-                    CACHE.put(someClass.getSimpleName(), method.invoke(someClass, repository));
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
-            };
-
-            switch (declaredAnnotation.set()) {
-                case CAR_MAP_REPOSITORY:
-                    Optional.ofNullable(CACHE.get(CarMapRepository.class.getSimpleName()))
-                            .ifPresentOrElse(
-                                    repository -> repositoryConsumer.accept(repository),
-                                    () -> {
-                                        CACHE.put(CarMapRepository.class.getSimpleName(),
-                                                CarMapRepository.getInstance());
-                                        repositoryConsumer.accept(CACHE.get(CarMapRepository.class.getSimpleName()));
-                                    }
-                            );
-                    break;
-                case CAR_LIST_REPOSITORY:
-                    Optional.ofNullable(CACHE.get(CarListRepository.class.getSimpleName()))
-                            .ifPresentOrElse(
-                                    repository -> repositoryConsumer.accept(repository),
-                                    () -> {
-                                        CACHE.put(CarListRepository.class.getSimpleName(),
-                                                CarListRepository.getInstance());
-                                        repositoryConsumer.accept(CACHE.get(CarListRepository.class.getSimpleName()));
-                                    }
-                            );
-                    break;
-                case CAR_ARRAY_REPOSITORY:
-                    Optional.ofNullable(CACHE.get(CarArrayRepository.class.getSimpleName()))
-                            .ifPresentOrElse(
-                                    repository -> repositoryConsumer.accept(repository),
-                                    () -> {
-                                        CACHE.put(CarArrayRepository.class.getSimpleName(),
-                                                CarArrayRepository.getInstance());
-                                        repositoryConsumer.accept(CACHE.get(CarArrayRepository.class.getSimpleName()));
-                                    }
-                            );
-                    break;
-                case NULL:
-                    repositoryConsumer.accept(null);
+    private void handleAutowired(final Class<?> someClass, final Method method) {
+        final Autowired declaredAnnotation = method.getDeclaredAnnotation(Autowired.class);
+        final Consumer<Object> repositoryConsumer = repository -> {
+            try {
+                CACHE.put(someClass.getSimpleName(), method.invoke(someClass, repository));
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
             }
+        };
+
+        switch (declaredAnnotation.set()) {
+            case CAR_MAP_REPOSITORY:
+                Optional.ofNullable(CACHE.get(CarMapRepository.class.getSimpleName()))
+                        .ifPresentOrElse(
+                                repository -> repositoryConsumer.accept(repository),
+                                () -> {
+                                    CACHE.put(CarMapRepository.class.getSimpleName(),
+                                            CarMapRepository.getInstance());
+                                    repositoryConsumer.accept(CACHE.get(CarMapRepository.class.getSimpleName()));
+                                }
+                        );
+                break;
+            case CAR_LIST_REPOSITORY:
+                Optional.ofNullable(CACHE.get(CarListRepository.class.getSimpleName()))
+                        .ifPresentOrElse(
+                                repository -> repositoryConsumer.accept(repository),
+                                () -> {
+                                    CACHE.put(CarListRepository.class.getSimpleName(),
+                                            CarListRepository.getInstance());
+                                    repositoryConsumer.accept(CACHE.get(CarListRepository.class.getSimpleName()));
+                                }
+                        );
+                break;
+            case CAR_ARRAY_REPOSITORY:
+                Optional.ofNullable(CACHE.get(CarArrayRepository.class.getSimpleName()))
+                        .ifPresentOrElse(
+                                repository -> repositoryConsumer.accept(repository),
+                                () -> {
+                                    CACHE.put(CarArrayRepository.class.getSimpleName(),
+                                            CarArrayRepository.getInstance());
+                                    repositoryConsumer.accept(CACHE.get(CarArrayRepository.class.getSimpleName()));
+                                }
+                        );
+                break;
+            case NULL:
+                repositoryConsumer.accept(null);
         }
     }
 
-    private boolean hasAutowired(final Class<?> someClass) {
-        Method[] declaredMethods = someClass.getDeclaredMethods();
+    private Optional<Method> hasAutowired(final Class<?> someClass) {
+        final Method[] declaredMethods = someClass.getDeclaredMethods();
         return Arrays.stream(declaredMethods)
-                .anyMatch(m -> Objects.nonNull(m.getDeclaredAnnotation(Autowired.class)));
+                .filter(m -> Objects.nonNull(m.getDeclaredAnnotation(Autowired.class)))
+                .findAny();
     }
 
     public static void main(String[] args) {
         final AnnotationProcessor annotationProcessor = new AnnotationProcessor();
-        annotationProcessor.findAndHandleSingletonClasses();
     }
 }
