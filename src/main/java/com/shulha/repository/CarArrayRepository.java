@@ -1,6 +1,7 @@
 package com.shulha.repository;
 
 
+import com.shulha.annotation.Singleton;
 import com.shulha.model.Car;
 import com.shulha.model.CarColors;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
 //  Read
 //  Update
 //  Delete
+@Singleton
 public class CarArrayRepository implements Repository<Car, String> {
     private static Car[] cars = new Car[10];
     private static CarArrayRepository instance;

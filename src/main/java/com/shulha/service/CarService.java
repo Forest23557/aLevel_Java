@@ -1,10 +1,11 @@
 package com.shulha.service;
 
+import com.shulha.annotation.Autowired;
+import com.shulha.annotation.Singleton;
 import com.shulha.model.*;
-import com.shulha.repository.CarArrayRepository;
-import com.shulha.repository.CarListRepository;
 import com.shulha.repository.CarMapRepository;
 import com.shulha.repository.Repository;
+import com.shulha.types.RepositoryTypes;
 import com.shulha.util.RandomGenerator;
 
 import java.io.*;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static java.util.function.Function.*;
 
+@Singleton
 public class CarService {
     private final static Random RANDOM = new Random();
 
@@ -34,6 +36,7 @@ public class CarService {
         return instance;
     }
 
+    @Autowired(set = RepositoryTypes.CAR_MAP_REPOSITORY)
     public static CarService getInstance(final Repository<Car, String> repository) {
         instance = Optional
                 .ofNullable(instance)

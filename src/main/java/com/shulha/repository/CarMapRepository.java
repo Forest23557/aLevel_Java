@@ -1,5 +1,6 @@
 package com.shulha.repository;
 
+import com.shulha.annotation.Singleton;
 import com.shulha.model.Car;
 import com.shulha.model.CarTypes;
 import com.shulha.service.CarService;
@@ -7,6 +8,7 @@ import com.shulha.service.CarService;
 import java.util.*;
 import java.util.function.BiPredicate;
 
+@Singleton
 public class CarMapRepository implements Repository<Car, String> {
     private static final Map<String, Car> CARS = new HashMap<>();
     private static final BiPredicate<String, String> CHECK_ID = (checkingId, id) -> checkingId.equals(id);
