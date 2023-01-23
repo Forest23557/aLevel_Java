@@ -11,7 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 public class JdbcManager {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/test?currentSchema=public";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/carService?currentSchema=public";
     private static final String USER = "postgres";
     private static String PASS;
 
@@ -39,20 +39,20 @@ public class JdbcManager {
         return DriverManager.getConnection(DB_URL, USER, PASS);
     }
 
-    @SneakyThrows
-    public static void main(String[] args) {
-        Connection connection = JdbcManager.getConnection();
-        System.out.println(connection.getCatalog());
-        Statement statement = connection.createStatement();
-        final String statementString = "SELECT * FROM \"Orders\"";
-        boolean execute = statement.execute(statementString);
-        System.out.println(execute);
-        statement.close();
-
-        final String prepareStatementString = "SELECT * FROM \"Orders\"";
-        PreparedStatement preparedStatement = connection.prepareStatement(prepareStatementString);
-        boolean execute1 = preparedStatement.execute();
-        System.out.println(execute1);
-        preparedStatement.close();
-    }
+//    @SneakyThrows
+//    public static void main(String[] args) {
+//        Connection connection = JdbcManager.getConnection();
+//        System.out.println(connection.getCatalog());
+//        Statement statement = connection.createStatement();
+//        final String statementString = "SELECT * FROM \"Orders\"";
+//        boolean execute = statement.execute(statementString);
+//        System.out.println(execute);
+//        statement.close();
+//
+//        final String prepareStatementString = "SELECT * FROM \"Orders\"";
+//        PreparedStatement preparedStatement = connection.prepareStatement(prepareStatementString);
+//        boolean execute1 = preparedStatement.execute();
+//        System.out.println(execute1);
+//        preparedStatement.close();
+//    }
 }

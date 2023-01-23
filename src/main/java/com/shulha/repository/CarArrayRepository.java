@@ -5,6 +5,8 @@ import com.shulha.annotation.Singleton;
 import com.shulha.model.Car;
 import com.shulha.model.CarColors;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -87,7 +89,7 @@ public class CarArrayRepository implements Repository<Car, String> {
 
 //  tested
     @Override
-    public Car[] getAll() {
+    public List<Car> getAll() {
         final int newLength = findUsefulLength();
 
         if (newLength == 0) {
@@ -96,7 +98,7 @@ public class CarArrayRepository implements Repository<Car, String> {
 
         final Car[] newCarsArray = new Car[newLength];
         System.arraycopy(cars, 0, newCarsArray, 0, newLength);
-        return newCarsArray;
+        return Arrays.asList(newCarsArray);
     }
 
 //  tested

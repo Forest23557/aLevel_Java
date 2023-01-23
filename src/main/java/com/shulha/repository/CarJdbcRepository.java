@@ -2,6 +2,8 @@ package com.shulha.repository;
 
 import com.shulha.model.Car;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class CarJdbcRepository implements Repository<Car, String> {
@@ -21,8 +23,8 @@ public class CarJdbcRepository implements Repository<Car, String> {
     }
 
     @Override
-    public Car[] getAll() {
-        return new Car[0];
+    public List<Car> getAll() {
+        return new ArrayList<>();
     }
 
     @Override
