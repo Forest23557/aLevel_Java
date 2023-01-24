@@ -93,49 +93,16 @@ public class AnnotationProcessor {
             }
         };
         final Object objectRepository;
+        final Class<?> settingClass = declaredAnnotation.set();
 
-        switch (declaredAnnotation.set()) {
-            case CAR_MAP_REPOSITORY:
-                final String mapRepositoryName = CarMapRepository.class.getSimpleName();
-                objectRepository = CACHE.get(mapRepositoryName);
-                Optional.ofNullable(objectRepository)
-                        .ifPresentOrElse(
-                                repository -> repositoryConsumer.accept(repository),
-                                () -> {
-                                    CACHE.put(mapRepositoryName,
-                                            CarMapRepository.getInstance());
-                                    repositoryConsumer.accept(CACHE.get(mapRepositoryName));
-                                }
-                        );
-                break;
-            case CAR_LIST_REPOSITORY:
-                final String listRepositoryName = CarListRepository.class.getSimpleName();
-                objectRepository = CACHE.get(listRepositoryName);
-                Optional.ofNullable(objectRepository)
-                        .ifPresentOrElse(
-                                repository -> repositoryConsumer.accept(repository),
-                                () -> {
-                                    CACHE.put(listRepositoryName,
-                                            CarListRepository.getInstance());
-                                    repositoryConsumer.accept(CACHE.get(listRepositoryName));
-                                }
-                        );
-                break;
-            case CAR_ARRAY_REPOSITORY:
-                final String arrayRepositoryName = CarArrayRepository.class.getSimpleName();
-                objectRepository = CACHE.get(arrayRepositoryName);
-                Optional.ofNullable(objectRepository)
-                        .ifPresentOrElse(
-                                repository -> repositoryConsumer.accept(repository),
-                                () -> {
-                                    CACHE.put(arrayRepositoryName,
-                                            CarArrayRepository.getInstance());
-                                    repositoryConsumer.accept(CACHE.get(arrayRepositoryName));
-                                }
-                        );
-                break;
-            case NULL:
-                repositoryConsumer.accept(null);
+        if (Objects.nonNull(settingClass)) {
+            final Method settingClassDeclaredMethod = settingClass.getDeclaredMethod("getInstance");
+
+            CACHE.putIfAbsent(settingClass.getSimpleName(), settingClassDeclaredMethod.invoke(someClass));
+            objectRepository = CACHE.get(settingClass.getSimpleName());
+            repositoryConsumer.accept(objectRepository);
+        } else {
+            repositoryConsumer.accept(null);
         }
     }
 

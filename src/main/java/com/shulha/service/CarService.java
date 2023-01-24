@@ -36,7 +36,7 @@ public class CarService {
         return instance;
     }
 
-    @Autowired(set = RepositoryTypes.CAR_MAP_REPOSITORY)
+    @Autowired(set = CarMapRepository.class)
     public static CarService getInstance(final Repository<Car, String> repository) {
         instance = Optional
                 .ofNullable(instance)
