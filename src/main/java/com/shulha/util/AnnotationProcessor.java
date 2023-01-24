@@ -5,6 +5,7 @@ import com.shulha.annotation.Singleton;
 import com.shulha.repository.CarArrayRepository;
 import com.shulha.repository.CarListRepository;
 import com.shulha.repository.CarMapRepository;
+import com.shulha.service.CarService;
 import lombok.SneakyThrows;
 import org.reflections.Reflections;
 
@@ -98,7 +99,7 @@ public class AnnotationProcessor {
         if (Objects.nonNull(settingClass)) {
             final Method settingClassDeclaredMethod = settingClass.getDeclaredMethod("getInstance");
 
-            CACHE.putIfAbsent(settingClass.getSimpleName(), settingClassDeclaredMethod.invoke(someClass));
+            CACHE.putIfAbsent(settingClass.getSimpleName(), settingClassDeclaredMethod.invoke(settingClass));
             objectRepository = CACHE.get(settingClass.getSimpleName());
             repositoryConsumer.accept(objectRepository);
         } else {
