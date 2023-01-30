@@ -15,7 +15,7 @@ public class Order implements Repository<Car, String> {
     @Getter
     private final String id;
     @Getter
-    private String date;
+    private LocalDateTime date;
 
     public Order() {
         setDate();
@@ -23,7 +23,7 @@ public class Order implements Repository<Car, String> {
     }
 
     private void setDate() {
-        date = LocalDateTime.now().format(DATE_TIME_FORMATTER);
+        date = LocalDateTime.now();
     }
 
     @Override

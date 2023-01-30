@@ -1,4 +1,4 @@
-package com.shulha.repository;
+package com.shulha.util;
 
 import lombok.SneakyThrows;
 
@@ -9,9 +9,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.Optional;
 
 public class JdbcManager {
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/carService?currentSchema=public";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/CarService?currentSchema=public";
     private static final String USER = "postgres";
     private static String PASS;
 

@@ -124,8 +124,8 @@ class CarArrayRepositoryTest {
         int expectedLength = 1;
 
 //      action
-        Car actual = target.getAll()[0];
-        int actualLength = target.getAll().length;
+        Car actual = target.getAll().get(0);
+        int actualLength = target.getAll().size();
 
 //      checks
         Assertions.assertEquals(expected, actual);
@@ -273,7 +273,7 @@ class CarArrayRepositoryTest {
 
 //      action
         target.insert(index, car);
-        Car actual = target.getAll()[index];
+        Car actual = target.getAll().get(index);
 
 //      checks
         Assertions.assertEquals(expected, actual);
