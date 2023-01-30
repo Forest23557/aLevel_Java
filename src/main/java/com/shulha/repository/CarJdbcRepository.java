@@ -69,7 +69,6 @@ public class CarJdbcRepository implements Repository<Car, String> {
         try {
             engineJdbcRepository.createTableInDB(connection);
             statement.executeBatch();
-            connection.commit();
             statement.close();
         } finally {
             if (statement != null) {
@@ -117,7 +116,6 @@ public class CarJdbcRepository implements Repository<Car, String> {
 
             try {
                 preparedStatement.executeUpdate();
-                connection.commit();
             } finally {
                 if (preparedStatement != null) {
                     preparedStatement.close();
@@ -128,6 +126,7 @@ public class CarJdbcRepository implements Repository<Car, String> {
         }
 
         if (connection != null && isConnectionCreated.get()) {
+            connection.commit();
             connection.close();
         }
     }
@@ -223,7 +222,6 @@ public class CarJdbcRepository implements Repository<Car, String> {
 
         try {
             preparedStatement.executeUpdate();
-            connection.commit();
         } finally {
             if (preparedStatement != null) {
                 preparedStatement.close();
@@ -241,7 +239,6 @@ public class CarJdbcRepository implements Repository<Car, String> {
 
         try {
             preparedStatement.executeUpdate();
-            connection.commit();
             preparedStatement.close();
         } finally {
             if (preparedStatement != null) {

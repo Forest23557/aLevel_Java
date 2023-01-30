@@ -41,7 +41,6 @@ public class EngineJdbcRepository implements Repository<Engine, String> {
 
         try {
             preparedStatement.executeUpdate();
-            connection.commit();
             preparedStatement.close();
         } finally {
             if (preparedStatement != null) {
@@ -83,7 +82,6 @@ public class EngineJdbcRepository implements Repository<Engine, String> {
 
             try {
                 preparedStatement.executeUpdate();
-                connection.commit();
                 preparedStatement.close();
             } finally {
                 if (preparedStatement != null) {
@@ -93,6 +91,7 @@ public class EngineJdbcRepository implements Repository<Engine, String> {
         }
 
         if (connection != null && isConnectionCreated.get()) {
+            connection.commit();
             connection.close();
         }
 

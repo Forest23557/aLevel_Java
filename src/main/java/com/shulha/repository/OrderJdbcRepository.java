@@ -46,7 +46,6 @@ public class OrderJdbcRepository implements Repository<Order, String> {
 
         try {
             preparedStatement.executeUpdate();
-            connection.commit();
             preparedStatement.close();
         } finally {
             if (preparedStatement != null) {
@@ -57,6 +56,7 @@ public class OrderJdbcRepository implements Repository<Order, String> {
         carJdbcRepository.createTableInDB(connection);
 
         try {
+            connection.commit();
             connection.close();
         } finally {
             if (connection != null) {
@@ -90,7 +90,6 @@ public class OrderJdbcRepository implements Repository<Order, String> {
 
             try {
                 preparedStatement.executeUpdate();
-                connection.commit();
                 preparedStatement.close();
             } finally {
                 if (preparedStatement != null) {
@@ -257,10 +256,10 @@ public class OrderJdbcRepository implements Repository<Order, String> {
 
     public static void main(String[] args) {
         final OrderJdbcRepository instance1 = OrderJdbcRepository.getInstance();
-//        final Order order = new Order();
-//        order.save(new Truck());
-//        order.save(new PassengerCar());
-//        instance1.save(order);
+        final Order order = new Order();
+        order.save(new Truck());
+        order.save(new PassengerCar());
+        instance1.save(order);
         System.out.println(instance1.getAll());
     }
 }
