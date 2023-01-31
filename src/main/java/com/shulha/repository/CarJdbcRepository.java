@@ -63,7 +63,6 @@ public class CarJdbcRepository implements Repository<Car, String> {
         statement.addBatch(createPassengerCarsTableRequest);
 
         try {
-            engineJdbcRepository.createTableInDB(connection);
             statement.executeBatch();
             statement.close();
         } finally {

@@ -1,5 +1,6 @@
 package com.shulha.repository;
 
+import com.shulha.annotation.Singleton;
 import com.shulha.model.Car;
 import com.shulha.model.Order;
 import com.shulha.model.PassengerCar;
@@ -15,6 +16,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@Singleton
 public class OrderJdbcRepository implements Repository<Order, String> {
     private static OrderJdbcRepository instance;
     private final CarJdbcRepository carJdbcRepository;
@@ -24,7 +26,7 @@ public class OrderJdbcRepository implements Repository<Order, String> {
         createTableInDB();
     }
 
-    private static OrderJdbcRepository getInstance() {
+    public static OrderJdbcRepository getInstance() {
         instance = Optional.ofNullable(instance)
                 .orElseGet(() -> new OrderJdbcRepository(CarJdbcRepository.getInstance()));
         return instance;
@@ -318,7 +320,7 @@ public class OrderJdbcRepository implements Repository<Order, String> {
 //        instance1.save(order);
 //
 //        final List<Order> orderList = instance1.getAll();
-//        final String id = orderList.get(1).getId();
+//        final String id = orderList.get(0).getId();
 //        System.out.println("ID: " + id);
 //        System.out.println(orderList);
 //        System.out.println("---".repeat(20));

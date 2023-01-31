@@ -18,6 +18,9 @@ public class EngineJdbcRepository implements Repository<Engine, String> {
     private static EngineJdbcRepository instance;
 
     private EngineJdbcRepository() {
+        ConnectionPool.createCurrentConnection();
+        createTableInDB(ConnectionPool.getCurrentConnection());
+        ConnectionPool.commitAndClose();
     }
 
     public static EngineJdbcRepository getInstance() {
