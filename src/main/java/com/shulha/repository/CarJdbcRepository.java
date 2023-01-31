@@ -2,6 +2,7 @@ package com.shulha.repository;
 
 import com.shulha.annotation.Singleton;
 import com.shulha.model.*;
+import com.shulha.util.ConnectionPool;
 import com.shulha.util.JdbcManager;
 import lombok.SneakyThrows;
 
@@ -17,7 +18,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class CarJdbcRepository implements Repository<Car, String> {
     private static CarJdbcRepository instance;
     private final EngineJdbcRepository engineJdbcRepository;
-    private Connection connection;
 
     private CarJdbcRepository(final EngineJdbcRepository engineJdbcRepository) {
         this.engineJdbcRepository = engineJdbcRepository;
@@ -27,10 +27,6 @@ public class CarJdbcRepository implements Repository<Car, String> {
         instance = Optional.ofNullable(instance)
                 .orElseGet(() -> new CarJdbcRepository(EngineJdbcRepository.getInstance()));
         return instance;
-    }
-
-    protected void saveConnection(final Connection connection) {
-        this.connection = connection;
     }
 
     @SneakyThrows
@@ -54,10 +50,10 @@ public class CarJdbcRepository implements Repository<Car, String> {
                 "\"color\" VARCHAR(50) NOT NULL, " +
                 "\"count\" INTEGER NOT NULL, " +
                 "\"price\" INTEGER NOT NULL, " +
-                "\"engine_id\" VARCHAR(36) NOT NULL, " +
+                "\"engine_id\" VARCHAR(36), " +
                 "\"order_id\" VARCHAR(36), " +
-                "FOREIGN KEY (\"engine_id\") REFERENCES \"engines\"(\"id\"), " +
-                "FOREIGN KEY (\"order_id\") REFERENCES \"orders\"(\"id\")" +
+                "FOREIGN KEY (\"engine_id\") REFERENCES \"engines\"(\"id\") ON DELETE SET NULL, " +
+                "FOREIGN KEY (\"order_id\") REFERENCES \"orders\"(\"id\") ON DELETE SET NULL" +
                 ");";
 
         final Statement statement = connection.createStatement();
@@ -77,9 +73,34 @@ public class CarJdbcRepository implements Repository<Car, String> {
         }
     }
 
+    @SneakyThrows
     @Override
     public void delete(final String id) {
+        if (Objects.nonNull(id) && !id.isBlank()) {
+            final AtomicBoolean isConnectionCreated = new AtomicBoolean(false);
+            final Connection connection = ConnectionPool.checkAndGetConnection(isConnectionCreated);
 
+            final String deleteCarById = "DELETE FROM passenger_cars WHERE car_id = ?; " +
+                    "DELETE FROM trucks WHERE car_id = ?; " +
+                    "DELETE FROM cars WHERE id = ?;";
+
+            final PreparedStatement preparedStatement = connection.prepareStatement(deleteCarById);
+            preparedStatement.setString(1, id);
+            preparedStatement.setString(2, id);
+            preparedStatement.setString(3, id);
+
+            try {
+                preparedStatement.executeUpdate();
+                preparedStatement.close();
+            } finally {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null && isConnectionCreated.get()) {
+                    ConnectionPool.commitAndClose();
+                }
+            }
+        }
     }
 
     @SneakyThrows
@@ -89,17 +110,11 @@ public class CarJdbcRepository implements Repository<Car, String> {
         final Engine engine = car.getEngine();
         final String carId = car.getId();
 
-        connection = Optional.ofNullable(connection)
-                .orElseGet(() -> {
-                    isConnectionCreated.set(true);
-                    return JdbcManager.getConnection();
-                });
-        connection.setAutoCommit(false);
+        final Connection connection = ConnectionPool.checkAndGetConnection(isConnectionCreated);
 
-        engineJdbcRepository.saveConnection(connection);
         engineJdbcRepository.save(engine);
 
-        int count = checkIfCarExists(carId);
+        int count = checkIfCarExists(carId, connection);
 
         if (count == 0) {
             final String insertCar = "INSERT INTO \"cars\" (\"id\", \"type\", \"manufacturer\", \"color\", \"count\", " +
@@ -122,12 +137,11 @@ public class CarJdbcRepository implements Repository<Car, String> {
                 }
             }
 
-            saveCarFeaturesByType(car);
+            saveCarFeaturesByType(car, connection);
         }
 
         if (connection != null && isConnectionCreated.get()) {
-            connection.commit();
-            connection.close();
+            ConnectionPool.commitAndClose();
         }
     }
 
@@ -176,7 +190,7 @@ public class CarJdbcRepository implements Repository<Car, String> {
 //    }
 
     @SneakyThrows
-    private int checkIfCarExists(final String carId) {
+    private int checkIfCarExists(final String carId, final Connection connection) {
         final String checkCarExistenceSql = "SELECT COUNT(id) FROM \"cars\" WHERE cars.id = ?;";
         final PreparedStatement preparedStatement = connection.prepareStatement(checkCarExistenceSql);
 
@@ -200,7 +214,7 @@ public class CarJdbcRepository implements Repository<Car, String> {
     }
 
     @SneakyThrows
-    private void saveCarFeaturesByType(final Car car) {
+    private void saveCarFeaturesByType(final Car car, final Connection connection) {
         final PreparedStatement preparedStatement;
 
         if (car.getType() == CarTypes.CAR) {
@@ -247,9 +261,32 @@ public class CarJdbcRepository implements Repository<Car, String> {
         }
     }
 
+    @SneakyThrows
     @Override
     public void removeAll() {
+        final AtomicBoolean isConnectionCreated = new AtomicBoolean(false);
+        final Connection connection = ConnectionPool.checkAndGetConnection(isConnectionCreated);
 
+        final String deletePassengerCarParameters = "DELETE FROM passenger_cars;";
+        final String deleteTruckParameters = "DELETE FROM trucks;";
+        final String deleteCars = "DELETE FROM cars;";
+
+        final Statement statement = connection.createStatement();
+        statement.addBatch(deletePassengerCarParameters);
+        statement.addBatch(deleteTruckParameters);
+        statement.addBatch(deleteCars);
+
+        try {
+            statement.executeBatch();
+            statement.close();
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null && isConnectionCreated.get()) {
+                ConnectionPool.commitAndClose();
+            }
+        }
     }
 
     @SneakyThrows
@@ -258,13 +295,7 @@ public class CarJdbcRepository implements Repository<Car, String> {
         final List<Car> carList;
         final AtomicBoolean isConnectionCreated = new AtomicBoolean(false);
 
-        connection = Optional.ofNullable(connection)
-                .orElseGet(() -> {
-                    isConnectionCreated.set(true);
-                    return JdbcManager.getConnection();
-                });
-        connection.setAutoCommit(false);
-        engineJdbcRepository.saveConnection(connection);
+        final Connection connection = ConnectionPool.checkAndGetConnection(isConnectionCreated);
 
         final String sqlRequest = "SELECT cars.id AS \"car_id\", " +
                 "cars.type AS \"car_type\", " +
@@ -272,7 +303,7 @@ public class CarJdbcRepository implements Repository<Car, String> {
                 "cars.count AS \"car_count\", cars.price AS \"car_price\", pc.passenger_count, " +
                 "trucks.load_capacity, engines.id AS \"engine_id\" " +
                 "FROM \"cars\" " +
-                "JOIN \"engines\" ON cars.engine_id = engines.id " +
+                "LEFT JOIN \"engines\" ON cars.engine_id = engines.id " +
                 "LEFT JOIN \"passenger_cars\" AS \"pc\" ON cars.id = pc.car_id " +
                 "LEFT JOIN \"trucks\" ON cars.id = trucks.car_id;";
         final PreparedStatement preparedStatement = connection.prepareStatement(sqlRequest);
@@ -292,7 +323,7 @@ public class CarJdbcRepository implements Repository<Car, String> {
                 preparedStatement.close();
             }
             if (connection != null && isConnectionCreated.get()) {
-                connection.close();
+                ConnectionPool.shutDownCurrentConnection();
             }
         }
 
@@ -315,7 +346,6 @@ public class CarJdbcRepository implements Repository<Car, String> {
     private List<Car> mapToCar(final Map<String, List<Object>> carStringMap) {
         final List<Car> carList = new ArrayList<>();
         final Iterator<String> iterator = carStringMap.keySet().iterator();
-        final List<Engine> engineList = engineJdbcRepository.getAll();
         final Class<Car> carClass = Car.class;
         final Field fieldId = carClass.getDeclaredField("id");
 
@@ -335,10 +365,8 @@ public class CarJdbcRepository implements Repository<Car, String> {
             final int carCount = (int) carParametersList.get(4);
             final int carPrice = (int) carParametersList.get(5);
 
-            final Engine engine = engineList.stream()
-                    .filter(engine1 -> engine1.getId().equals(engineId))
-                    .findAny()
-                    .orElseThrow(NullPointerException::new);
+            final Engine engine = engineJdbcRepository.getById(engineId)
+                    .orElseGet(Engine::new);
 
             if (carType.equals(CarTypes.CAR)) {
                 final int passengerCount = (int) carParametersList.get(6);
@@ -394,13 +422,69 @@ public class CarJdbcRepository implements Repository<Car, String> {
         return carStringsMap;
     }
 
+    @SneakyThrows
     @Override
     public Optional<Car> getById(final String id) {
-        return Optional.empty();
+        Car car = null;
+
+        if (Objects.nonNull(id) && !id.isBlank()) {
+            final List<Car> carList;
+            final AtomicBoolean isConnectionCreated = new AtomicBoolean(false);
+
+            final Connection connection = ConnectionPool.checkAndGetConnection(isConnectionCreated);
+
+            final String sqlRequest = "SELECT cars.id AS \"car_id\", " +
+                    "cars.type AS \"car_type\", " +
+                    "cars.manufacturer AS \"car_manufacturer\", cars.color AS \"car_color\", " +
+                    "cars.count AS \"car_count\", cars.price AS \"car_price\", pc.passenger_count, " +
+                    "trucks.load_capacity, engines.id AS \"engine_id\" " +
+                    "FROM \"cars\" " +
+                    "LEFT JOIN \"engines\" ON cars.engine_id = engines.id " +
+                    "LEFT JOIN \"passenger_cars\" AS \"pc\" ON cars.id = pc.car_id " +
+                    "LEFT JOIN \"trucks\" ON cars.id = trucks.car_id " +
+                    "WHERE cars.id = ?;";
+            final PreparedStatement preparedStatement = connection.prepareStatement(sqlRequest);
+
+            preparedStatement.setString(1, id);
+
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            final Map<String, List<Object>> carStringMap = dbDataToStringMap(resultSet);
+
+            carList = mapToCar(carStringMap);
+
+            if (carList.size() == 1) {
+                car = carList.get(0);
+            }
+
+            try {
+                resultSet.close();
+                preparedStatement.close();
+            } finally {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null && isConnectionCreated.get()) {
+                    ConnectionPool.shutDownCurrentConnection();
+                }
+            }
+        }
+
+        return Optional.ofNullable(car);
     }
 
-    public static void main(String[] args) {
-        final CarJdbcRepository instance1 = CarJdbcRepository.getInstance();
-        System.out.println(instance1.getAll());
-    }
+//    public static void main(String[] args) {
+//        final CarJdbcRepository instance1 = CarJdbcRepository.getInstance();
+//        final List<Car> carList = instance1.getAll();
+//        final String id = carList.get(0).getId();
+//        System.out.println("ID: " + id);
+//        System.out.println(carList);
+//        System.out.println("---".repeat(20));
+//        instance1.delete(id);
+//        instance1.removeAll();
+//        System.out.println(instance1.getAll());
+//        System.out.println(instance1.getById(id));
+//    }
 }
