@@ -1,6 +1,5 @@
 package com.shulha.model;
 
-import com.shulha.repository.Repository;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -8,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.BiPredicate;
 
-public class Order implements Repository<Car, String> {
+public class Order {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     private static final BiPredicate<Car, String> CHECK_ID = (car, id) -> car.getId().equals(id);
     private final List<Car> cars = new ArrayList<>();
@@ -26,7 +25,6 @@ public class Order implements Repository<Car, String> {
         date = LocalDateTime.now();
     }
 
-    @Override
     public void delete(final String id) {
         cars.stream()
                 .dropWhile(Objects::isNull)
@@ -35,8 +33,7 @@ public class Order implements Repository<Car, String> {
                 .ifPresent(cars::remove);
     }
 
-    @Override
-    public void save(final Car car) {
+    public void saveCar(final Car car) {
         cars.stream()
                 .dropWhile(Objects::isNull)
                 .filter(checkingCar -> CHECK_ID.test(checkingCar, car.getId()))
@@ -47,18 +44,15 @@ public class Order implements Repository<Car, String> {
                 );
     }
 
-    @Override
-    public void removeAll() {
+    public void removeAllCars() {
         cars.clear();
     }
 
-    @Override
-    public List<Car> getAll() {
+    public List<Car> getAllCars() {
         return cars;
     }
 
-    @Override
-    public Optional<Car> getById(final String id) {
+    public Optional<Car> getCarsById(final String id) {
         return cars.stream()
                 .dropWhile(Objects::isNull)
                 .filter(checkingCar -> CHECK_ID.test(checkingCar, id))
@@ -80,6 +74,6 @@ public class Order implements Repository<Car, String> {
 
     @Override
     public String toString() {
-        return String.format("ORDER №%s%nDATE AND TIME: %s%nCARS: %s%n", id, date, cars);
+        return String.format("ORDER №%s%nDATE AND TIME: %s%nCARS: %s%n", id, date.format(DATE_TIME_FORMATTER), cars);
     }
 }

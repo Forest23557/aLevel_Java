@@ -88,7 +88,7 @@ public class OrderJdbcRepository implements Repository<Order, String> {
         final Connection connection = ConnectionPool.getCurrentConnection();
         final String orderId = order.getId();
         final Timestamp timestamp = Timestamp.valueOf(order.getDate());
-        final Iterator<Car> carIterator = order.getAll().iterator();
+        final Iterator<Car> carIterator = order.getAllCars().iterator();
 
         final int count = checkIfOrderExists(orderId, connection);
 
@@ -176,8 +176,7 @@ public class OrderJdbcRepository implements Repository<Order, String> {
         ConnectionPool.createCurrentConnection();
         final Connection connection = ConnectionPool.getCurrentConnection();
         final List<Order> orderList;
-        final Map<String, LocalDateTime> orderDataMap;
-        final Map<String, String> carOrderIdMap = new HashMap<>();
+        final Map<String, Set<Object>> orderDataMap;
 
         final String sqlRequest = "SELECT orders.id AS \"order_id\", orders.order_date_and_time, " +
                 "cars.id AS \"car_id\" " +
@@ -186,9 +185,9 @@ public class OrderJdbcRepository implements Repository<Order, String> {
         final PreparedStatement preparedStatement = connection.prepareStatement(sqlRequest);
         final ResultSet resultSet = preparedStatement.executeQuery();
 
-        orderDataMap = dbDataToMap(resultSet, carOrderIdMap);
+        orderDataMap = dbDataToMap(resultSet);
 
-        orderList = mapToOrder(orderDataMap, carOrderIdMap);
+        orderList = mapToOrder(orderDataMap);
 
         try {
             resultSet.close();
@@ -207,37 +206,28 @@ public class OrderJdbcRepository implements Repository<Order, String> {
     }
 
     @SneakyThrows
-    private List<Order> mapToOrder(final Map<String, LocalDateTime> orderDataMap,
-                                   final Map<String, String> carOrderIdMap) {
-
+    private List<Order> mapToOrder(final Map<String, Set<Object>> orderDataMap) {
         final List<Order> orderList = new ArrayList<>();
         final Iterator<String> iterator = orderDataMap.keySet().iterator();
         final Class<Order> orderClass = Order.class;
         final Field fieldId = orderClass.getDeclaredField("id");
         final Field date = orderClass.getDeclaredField("date");
-        final Map<String, Car> carMap;
 
         fieldId.setAccessible(true);
         date.setAccessible(true);
 
-        carMap = carJdbcRepository.carListToMap(carJdbcRepository.getAll());
-
         while (iterator.hasNext()) {
             final String orderId = iterator.next();
-            final LocalDateTime orderDateAndTime = orderDataMap.get(orderId);
+            final List<Object> objectList =
+                    new ArrayList<>(orderDataMap.get(orderId));
+            final LocalDateTime orderDateAndTime =
+                    (LocalDateTime) objectList.remove(0);
             final Order order = new Order();
 
             fieldId.set(order, orderId);
             date.set(order, orderDateAndTime);
 
-            carOrderIdMap.entrySet()
-                    .stream()
-                    .filter(entry -> entry.getValue().equals(orderId))
-                    .map(Map.Entry::getKey)
-                    .forEach(carId -> {
-                        final Car car = carMap.get(carId);
-                        order.save(car);
-                    });
+            objectList.forEach(car -> order.saveCar((Car) car));
 
             orderList.add(order);
         }
@@ -246,18 +236,24 @@ public class OrderJdbcRepository implements Repository<Order, String> {
     }
 
     @SneakyThrows
-    private Map<String, LocalDateTime> dbDataToMap(final ResultSet resultSet, final Map<String, String> carOrderIdMap) {
-        final Map<String, LocalDateTime> orderDataMap = new HashMap<>();
+    private Map<String, Set<Object>> dbDataToMap(final ResultSet resultSet) {
+        final Map<String, Set<Object>> orderDataMap = new HashMap<>();
 
         while (resultSet.next()) {
             final String orderId = resultSet.getString("order_id");
             final LocalDateTime orderDateAndTime = resultSet.getTimestamp("order_date_and_time")
                     .toLocalDateTime();
             final String carId = resultSet.getString("car_id");
-            orderDataMap.putIfAbsent(orderId, orderDateAndTime);
+            orderDataMap.putIfAbsent(orderId, new LinkedHashSet<>());
+            orderDataMap.get(orderId)
+                    .add(orderDateAndTime);
 
-            if (Objects.nonNull(carId)) {
-                carOrderIdMap.putIfAbsent(carId, orderId);
+            if (Objects.nonNull(carId) && !carId.isBlank()) {
+                carJdbcRepository.getById(carId)
+                                .ifPresent(car -> {
+                                    orderDataMap.get(orderId)
+                                            .add(car);
+                                });
             }
         }
 
@@ -271,8 +267,7 @@ public class OrderJdbcRepository implements Repository<Order, String> {
 
         if (Objects.nonNull(id) && !id.isBlank()) {
             final List<Order> orderList;
-            final Map<String, LocalDateTime> orderDataMap;
-            final Map<String, String> carOrderIdMap = new HashMap<>();
+            final Map<String, Set<Object>> orderDataMap;
             ConnectionPool.createCurrentConnection();
             final Connection connection = ConnectionPool.getCurrentConnection();
 
@@ -286,9 +281,9 @@ public class OrderJdbcRepository implements Repository<Order, String> {
 
             final ResultSet resultSet = preparedStatement.executeQuery();
 
-            orderDataMap = dbDataToMap(resultSet, carOrderIdMap);
+            orderDataMap = dbDataToMap(resultSet);
 
-            orderList = mapToOrder(orderDataMap, carOrderIdMap);
+            orderList = mapToOrder(orderDataMap);
 
             if (orderList.size() == 1) {
                 order = orderList.get(0);
@@ -315,8 +310,8 @@ public class OrderJdbcRepository implements Repository<Order, String> {
 //    public static void main(String[] args) {
 //        final OrderJdbcRepository instance1 = OrderJdbcRepository.getInstance();
 //        final Order order = new Order();
-//        order.save(new Truck());
-//        order.save(new PassengerCar());
+//        order.saveCar(new Truck());
+//        order.saveCar(new PassengerCar());
 //        instance1.save(order);
 //
 //        final List<Order> orderList = instance1.getAll();
