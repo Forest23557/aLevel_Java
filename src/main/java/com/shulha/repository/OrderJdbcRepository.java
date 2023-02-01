@@ -179,10 +179,18 @@ public class OrderJdbcRepository implements Repository<Order, String> {
         final Map<String, Set<Object>> orderDataMap;
 
         final String sqlRequest = "SELECT orders.id AS \"order_id\", orders.order_date_and_time, " +
-                "cars.id AS \"car_id\" " +
+                "cars.id AS \"car_id\", cars.type AS \"car_type\", " +
+                "cars.manufacturer AS \"car_manufacturer\", cars.color AS \"car_color\", " +
+                "cars.count AS \"car_count\", cars.price AS \"car_price\", pc.passenger_count, " +
+                "trucks.load_capacity, engines.id AS \"engine_id\", engines.type AS \"engine_type\", " +
+                "engines.power AS \"engine_power\" " +
                 "FROM \"orders\" " +
-                "LEFT JOIN \"cars\" ON orders.id = cars.order_id;";
-        final PreparedStatement preparedStatement = connection.prepareStatement(sqlRequest);
+                "LEFT JOIN \"cars\" ON orders.id = cars.order_id " +
+                "LEFT JOIN \"engines\" ON cars.engine_id = engines.id " +
+                "LEFT JOIN \"passenger_cars\" AS \"pc\" ON cars.id = pc.car_id " +
+                "LEFT JOIN \"trucks\" ON cars.id = trucks.car_id;";
+        final PreparedStatement preparedStatement =
+                connection.prepareStatement(sqlRequest, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         final ResultSet resultSet = preparedStatement.executeQuery();
 
         orderDataMap = dbDataToMap(resultSet);
@@ -238,22 +246,24 @@ public class OrderJdbcRepository implements Repository<Order, String> {
     @SneakyThrows
     private Map<String, Set<Object>> dbDataToMap(final ResultSet resultSet) {
         final Map<String, Set<Object>> orderDataMap = new HashMap<>();
+        final Map<String, List<Object>> dataToStringMap = carJdbcRepository.dbDataToStringMap(resultSet);
+
+        resultSet.beforeFirst();
 
         while (resultSet.next()) {
             final String orderId = resultSet.getString("order_id");
             final LocalDateTime orderDateAndTime = resultSet.getTimestamp("order_date_and_time")
                     .toLocalDateTime();
             final String carId = resultSet.getString("car_id");
+
             orderDataMap.putIfAbsent(orderId, new LinkedHashSet<>());
             orderDataMap.get(orderId)
                     .add(orderDateAndTime);
 
             if (Objects.nonNull(carId) && !carId.isBlank()) {
-                carJdbcRepository.getById(carId)
-                                .ifPresent(car -> {
-                                    orderDataMap.get(orderId)
-                                            .add(car);
-                                });
+                final Car car = carJdbcRepository.getCarFromMapById(carId, dataToStringMap);
+                orderDataMap.get(orderId)
+                        .add(car);
             }
         }
 
@@ -272,11 +282,19 @@ public class OrderJdbcRepository implements Repository<Order, String> {
             final Connection connection = ConnectionPool.getCurrentConnection();
 
             final String sqlRequest = "SELECT orders.id AS \"order_id\", orders.order_date_and_time, " +
-                    "cars.id AS \"car_id\" " +
+                    "cars.id AS \"car_id\", cars.type AS \"car_type\", " +
+                    "cars.manufacturer AS \"car_manufacturer\", cars.color AS \"car_color\", " +
+                    "cars.count AS \"car_count\", cars.price AS \"car_price\", pc.passenger_count, " +
+                    "trucks.load_capacity, engines.id AS \"engine_id\", engines.type AS \"engine_type\", " +
+                    "engines.power AS \"engine_power\" " +
                     "FROM \"orders\" " +
-                    "JOIN \"cars\" ON orders.id = cars.order_id " +
+                    "LEFT JOIN \"cars\" ON orders.id = cars.order_id " +
+                    "LEFT JOIN \"engines\" ON cars.engine_id = engines.id " +
+                    "LEFT JOIN \"passenger_cars\" AS \"pc\" ON cars.id = pc.car_id " +
+                    "LEFT JOIN \"trucks\" ON cars.id = trucks.car_id " +
                     "WHERE orders.id = ?;";
-            final PreparedStatement preparedStatement = connection.prepareStatement(sqlRequest);
+            final PreparedStatement preparedStatement =
+                    connection.prepareStatement(sqlRequest, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             preparedStatement.setString(1, id);
 
             final ResultSet resultSet = preparedStatement.executeQuery();

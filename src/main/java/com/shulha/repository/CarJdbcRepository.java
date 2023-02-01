@@ -330,7 +330,46 @@ public class CarJdbcRepository implements Repository<Car, String> {
     }
 
     @SneakyThrows
-    private List<Car> mapToCar(final Map<String, List<Object>> carStringMap) {
+    protected Car getCarFromMapById(final String carId, final Map<String, List<Object>> carStringMap) {
+        final Class<Car> carClass = Car.class;
+        final Field fieldId = carClass.getDeclaredField("id");
+
+        fieldId.setAccessible(true);
+
+        final Car car;
+        final List<Object> carParametersList = carStringMap.get(carId);
+        final String engineId = (String) carParametersList.get(0);
+        final CarTypes carType =
+                Enum.valueOf(CarTypes.class, (String) carParametersList.get(1));
+        final CarManufacturers carManufacturer =
+                Enum.valueOf(CarManufacturers.class, (String) carParametersList.get(2));
+        final CarColors carColor =
+                Enum.valueOf(CarColors.class, (String) carParametersList.get(3));
+        final int carCount = (int) carParametersList.get(4);
+        final int carPrice = (int) carParametersList.get(5);
+
+        final Engine engine = engineJdbcRepository.getById(engineId)
+                .orElseGet(Engine::new);
+
+        if (carType.equals(CarTypes.CAR)) {
+            final int passengerCount = (int) carParametersList.get(6);
+            final PassengerCar passengerCar = new PassengerCar(carManufacturer, engine, carColor, passengerCount);
+            car = passengerCar;
+        } else {
+            final int loadCapacity = (int) carParametersList.get(6);
+            final Truck truck = new Truck(carManufacturer, engine, carColor, loadCapacity);
+            car = truck;
+        }
+
+        car.setCount(carCount);
+        car.setPrice(carPrice);
+        fieldId.set(car, carId);
+
+        return car;
+    }
+
+    @SneakyThrows
+    protected List<Car> mapToCar(final Map<String, List<Object>> carStringMap) {
         final List<Car> carList = new ArrayList<>();
         final Iterator<String> iterator = carStringMap.keySet().iterator();
         final Class<Car> carClass = Car.class;
@@ -379,9 +418,12 @@ public class CarJdbcRepository implements Repository<Car, String> {
         final Map<String, List<Object>> carStringsMap = new HashMap<>();
 
         while (resultSet.next()) {
+            final String carId = resultSet.getString("car_id");
+
+            if (Objects.isNull(carId)) continue;
+
             final List<Object> carParametersList = new ArrayList<>();
             final String engineId = resultSet.getString("engine_id");
-            final String carId = resultSet.getString("car_id");
             final String type = resultSet.getString("car_type");
             final String carManufacturer = resultSet.getString("car_manufacturer");
             final String carColor = resultSet.getString("car_color");
