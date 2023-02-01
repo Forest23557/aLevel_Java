@@ -329,18 +329,6 @@ public class CarJdbcRepository implements Repository<Car, String> {
         return carList;
     }
 
-    protected Map<String, Car> carListToMap(final List<Car> carList) {
-        final Map<String, Car> carMap = new HashMap<>();
-        final Iterator<Car> carIterator = carList.iterator();
-
-        while (carIterator.hasNext()) {
-            final Car car = carIterator.next();
-            carMap.put(car.getId(), car);
-        }
-
-        return carMap;
-    }
-
     @SneakyThrows
     private List<Car> mapToCar(final Map<String, List<Object>> carStringMap) {
         final List<Car> carList = new ArrayList<>();
