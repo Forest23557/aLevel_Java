@@ -52,8 +52,8 @@ public class CarMapRepository implements Repository<Car, String> {
     }
 
     @Override
-    public Car[] getAll() {
-        return CARS.values().toArray(new Car[0]);
+    public List<Car> getAll() {
+        return Arrays.asList(CARS.values().toArray(new Car[0]));
     }
 
     @Override

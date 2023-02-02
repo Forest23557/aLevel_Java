@@ -3,14 +3,16 @@ package com.shulha.action;
 import com.shulha.model.Car;
 import com.shulha.model.CarTypes;
 
+import java.util.List;
+
 public class CompareAction implements Action {
     @Override
     public void execute() {
         CAR_SERVICE.createCar(5, CarTypes.CAR);
-        final Car[] all = CAR_SERVICE.getAll();
-        for (int i = 0; i < all.length - 1; i++) {
-            Car currentCar = all[i];
-            Car nextCar = all[i + 1];
+        final List<Car> all = CAR_SERVICE.getAll();
+        for (int i = 0; i < all.size() - 1; i++) {
+            Car currentCar = all.get(i);
+            Car nextCar = all.get(i + 1);
             final int compare = CAR_SERVICE.compareCar(currentCar, nextCar);
             System.out.println("Current car: " + currentCar.getId());
             System.out.println("Next car: " + nextCar.getId());

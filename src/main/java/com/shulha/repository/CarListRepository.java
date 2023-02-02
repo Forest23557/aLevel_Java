@@ -53,8 +53,8 @@ public class CarListRepository implements Repository<Car, String> {
     }
 
     @Override
-    public Car[] getAll() {
-        return CARS.toArray(new Car[0]);
+    public List<Car> getAll() {
+        return CARS;
     }
 
     @Override

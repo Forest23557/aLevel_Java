@@ -36,7 +36,7 @@ public class CarService {
         return instance;
     }
 
-    @Autowired(set = RepositoryTypes.CAR_MAP_REPOSITORY)
+    @Autowired(set = CarMapRepository.class)
     public static CarService getInstance(final Repository<Car, String> repository) {
         instance = Optional
                 .ofNullable(instance)
@@ -123,7 +123,7 @@ public class CarService {
         return mapToObject(mapCar);
     }
 
-    public <T extends Car> void findManufacturerByPrice(final T[] cars, final int lowerBoundOfPrice) {
+    public <T extends Car> void findManufacturerByPrice(final List<T> cars, final int lowerBoundOfPrice) {
         Optional.ofNullable(cars)
                 .orElseThrow(NullPointerException::new);
         if (lowerBoundOfPrice <= 0) {
@@ -133,18 +133,18 @@ public class CarService {
         final Predicate<Car> pricePredicate = car -> car.getPrice() > lowerBoundOfPrice;
 
         System.out.printf("Manufacturers whose cars cost more than %d$: %n", lowerBoundOfPrice);
-        Arrays.asList(cars)
+        cars
                 .stream()
                 .filter(pricePredicate)
                 .map(car -> car.getManufacturer())
                 .forEach(System.out::println);
     }
 
-    public <T extends Car> int countSum(final T[] cars) {
+    public <T extends Car> int countSum(final List<T> cars) {
         Optional.ofNullable(cars)
                 .orElseThrow(NullPointerException::new);
 
-        final Integer carCount = Arrays.asList(cars)
+        final Integer carCount = cars
                 .stream()
                 .map(car -> car.getCount())
                 .reduce(0, (sum, next) -> sum + next);
@@ -152,14 +152,14 @@ public class CarService {
         return carCount;
     }
 
-    public <T extends Car> Map<String, CarTypes> mapToMap(final T[] cars) {
+    public <T extends Car> Map<String, CarTypes> mapToMap(final List<T> cars) {
         Optional.ofNullable(cars)
                 .orElseThrow(NullPointerException::new);
 
         final Comparator<T> comparator = (firstCar, secondCar) -> firstCar.getManufacturer()
                 .compareTo(secondCar.getManufacturer());
 
-        Map<String, CarTypes> sortedCarMap = Arrays.asList(cars)
+        Map<String, CarTypes> sortedCarMap = cars
                 .stream()
                 .sorted(comparator)
                 .distinct()
@@ -169,11 +169,11 @@ public class CarService {
         return sortedCarMap;
     }
 
-    public <T extends Car> IntSummaryStatistics statistic(final T[] cars) {
+    public <T extends Car> IntSummaryStatistics statistic(final List<T> cars) {
         Optional.ofNullable(cars)
                 .orElseThrow(NullPointerException::new);
 
-        final IntSummaryStatistics statistics = Arrays.asList(cars)
+        final IntSummaryStatistics statistics = cars
                 .stream()
                 .mapToInt(Car::getPrice)
                 .summaryStatistics();
@@ -185,7 +185,7 @@ public class CarService {
         return statistics;
     }
 
-    public <T extends Car> boolean checkPrice(final T[] cars, final int lowerBoundOfPrice) {
+    public <T extends Car> boolean checkPrice(final List<T> cars, final int lowerBoundOfPrice) {
         Optional.ofNullable(cars)
                 .orElseThrow(NullPointerException::new);
         if (lowerBoundOfPrice <= 0) {
@@ -194,7 +194,7 @@ public class CarService {
 
         final Predicate<Car> pricePredicate = car -> car.getPrice() > lowerBoundOfPrice;
 
-        final boolean answer = Arrays.asList(cars)
+        final boolean answer = cars
                 .stream()
                 .allMatch(pricePredicate);
 
@@ -263,7 +263,7 @@ public class CarService {
         return colorMap;
     }
 
-    public <T extends Car> Map<CarManufacturers, Integer> getManufacturersMap(final T[] cars) {
+    public <T extends Car> Map<CarManufacturers, Integer> getManufacturersMap(final List<T> cars) {
         Optional.ofNullable(cars)
                 .orElseThrow(() -> new NullPointerException("Our repository is empty!"));
 
@@ -277,7 +277,7 @@ public class CarService {
         return carsManufacturersMap;
     }
 
-    public <T extends Car> Map<Engine, List<T>> getEnginesMap(final T[] cars) {
+    public <T extends Car> Map<Engine, List<T>> getEnginesMap(final List<T> cars) {
         Optional.ofNullable(cars)
                 .orElseThrow(() -> new NullPointerException("Our repository is empty!"));
 
@@ -408,7 +408,7 @@ public class CarService {
         return RANDOM.nextInt(100) + 1;
     }
 
-    public <T extends Car> void setRandomCount(final T[] cars) {
+    public <T extends Car> void setRandomCount(final List<T> cars) {
         if (Optional.ofNullable(cars).isPresent()) {
             for (T car : cars) {
                 car.setCount(getRandomCountOfCars());
@@ -453,19 +453,19 @@ public class CarService {
 
     //  tested
     public void printAll() {
-        final Car[] allCars = carRepository.getAll();
+        final List<Car> allCars = carRepository.getAll();
 
         if (allCars == null) {
             return;
         }
 
-        for (int i = 0; i < allCars.length; i++) {
-            System.out.println(allCars[i]);
+        for (int i = 0; i < allCars.size(); i++) {
+            System.out.println(allCars.get(i));
         }
     }
 
     //  tested
-    public Car[] getAll() {
+    public List<Car> getAll() {
         return carRepository.getAll();
     }
 

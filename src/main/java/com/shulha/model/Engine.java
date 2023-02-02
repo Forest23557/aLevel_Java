@@ -3,9 +3,11 @@ package com.shulha.model;
 import lombok.Getter;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 public class Engine {
+    private final String id;
     private int power;
     private EngineTypes type;
 
@@ -14,6 +16,7 @@ public class Engine {
     }
 
     public Engine(int power, EngineTypes type) {
+        this.id = UUID.randomUUID().toString();
         if(power < 0 || power > 1000) {
             return;
         }
@@ -44,16 +47,17 @@ public class Engine {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Engine engine = (Engine) o;
-        return power == engine.power && type == engine.type;
+        return Objects.equals(id, engine.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(power, type);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
-        return String.format("the power of the engine - %s hp, the type of the engine - %s", power, type);
+        return String.format("engine id - %s, engine power - %s hp, engine type - %s",
+                id, power, type);
     }
 }

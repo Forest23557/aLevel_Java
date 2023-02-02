@@ -5,6 +5,7 @@ import com.shulha.model.CarTypes;
 import com.shulha.util.UserInput;
 import lombok.SneakyThrows;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -22,10 +23,10 @@ public class FindAction implements Action {
             final String id = UserInput.find("Write ID of your car: ", "You wrote an empty line!");
             optionalCar = CAR_SERVICE.find(id);
         } else {
-            final Car[] cars = Optional.ofNullable(CAR_SERVICE.getAll())
+            final List<Car> cars = Optional.ofNullable(CAR_SERVICE.getAll())
                     .orElseThrow(
                             () -> new NullPointerException("You haven't created any cars! Our repository is empty!"));
-            optionalCar = Optional.ofNullable(cars[RANDOM.nextInt(cars.length)]);
+            optionalCar = Optional.ofNullable(cars.get(RANDOM.nextInt(cars.size())));
         }
 
         optionalCar.ifPresentOrElse(
