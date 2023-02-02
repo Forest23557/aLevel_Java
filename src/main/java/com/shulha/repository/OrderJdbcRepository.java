@@ -324,22 +324,22 @@ public class OrderJdbcRepository implements Repository<Order, String> {
         return Optional.ofNullable(order);
     }
 
-    @SneakyThrows
-    public static void main(String[] args) {
-        final OrderJdbcRepository instance1 = OrderJdbcRepository.getInstance();
-        final Order order = new Order();
-        order.getCars().add(new Truck());
-        order.getCars().add(new PassengerCar());
-        instance1.save(order);
-
-        final List<Order> orderList = instance1.getAll();
-        final String id = orderList.get(0).getId();
-        System.out.println("ID: " + id);
-        System.out.println(orderList);
-        System.out.println("---".repeat(20));
-        instance1.removeAll();
-        instance1.delete(id);
-        System.out.println(instance1.getAll());
-        System.out.println(instance1.getById(id));
-    }
+//    @SneakyThrows
+//    public static void main(String[] args) {
+//        final OrderJdbcRepository instance1 = OrderJdbcRepository.getInstance();
+//        final Order order = new Order();
+//        order.getCars().add(new Truck());
+//        order.getCars().add(new PassengerCar());
+//        instance1.save(order);
+//
+//        final List<Order> orderList = instance1.getAll();
+//        final String id = orderList.get(0).getId();
+//        System.out.println("ID: " + id);
+//        System.out.println(orderList);
+//        System.out.println("---".repeat(20));
+//        instance1.removeAll();
+//        instance1.delete(id);
+//        System.out.println(instance1.getAll());
+//        System.out.println(instance1.getById(id));
+//    }
 }
