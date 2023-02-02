@@ -3,21 +3,32 @@ package com.shulha.model;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.*;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
 @Setter
 @Getter
+@Entity
+@Table(name = "car")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Car implements CountRestore, Cloneable {
     private final static Random RANDOM = new Random();
     private final static int UPPER_BOUND = 99_001;
-
-    private final String id;
+    @Id
+    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "car_id")
+    private String id;
+    @Column(name = "car_type")
     @Setter(AccessLevel.PROTECTED)
     private CarTypes type;
     private CarManufacturers manufacturer;
+    @OneToOne
+    @JoinColumn(name = "engine_id")
     private Engine engine;
     private CarColors color;
     @Setter(AccessLevel.NONE)
@@ -32,7 +43,7 @@ public abstract class Car implements CountRestore, Cloneable {
     public Car(final CarManufacturers manufacturer, final Engine engine, final CarColors color) {
         count = 1;
         price = RANDOM.nextInt(UPPER_BOUND + 1_000);
-        this.id = UUID.randomUUID().toString();
+//        this.id = UUID.randomUUID().toString();
 
         if (manufacturer == null) {
             this.manufacturer = CarManufacturers.AUDI;

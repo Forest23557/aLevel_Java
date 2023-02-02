@@ -2,11 +2,15 @@ package com.shulha.model;
 
 import lombok.Getter;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import java.util.Random;
 
 @Getter
+@Entity
 public class Truck extends Car {
     private static final Random RANDOM = new Random();
+    @Column(name = "load_capacity")
     private int loadCapacity;
 
     public Truck() {

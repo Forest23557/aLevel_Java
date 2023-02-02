@@ -1,14 +1,24 @@
 package com.shulha.model;
 
 import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
 
 @Getter
+@Entity
 public class Engine {
-    private final String id;
+    @Setter
+    @Id
+    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "engine_id")
+    private String id;
     private int power;
+    @Column(name = "engine_type")
     private EngineTypes type;
 
     public Engine() {
@@ -16,7 +26,7 @@ public class Engine {
     }
 
     public Engine(int power, EngineTypes type) {
-        this.id = UUID.randomUUID().toString();
+//        this.id = UUID.randomUUID().toString();
         if(power < 0 || power > 1000) {
             return;
         }
