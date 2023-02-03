@@ -19,15 +19,15 @@ public abstract class Car implements CountRestore, Cloneable {
     private final static Random RANDOM = new Random();
     private final static int UPPER_BOUND = 99_001;
     @Id
-    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+//    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "car_id")
     private String id;
     @Column(name = "car_type")
     @Setter(AccessLevel.PROTECTED)
     private CarTypes type;
     private CarManufacturers manufacturer;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "engine_id")
     private Engine engine;
     private CarColors color;
@@ -43,7 +43,7 @@ public abstract class Car implements CountRestore, Cloneable {
     public Car(final CarManufacturers manufacturer, final Engine engine, final CarColors color) {
         count = 1;
         price = RANDOM.nextInt(UPPER_BOUND + 1_000);
-//        this.id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString();
 
         if (manufacturer == null) {
             this.manufacturer = CarManufacturers.AUDI;

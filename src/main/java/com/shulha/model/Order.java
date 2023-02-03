@@ -17,22 +17,19 @@ import java.util.*;
 public class Order {
     @Getter(AccessLevel.NONE)
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "car_id")
-    )
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
     private List<Car> cars = new ArrayList<>();
     @Id
-    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+//    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "order_id")
     private String id;
     private LocalDateTime date;
 
     public Order() {
         setDateNow();
-//        id = UUID.randomUUID().toString();
+        id = UUID.randomUUID().toString();
     }
 
     private void setDateNow() {

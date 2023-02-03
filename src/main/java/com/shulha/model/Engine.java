@@ -13,8 +13,8 @@ import java.util.UUID;
 public class Engine {
     @Setter
     @Id
-    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+//    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "engine_id")
     private String id;
     private int power;
@@ -26,7 +26,7 @@ public class Engine {
     }
 
     public Engine(int power, EngineTypes type) {
-//        this.id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString();
         if(power < 0 || power > 1000) {
             return;
         }

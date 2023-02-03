@@ -2,7 +2,7 @@ package com.shulha.repository;
 
 import com.shulha.annotation.Singleton;
 import com.shulha.config.HibernateFactoryUtil;
-import com.shulha.model.*;
+import com.shulha.model.Car;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -10,33 +10,33 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Singleton
-public class OrderHibernateRepository implements Repository<Order, String> {
+public class CarHibernateRepository implements Repository<Car, String> {
     private static final EntityManager ENTITY_MANAGER = HibernateFactoryUtil.getEntityManager();
-    private static OrderHibernateRepository instance;
+    private static CarHibernateRepository instance;
 
-    private OrderHibernateRepository() {
+    private CarHibernateRepository() {
     }
 
-    public static OrderHibernateRepository getInstance() {
+    public static CarHibernateRepository getInstance() {
         instance = Optional.ofNullable(instance)
-                .orElseGet(() -> new OrderHibernateRepository());
+                .orElseGet(CarHibernateRepository::new);
         return instance;
     }
 
     @Override
     public void delete(final String id) {
-        getById(id).ifPresent(order -> {
+        getById(id).ifPresent(car -> {
             ENTITY_MANAGER.getTransaction().begin();
-            ENTITY_MANAGER.remove(order);
+            ENTITY_MANAGER.remove(car);
             ENTITY_MANAGER.getTransaction().commit();
         });
     }
 
     @Override
-    public void save(final Order order) {
-        if (Objects.nonNull(order)) {
+    public void save(final Car car) {
+        if (Objects.nonNull(car)) {
             ENTITY_MANAGER.getTransaction().begin();
-            ENTITY_MANAGER.persist(order);
+            ENTITY_MANAGER.persist(car);
             ENTITY_MANAGER.flush();
             ENTITY_MANAGER.getTransaction().commit();
         }
@@ -48,26 +48,25 @@ public class OrderHibernateRepository implements Repository<Order, String> {
         ENTITY_MANAGER.createNativeQuery("DELETE FROM passenger_car; " +
                         "DELETE FROM truck; " +
                         "DELETE FROM car; " +
-                        "DELETE FROM engine; " +
-                        "DELETE FROM our_order")
+                        "DELETE FROM engine")
                 .executeUpdate();
         ENTITY_MANAGER.getTransaction().commit();
     }
 
     @Override
-    public List<Order> getAll() {
-        return ENTITY_MANAGER.createQuery("select o from Order o", Order.class)
+    public List<Car> getAll() {
+        return ENTITY_MANAGER.createQuery("select c from Car c", Car.class)
                 .getResultList();
     }
 
     @Override
-    public Optional<Order> getById(final String id) {
-        Order order = null;
+    public Optional<Car> getById(final String id) {
+        Car car = null;
 
         if (Objects.nonNull(id) && !id.isBlank()) {
-            order = ENTITY_MANAGER.find(Order.class, id);
+            car = ENTITY_MANAGER.find(Car.class, id);
         }
 
-        return Optional.ofNullable(order);
+        return Optional.ofNullable(car);
     }
 }
