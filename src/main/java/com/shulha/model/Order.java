@@ -3,6 +3,8 @@ package com.shulha.model;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -19,6 +21,7 @@ public class Order {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
+    @Fetch(FetchMode.SUBSELECT)
     private List<Car> cars = new ArrayList<>();
     @Id
 //    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "UUID")

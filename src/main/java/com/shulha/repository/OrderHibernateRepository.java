@@ -5,9 +5,7 @@ import com.shulha.config.HibernateFactoryUtil;
 import com.shulha.model.*;
 
 import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Singleton
 public class OrderHibernateRepository implements Repository<Order, String> {
@@ -70,4 +68,27 @@ public class OrderHibernateRepository implements Repository<Order, String> {
 
         return Optional.ofNullable(order);
     }
+
+//    public static void main(String[] args) {
+//        final OrderHibernateRepository instance1 = OrderHibernateRepository.getInstance();
+//        final List<Order> orderList = new LinkedList<>();
+//        for (int i = 0; i < 1000; i++) {
+//            final Order order = new Order();
+//            final PassengerCar passengerCar = new PassengerCar();
+//            final Truck truck = new Truck();
+//            order.getCars().add(passengerCar);
+//            order.getCars().add(truck);
+//            orderList.add(order);
+//        }
+//
+//        orderList.forEach(order -> instance1.save(order));
+//        System.out.println(instance1.getAll());
+//
+//        for (int i = 0; i < 1000; i++) {
+//            final Car car = instance1.getAll().get(i).getCars().get(0);
+//            final Car car1 = instance1.getAll().get(i).getCars().get(1);
+//            System.out.println(car);
+//            System.out.println(car1);
+//        }
+//    }
 }
