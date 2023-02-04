@@ -3,6 +3,8 @@ package com.shulha.model;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -29,6 +31,7 @@ public abstract class Car implements CountRestore, Cloneable {
     private CarManufacturers manufacturer;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "engine_id")
+    @Fetch(FetchMode.JOIN)
     private Engine engine;
     private CarColors color;
     @Setter(AccessLevel.NONE)
