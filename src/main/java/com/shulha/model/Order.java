@@ -3,18 +3,31 @@ package com.shulha.model;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Getter
 @Setter
+@Entity
+@Table(name = "our_order")
 public class Order {
     @Getter(AccessLevel.NONE)
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-    private final List<Car> cars = new ArrayList<>();
-    private final String id;
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Car> cars = new ArrayList<>();
+    @Id
+//    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "order_id")
+    private String id;
     private LocalDateTime date;
 
     public Order() {

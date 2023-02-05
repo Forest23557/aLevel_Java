@@ -3,21 +3,35 @@ package com.shulha.model;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.*;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
 @Setter
 @Getter
+@Entity
+@Table(name = "car")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Car implements CountRestore, Cloneable {
     private final static Random RANDOM = new Random();
     private final static int UPPER_BOUND = 99_001;
-
-    private final String id;
+    @Id
+//    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "car_id")
+    private String id;
+    @Column(name = "car_type")
     @Setter(AccessLevel.PROTECTED)
     private CarTypes type;
     private CarManufacturers manufacturer;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "engine_id")
+    @Fetch(FetchMode.JOIN)
     private Engine engine;
     private CarColors color;
     @Setter(AccessLevel.NONE)

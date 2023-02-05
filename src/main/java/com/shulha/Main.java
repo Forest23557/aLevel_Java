@@ -1,6 +1,7 @@
 package com.shulha;
 
 import com.shulha.action.Actions;
+import com.shulha.config.HibernateFactoryUtil;
 import com.shulha.util.AnnotationProcessor;
 import com.shulha.util.UserInput;
 import lombok.SneakyThrows;
