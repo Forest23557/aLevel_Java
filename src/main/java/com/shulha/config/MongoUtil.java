@@ -27,13 +27,13 @@ public class MongoUtil {
     }
 
     private static MongoClient getMongoClient(final MongoCredential credential) {
-        if (Objects.nonNull(mongoClient)) return mongoClient;
+        if (Objects.isNull(mongoClient)) {
+            final MongoClientOptions.Builder options = MongoClientOptions.builder();
 
-        final MongoClientOptions.Builder options = MongoClientOptions.builder();
-
-        mongoClient = Objects.isNull(credential)
-                ? new MongoClient("localhost", 27017)
-                : new MongoClient(new ServerAddress("localhost", 27017), credential, options.build());
+            mongoClient = Objects.isNull(credential)
+                    ? new MongoClient("localhost", 27017)
+                    : new MongoClient(new ServerAddress("localhost", 27017), credential, options.build());
+        }
 
         return mongoClient;
     }
