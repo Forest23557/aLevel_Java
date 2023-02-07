@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.shulha.annotation.Singleton;
 import com.shulha.config.MongoUtil;
 import com.shulha.model.Engine;
 import org.bson.Document;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Singleton
 public class EngineMongoRepository implements Repository<Engine, String> {
     private static MongoDatabase mongoDatabase = MongoUtil.connect("mongodb");
     private static MongoCollection<Document> mongoDatabaseCollectionEngines = mongoDatabase.getCollection("engine");

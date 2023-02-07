@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonReader;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.shulha.annotation.Singleton;
 import com.shulha.config.MongoUtil;
 import com.shulha.model.*;
 import com.shulha.util.CarGsonDeserializer;
@@ -15,6 +16,7 @@ import org.bson.Document;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Singleton
 public class OrderMongoRepository implements Repository<Order, String> {
     private static MongoDatabase mongoDatabase = MongoUtil.connect("mongodb");
     private static MongoCollection<Document> mongoDatabaseCollectionOrders = mongoDatabase.getCollection("order");

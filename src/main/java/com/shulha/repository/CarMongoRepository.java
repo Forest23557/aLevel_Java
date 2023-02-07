@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.shulha.annotation.Singleton;
 import com.shulha.config.MongoUtil;
 import com.shulha.model.*;
 import com.shulha.util.CarGsonDeserializer;
@@ -17,6 +18,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Singleton
 public class CarMongoRepository implements Repository<Car, String> {
     private static MongoDatabase mongoDatabase = MongoUtil.connect("mongodb");
     private static MongoCollection<Document> mongoDatabaseCollectionCars = mongoDatabase.getCollection("car");
