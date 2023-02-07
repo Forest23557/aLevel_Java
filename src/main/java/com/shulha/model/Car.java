@@ -1,5 +1,6 @@
 package com.shulha.model;
 
+import com.google.gson.annotations.Expose;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,22 +21,28 @@ import java.util.UUID;
 public abstract class Car implements CountRestore, Cloneable {
     private final static Random RANDOM = new Random();
     private final static int UPPER_BOUND = 99_001;
+    @Expose
     @Id
 //    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "UUID")
 //    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "car_id")
     private String id;
+    @Expose
     @Column(name = "car_type")
     @Setter(AccessLevel.PROTECTED)
     private CarTypes type;
+    @Expose
     private CarManufacturers manufacturer;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "engine_id")
     @Fetch(FetchMode.JOIN)
     private Engine engine;
+    @Expose
     private CarColors color;
+    @Expose
     @Setter(AccessLevel.NONE)
     private int count;
+    @Expose
     @Setter(AccessLevel.NONE)
     private int price;
 

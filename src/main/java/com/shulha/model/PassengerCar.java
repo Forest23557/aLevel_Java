@@ -1,5 +1,6 @@
 package com.shulha.model;
 
+import com.google.gson.annotations.Expose;
 import lombok.Getter;
 
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "passenger_car")
 public class PassengerCar extends Car {
+    @Expose
     @Column(name = "passenger_count")
     private int passengerCount;
 
