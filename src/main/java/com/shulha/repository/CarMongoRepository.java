@@ -66,10 +66,10 @@ public class CarMongoRepository implements Repository<Car, String> {
 
         newData.append("engineId", car.getEngine().getId());
 
-        final Document updateEngine = new Document();
-        updateEngine.append("$set", newData);
+        final Document updateCar = new Document();
+        updateCar.append("$set", newData);
 
-        mongoDatabaseCollectionCars.updateOne(filter, updateEngine);
+        mongoDatabaseCollectionCars.updateOne(filter, updateCar);
     }
 
     private Car jsonToCar(final String json) {
@@ -160,25 +160,25 @@ public class CarMongoRepository implements Repository<Car, String> {
         return Optional.ofNullable(car);
     }
 
-    public static void main(String[] args) {
-        final CarMongoRepository carMongoRepository = CarMongoRepository.getInstance();
-        final PassengerCar passengerCar = new PassengerCar();
-        passengerCar.setEngine(new Engine(456, EngineTypes.CRDI));
-        final Truck truck = new Truck();
-        truck.setEngine(new Engine(380, EngineTypes.MPFI));
-        final String id = passengerCar.getId();
-        System.out.println(id);
-
-        carMongoRepository.removeAll();
-        carMongoRepository.save(passengerCar);
-        passengerCar.setPassengerCount(2);
-        passengerCar.setCount(5);
-        passengerCar.setEngine(new Engine(820, EngineTypes.TURBOCHARGED));
-        carMongoRepository.save(passengerCar);
-        carMongoRepository.save(truck);
+//    public static void main(String[] args) {
+//        final CarMongoRepository carMongoRepository = CarMongoRepository.getInstance();
+//        final PassengerCar passengerCar = new PassengerCar();
+//        passengerCar.setEngine(new Engine(456, EngineTypes.CRDI));
+//        final Truck truck = new Truck();
+//        truck.setEngine(new Engine(380, EngineTypes.MPFI));
+//        final String id = passengerCar.getId();
+//        System.out.println(id);
+//
+//        carMongoRepository.removeAll();
+//        carMongoRepository.save(passengerCar);
+//        passengerCar.setPassengerCount(2);
+//        passengerCar.setCount(5);
+//        passengerCar.setEngine(new Engine(820, EngineTypes.TURBOCHARGED));
+//        carMongoRepository.save(passengerCar);
+//        carMongoRepository.save(truck);
 //        System.out.println(carMongoRepository.getAll());
 //        System.out.println(carMongoRepository.getById(id));
 //        carMongoRepository.delete(id);
-        System.out.println(carMongoRepository.getAll());
-    }
+//        System.out.println(carMongoRepository.getAll());
+//    }
 }

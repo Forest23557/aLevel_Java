@@ -7,8 +7,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.shulha.config.MongoUtil;
 import com.shulha.model.Engine;
-import com.shulha.model.EngineTypes;
-import com.shulha.util.EngineGsonSerializer;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -34,7 +32,6 @@ public class EngineMongoRepository implements Repository<Engine, String> {
         final Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .serializeNulls()
-                .registerTypeAdapter(Engine.class, new EngineGsonSerializer())
                 .create();
 
         return gson.toJson(engine);
