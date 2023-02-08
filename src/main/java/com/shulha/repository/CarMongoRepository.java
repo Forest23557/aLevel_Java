@@ -86,6 +86,25 @@ public class CarMongoRepository implements Repository<Car, String> {
         return car;
     }
 
+    public List<Car> findCarsByOrderId(final String orderId) {
+        List<Car> carList = new ArrayList<>();
+
+        if (Objects.nonNull(orderId) && !orderId.isBlank()) {
+            final Document filter = new Document();
+            filter.append("orderId", orderId);
+            final FindIterable<Document> documentFindIterable =
+                    mongoDatabaseCollectionCars.find(filter);
+
+            for (final Document document : documentFindIterable) {
+                final String json = document.toJson();
+                final Car car = jsonToCar(json);
+                carList.add(car);
+            }
+        }
+
+        return carList;
+    }
+
     @Override
     public void delete(final String id) {
         if (Objects.nonNull(id) && !id.isBlank()) {

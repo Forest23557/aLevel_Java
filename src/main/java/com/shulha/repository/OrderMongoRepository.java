@@ -41,13 +41,6 @@ public class OrderMongoRepository implements Repository<Order, String> {
         jsonObject.addProperty("id", order.getId());
         jsonObject.addProperty("date", date);
 
-        final String ids = order.getCars()
-                .stream()
-                .map(car -> car.getId())
-                .collect(Collectors.joining(", "));
-
-        jsonObject.addProperty("carIds", ids);
-
         return jsonObject.toString();
     }
 
@@ -61,13 +54,6 @@ public class OrderMongoRepository implements Repository<Order, String> {
         final Document newData = new Document();
         newData.append("date", date);
 
-        final String ids = order.getCars()
-                .stream()
-                .map(car -> car.getId())
-                .collect(Collectors.joining(", "));
-
-        newData.append("carIds", ids);
-
         final Document updateOrder = new Document();
         updateOrder.append("$set", newData);
 
@@ -78,21 +64,13 @@ public class OrderMongoRepository implements Repository<Order, String> {
         final Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Order.class, new OrderGsonDeserializer())
                 .create();
-
         final Order order = gson.fromJson(json, Order.class);
+        final List<Car> carsByOrderId = carMongoRepository.findCarsByOrderId(order.getId());
 
-        final JsonParser jsonParser = new JsonParser();
-        final JsonObject jsonObject = (JsonObject) jsonParser.parse(json);
-        final String carIds = jsonObject.get("carIds").getAsString();
-        final List<String> carIdList = Arrays.asList(carIds.split(", "));
-
-        carIdList.stream()
-                .forEach(carId -> {
-                    carMongoRepository.getById(carId)
-                            .ifPresent(car ->
-                                    order.getCars()
-                                            .add(car));
-                });
+        carsByOrderId.stream()
+                .forEach(car ->
+                        order.getCars()
+                                .add(car));
 
         return order;
     }
@@ -127,8 +105,8 @@ public class OrderMongoRepository implements Repository<Order, String> {
                         update(order);
                     },
                     () -> {
-                        final String serializedEngine = orderToJson(order);
-                        final Document carDocument = Document.parse(serializedEngine);
+                        final String serializedOrder = orderToJson(order);
+                        final Document carDocument = Document.parse(serializedOrder);
 
                         mongoDatabaseCollectionOrders.insertOne(carDocument);
                     }
@@ -136,7 +114,10 @@ public class OrderMongoRepository implements Repository<Order, String> {
 
             order.getCars()
                     .stream()
-                    .forEach(car -> carMongoRepository.save(car));
+                    .forEach(car -> {
+                        car.setOrderId(order.getId());
+                        carMongoRepository.save(car);
+                    });
         }
     }
 

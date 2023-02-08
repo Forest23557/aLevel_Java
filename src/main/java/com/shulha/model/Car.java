@@ -45,6 +45,9 @@ public abstract class Car implements CountRestore, Cloneable {
     @Expose
     @Setter(AccessLevel.NONE)
     private int price;
+    @Transient
+    @Expose
+    private String orderId;
 
     public Car() {
         this(CarManufacturers.AUDI, new Engine(), CarColors.BLACK);
