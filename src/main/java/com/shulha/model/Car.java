@@ -1,6 +1,7 @@
 package com.shulha.model;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,7 @@ public abstract class Car implements CountRestore, Cloneable {
 //    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "UUID")
 //    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "car_id")
+    @SerializedName(value = "_id")
     private String id;
     @Expose
     @Column(name = "car_type")

@@ -38,7 +38,7 @@ public class OrderMongoRepository implements Repository<Order, String> {
         final String date = order.getDate()
                 .toString();
 
-        jsonObject.addProperty("id", order.getId());
+        jsonObject.addProperty("_id", order.getId());
         jsonObject.addProperty("date", date);
 
         return jsonObject.toString();
@@ -49,7 +49,7 @@ public class OrderMongoRepository implements Repository<Order, String> {
                 .toString();
 
         final Document filter = new Document();
-        filter.append("id", order.getId());
+        filter.append("_id", order.getId());
 
         final Document newData = new Document();
         newData.append("date", date);
@@ -79,7 +79,7 @@ public class OrderMongoRepository implements Repository<Order, String> {
     public void delete(final String id) {
         if (Objects.nonNull(id) && !id.isBlank()) {
             final Document filter = new Document();
-            filter.append("id", id);
+            filter.append("_id", id);
 
             getById(id)
                     .filter(Objects::nonNull)
@@ -148,7 +148,7 @@ public class OrderMongoRepository implements Repository<Order, String> {
 
         if (Objects.nonNull(id) && !id.isBlank()) {
             final Document filter = new Document();
-            filter.append("id", id);
+            filter.append("_id", id);
             final FindIterable<Document> documentFindIterable =
                     mongoDatabaseCollectionOrders.find(filter);
 
@@ -166,7 +166,7 @@ public class OrderMongoRepository implements Repository<Order, String> {
 //
 //        orderMongoRepository.removeAll();
 //
-//        for (int i = 0; i < 10; i++) {
+//        for (int i = 0; i < 5; i++) {
 //            final Random random = new Random();
 //            final int randomPower = random.nextInt(751) + 250;
 //            final int randomPower1 = random.nextInt(751) + 250;
@@ -191,10 +191,11 @@ public class OrderMongoRepository implements Repository<Order, String> {
 //            orderMongoRepository.save(order);
 //            System.out.println(orderMongoRepository.getById(id));
 //
-//            if (i < 5) {
+//            if (i < 2) {
 //                orderMongoRepository.delete(id);
 //            }
 //        }
+//        System.out.println("----".repeat(20));
 //
 //        System.out.println(orderMongoRepository.getAll());
 //    }

@@ -1,5 +1,6 @@
 package com.shulha.model;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -16,6 +17,7 @@ public class Engine {
 //    @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "UUID")
 //    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "engine_id")
+    @SerializedName(value = "_id")
     private String id;
     private int power;
     @Column(name = "engine_type")

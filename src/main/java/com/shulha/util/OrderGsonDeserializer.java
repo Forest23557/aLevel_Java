@@ -13,7 +13,7 @@ public class OrderGsonDeserializer implements JsonDeserializer<Order> {
         final JsonObject jsonObject = json.getAsJsonObject();
         final Order order = new Order();
 
-        final String id = jsonObject.get("id").getAsString();
+        final String id = jsonObject.get("_id").getAsString();
         final LocalDateTime date =
                 LocalDateTime.parse(
                         jsonObject.get("date")

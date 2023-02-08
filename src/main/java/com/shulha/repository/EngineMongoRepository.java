@@ -47,7 +47,7 @@ public class EngineMongoRepository implements Repository<Engine, String> {
     public void delete(final String id) {
         if (Objects.nonNull(id) && !id.isBlank()) {
             final Document filter = new Document();
-            filter.append("id", id);
+            filter.append("_id", id);
 
             mongoDatabaseCollectionEngines.findOneAndDelete(filter);
         }
@@ -55,7 +55,7 @@ public class EngineMongoRepository implements Repository<Engine, String> {
 
     private void update(final Engine engine) {
         final Document filter = new Document();
-        filter.append("id", engine.getId());
+        filter.append("_id", engine.getId());
 
         final Document newData = new Document();
         newData.append("type", engine.getType().toString());
@@ -111,7 +111,7 @@ public class EngineMongoRepository implements Repository<Engine, String> {
 
         if (Objects.nonNull(id) && !id.isBlank()) {
             final Document filter = new Document();
-            filter.append("id", id);
+            filter.append("_id", id);
             final FindIterable<Document> documentFindIterable =
                     mongoDatabaseCollectionEngines.find(filter);
 

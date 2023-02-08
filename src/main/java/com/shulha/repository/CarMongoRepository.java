@@ -49,7 +49,7 @@ public class CarMongoRepository implements Repository<Car, String> {
         final CarTypes carType = car.getType();
 
         final Document filter = new Document();
-        filter.append("id", car.getId());
+        filter.append("_id", car.getId());
 
         final Document newData = new Document();
         newData.append("type", carType.toString());
@@ -109,7 +109,7 @@ public class CarMongoRepository implements Repository<Car, String> {
     public void delete(final String id) {
         if (Objects.nonNull(id) && !id.isBlank()) {
             final Document filter = new Document();
-            filter.append("id", id);
+            filter.append("_id", id);
 
             getById(id)
                     .filter(Objects::nonNull)
@@ -168,7 +168,7 @@ public class CarMongoRepository implements Repository<Car, String> {
 
         if (Objects.nonNull(id) && !id.isBlank()) {
             final Document filter = new Document();
-            filter.append("id", id);
+            filter.append("_id", id);
             final FindIterable<Document> documentFindIterable =
                     mongoDatabaseCollectionCars.find(filter);
 

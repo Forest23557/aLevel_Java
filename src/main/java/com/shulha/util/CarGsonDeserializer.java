@@ -13,7 +13,7 @@ public class CarGsonDeserializer implements JsonDeserializer<Car> {
         final Car car;
         final Engine engine = new Engine();
 
-        final String id = jsonObject.get("id").getAsString();
+        final String id = jsonObject.get("_id").getAsString();
         final CarTypes carType = Enum.valueOf(CarTypes.class,
                 jsonObject.get("type").getAsString());
         final CarManufacturers manufacturer = Enum.valueOf(CarManufacturers.class,
