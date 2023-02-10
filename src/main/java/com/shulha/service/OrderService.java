@@ -4,10 +4,7 @@ import com.shulha.annotation.Autowired;
 import com.shulha.annotation.Singleton;
 import com.shulha.model.Car;
 import com.shulha.model.Order;
-import com.shulha.repository.CarMapRepository;
-import com.shulha.repository.OrderHibernateRepository;
-import com.shulha.repository.OrderJdbcRepository;
-import com.shulha.repository.Repository;
+import com.shulha.repository.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +28,7 @@ public class OrderService {
         return instance;
     }
 
-    @Autowired(set = OrderHibernateRepository.class)
+    @Autowired(set = OrderMongoRepository.class)
     public static OrderService getInstance(final Repository<Order, String> orderRepository) {
         instance = Optional
                 .ofNullable(instance)

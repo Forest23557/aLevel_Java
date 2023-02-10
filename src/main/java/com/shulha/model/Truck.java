@@ -1,5 +1,6 @@
 package com.shulha.model;
 
+import com.google.gson.annotations.Expose;
 import lombok.Getter;
 
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import java.util.Random;
 @Entity
 public class Truck extends Car {
     private static final Random RANDOM = new Random();
+    @Expose
     @Column(name = "load_capacity")
     private int loadCapacity;
 
