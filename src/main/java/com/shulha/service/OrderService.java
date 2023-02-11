@@ -28,7 +28,7 @@ public class OrderService {
         return instance;
     }
 
-    @Autowired(set = OrderMongoRepository.class)
+    @Autowired(set = OrderHibernateRepository.class)
     public static OrderService getInstance(final Repository<Order, String> orderRepository) {
         instance = Optional
                 .ofNullable(instance)

@@ -19,7 +19,7 @@ public class JdbcManager {
     private JdbcManager() {
     }
 
-    private static String getPassword() {
+    public static String getPassword() {
         String password = "";
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
