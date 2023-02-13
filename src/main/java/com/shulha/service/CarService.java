@@ -3,6 +3,7 @@ package com.shulha.service;
 import com.shulha.annotation.Autowired;
 import com.shulha.annotation.Singleton;
 import com.shulha.model.*;
+import com.shulha.repository.CarHibernateRepository;
 import com.shulha.repository.CarMapRepository;
 import com.shulha.repository.Repository;
 import com.shulha.types.RepositoryTypes;
@@ -36,7 +37,7 @@ public class CarService {
         return instance;
     }
 
-    @Autowired(set = CarMapRepository.class)
+    @Autowired(set = CarHibernateRepository.class)
     public static CarService getInstance(final Repository<Car, String> repository) {
         instance = Optional
                 .ofNullable(instance)
