@@ -1,0 +1,34 @@
+CREATE TABLE IF NOT EXISTS "car"(
+"car_id" VARCHAR(36) NOT NULL PRIMARY KEY,
+"color" INTEGER,
+"count" INTEGER NOT NULL,
+"manufacturer" INTEGER,
+"price" INTEGER NOT NULL,
+"car_type" INTEGER,
+"engine_id" VARCHAR(36),
+"order_id" VARCHAR(36),
+FOREIGN KEY ("engine_id")
+REFERENCES "engine"("engine_id")
+ON DELETE SET NULL
+ON UPDATE CASCADE,
+FOREIGN KEY ("order_id")
+REFERENCES "our_order"("order_id")
+ON DELETE SET NULL
+ON UPDATE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "truck"(
+"car_id" VARCHAR(36) NOT NULL PRIMARY KEY,
+"load_capacity" INTEGER NOT NULL,
+FOREIGN KEY ("car_id")
+REFERENCES car("car_id")
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "passenger_car"(
+"car_id" VARCHAR(36) NOT NULL PRIMARY KEY,
+"passenger_count" INTEGER NOT NULL,
+FOREIGN KEY ("car_id")
+REFERENCES car("car_id")
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);

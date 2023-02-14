@@ -1,6 +1,7 @@
 package com.shulha.repository;
 
 import com.shulha.annotation.Singleton;
+import com.shulha.config.FlywayUtil;
 import com.shulha.config.HibernateFactoryUtil;
 import com.shulha.model.Car;
 
@@ -18,6 +19,8 @@ public class CarHibernateRepository implements Repository<Car, String> {
     }
 
     public static CarHibernateRepository getInstance() {
+        FlywayUtil.getFlyway()
+                .migrate();
         instance = Optional.ofNullable(instance)
                 .orElseGet(CarHibernateRepository::new);
         return instance;

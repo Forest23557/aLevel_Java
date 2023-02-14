@@ -19,7 +19,7 @@ public class CompareAction implements Action {
             System.out.println("If the compare is positive it means the current car is bigger than the next car");
             System.out.println("If the compare is negative it means the current car is smaller than the next car");
             System.out.println("Compare: " + compare);
-            System.out.println("-_- ".repeat(5));
+            System.out.println("-_- ".repeat(20));
         }
     }
 }
