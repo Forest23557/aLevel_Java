@@ -55,15 +55,15 @@
         </encoder>
     </appender>
 
-    <logger name="org" level="off">
-        <appender-ref ref="STDOUT"/>
-    </logger>
+<!--    <logger name="org" level="off">-->
+<!--        <appender-ref ref="STDOUT"/>-->
+<!--    </logger>-->
 
     <logger name="com.shulha" level="info">
         <appender-ref ref="FILE-ROLLING"/>
+        <appender-ref ref="STDOUT" />
     </logger>
 
     <root level="info">
-        <appender-ref ref="STDOUT" />
     </root>
 </configuration>
