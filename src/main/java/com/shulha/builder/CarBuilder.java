@@ -1,25 +1,69 @@
 package com.shulha.builder;
 
-import com.shulha.model.Car;
-import com.shulha.model.CarColors;
-import com.shulha.model.CarManufacturers;
-import com.shulha.model.EngineTypes;
+import com.shulha.model.*;
+public abstract class CarBuilder<T extends CarBuilder> implements Builder {
+    protected Car car;
 
-public interface CarBuilder {
-    int MIN_PRICE = 1000;
-    CarBuilder chooseManufacturer(final CarManufacturers carManufacturer);
+    protected CarBuilder(final Car car) {
+        this.car = car;
+    }
 
-    CarBuilder insertEngine(final int enginePower, final EngineTypes engineType);
+    @Override
+    public Builder chooseManufacturer(final CarManufacturers carManufacturer) {
+        car.setManufacturer(carManufacturer);
+        return this;
+    }
 
-    CarBuilder paintCar(final CarColors color);
+    @Override
+    public Builder insertEngine(final int enginePower, final EngineTypes engineType) {
+        car.setEngine(new Engine(enginePower, engineType));
+        return this;
+    }
 
-    CarBuilder setCount(final int count);
+    @Override
+    public Builder paintCar(final CarColors color) {
+        car.setColor(color);
+        return this;
+    }
 
-    CarBuilder setPrice(final int price);
+    @Override
+    public Builder setCount(final int count) {
+        checkCount(count);
+        car.setCount(count);
+        return this;
+    }
 
-    CarBuilder checkCount();
+    @Override
+    public Builder setPrice(final int price) {
+        checkPrice(price);
+        car.setPrice(price);
+        return this;
+    }
 
-    CarBuilder checkPrice();
+    public abstract T getBuilder();
 
-    Car getCar();
+    private Builder checkCount(final int count) {
+        if (count > 1) {
+            System.out.printf("We have %s cars%n", count);
+        } else if (count == 1) {
+            System.out.printf("We have %s car%n", count);
+        } else {
+            throw new IllegalArgumentException("Car count must be more than 0!");
+        }
+        return this;
+    }
+
+    private Builder checkPrice(final int price) {
+        if (price > MIN_PRICE) {
+            System.out.println("We have correct price");
+        } else {
+            throw new IllegalArgumentException("Price should be more than " + MIN_PRICE + "!");
+        }
+        return this;
+    }
+
+    @Override
+    public Car getCar() {
+        return car;
+    }
 }
