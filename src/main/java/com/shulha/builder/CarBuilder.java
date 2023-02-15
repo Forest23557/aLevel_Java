@@ -42,7 +42,7 @@ public abstract class CarBuilder<T extends CarBuilder> implements Builder {
 
     public abstract T getBuilder();
 
-    private Builder checkCount(final int count) {
+    private void checkCount(final int count) {
         if (count > 1) {
             System.out.printf("We have %s cars%n", count);
         } else if (count == 1) {
@@ -50,16 +50,14 @@ public abstract class CarBuilder<T extends CarBuilder> implements Builder {
         } else {
             throw new IllegalArgumentException("Car count must be more than 0!");
         }
-        return this;
     }
 
-    private Builder checkPrice(final int price) {
+    private void checkPrice(final int price) {
         if (price > MIN_PRICE) {
             System.out.println("We have correct price");
         } else {
             throw new IllegalArgumentException("Price should be more than " + MIN_PRICE + "!");
         }
-        return this;
     }
 
     @Override
