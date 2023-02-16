@@ -80,9 +80,6 @@ public abstract class Car implements CountRestore, Cloneable {
     }
 
     public void setCount(final int count) {
-        if (count <= 0) {
-            return;
-        }
         this.count = count;
     }
 
