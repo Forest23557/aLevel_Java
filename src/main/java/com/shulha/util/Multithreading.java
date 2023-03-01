@@ -76,14 +76,6 @@ public class Multithreading {
         }
     }
 
-    private static Thread createAndStartThread(final Runnable runnable) {
-        final Thread thread = new Thread(runnable);
-
-        thread.start();
-
-        return thread;
-    }
-
     @SneakyThrows
     public static void joinThreads() {
         for (Thread thread : THREAD_SET) {
@@ -94,12 +86,13 @@ public class Multithreading {
     }
 
     public static void countSumOfArrayNumbers(final int numberOfThreads) {
-        for (int i = 0; i < numberOfThreads; i++) {
-            final int dividedArrayLength = RANDOM_NUMBERS.length / numberOfThreads;
-            final int upperBound = (i + 1) * dividedArrayLength;
-            final int lowerBound = i * dividedArrayLength;
-            final int[] partOfArray = Arrays.copyOfRange(RANDOM_NUMBERS, lowerBound, upperBound);
-            final Runnable runnable = new ParallelCounter(partOfArray, SUM_OF_NUMBERS_FROM_ARRAY);
+        for (int currentThread = 0; currentThread < numberOfThreads; currentThread++) {
+//            final int dividedArrayLength = RANDOM_NUMBERS.length / numberOfThreads;
+//            final int upperBound = (currentThread + 1) * dividedArrayLength;
+//            final int lowerBound = currentThread * dividedArrayLength;
+//            final int[] partOfArray = Arrays.copyOfRange(RANDOM_NUMBERS, lowerBound, upperBound);
+            final Runnable runnable = new ParallelCounter(RANDOM_NUMBERS, SUM_OF_NUMBERS_FROM_ARRAY,
+                    numberOfThreads, currentThread);
             final Thread thread = createAndStartThread(runnable);
 
             THREAD_SET.add(thread);
@@ -114,6 +107,13 @@ public class Multithreading {
 
     public static int[] getArray() {
         return RANDOM_NUMBERS.clone();
+    }
+
+    private static Thread createAndStartThread(final Runnable runnable) {
+        final Thread thread = new Thread(runnable);
+        thread.start();
+
+        return thread;
     }
 
     @SneakyThrows
