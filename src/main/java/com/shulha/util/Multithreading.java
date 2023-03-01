@@ -86,6 +86,8 @@ public class Multithreading {
     }
 
     public static void countSumOfArrayNumbers(final int numberOfThreads) {
+        checkNumberOfThreads(numberOfThreads);
+
         for (int currentThread = 0; currentThread < numberOfThreads; currentThread++) {
 //            final int dividedArrayLength = RANDOM_NUMBERS.length / numberOfThreads;
 //            final int upperBound = (currentThread + 1) * dividedArrayLength;
@@ -114,6 +116,14 @@ public class Multithreading {
         thread.start();
 
         return thread;
+    }
+
+    private static void checkNumberOfThreads(final int numberOfThreads) {
+        Optional.of(numberOfThreads)
+                .filter(number -> RANDOM_NUMBERS.length % number == 0)
+                .orElseThrow(
+                        () -> new IllegalArgumentException("Number of threads must be a multiple of the array length")
+                );
     }
 
     @SneakyThrows
