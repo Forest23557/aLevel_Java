@@ -2,10 +2,10 @@ package com.shulha.util;
 
 import lombok.SneakyThrows;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Phaser;
-import java.util.concurrent.TimeUnit;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.*;
 
 public class ConcurrentMultithreading {
     private static ExecutorService threadPool;
@@ -14,7 +14,7 @@ public class ConcurrentMultithreading {
     }
 
     @SneakyThrows
-    public static void executeTask(final int threadNumber) {
+    public static void executeTaskPhaser(final int threadNumber) {
         threadPool = Executors.newFixedThreadPool(threadNumber);
         final Phaser phaser = new Phaser(1);
         int currentPhase;
@@ -48,7 +48,40 @@ public class ConcurrentMultithreading {
         System.out.println("The thread pool has been shut down");
     }
 
+    @SneakyThrows
+    public static void executeTaskCyclicBarrier(final int threadNumber) {
+        threadPool = Executors.newFixedThreadPool(threadNumber);
+        final Set<Future<Integer>> futureSet = new HashSet<>();
+        final CyclicBarrier cyclicBarrier = new CyclicBarrier(threadNumber);
+        final CountDownLatch countDownLatch = new CountDownLatch(threadNumber * 3);
+
+        for (int i = 0; i < threadNumber; i++) {
+            final Callable<Integer> callable = new CyclicBarrierTask(cyclicBarrier, countDownLatch);
+            final Future<Integer> integerFuture = threadPool.submit(callable);
+            futureSet.add(integerFuture);
+        }
+
+        countDownLatch.await(5, TimeUnit.MINUTES);
+        System.out.println("All phases have been finished");
+
+        int sum = 0;
+
+        for (Future<Integer> future : futureSet) {
+            while (!future.isDone()) {
+                System.out.println("Future is not ready yet");
+                TimeUnit.MILLISECONDS.sleep(300);
+            }
+            final int integer = future.get();
+            sum += integer;
+        }
+
+        System.out.println("All time that threads spent is " + sum + " seconds");
+        threadPool.shutdown();
+        System.out.println("The thread pool has been shut down");
+    }
+
     public static void main(String[] args) {
-        ConcurrentMultithreading.executeTask(3);
+        ConcurrentMultithreading.executeTaskPhaser(3);
+        ConcurrentMultithreading.executeTaskCyclicBarrier(4);
     }
 }
