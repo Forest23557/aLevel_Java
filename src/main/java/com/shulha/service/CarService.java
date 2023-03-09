@@ -33,7 +33,7 @@ public class CarService {
     public static CarService getInstance() {
         instance = Optional
                 .ofNullable(instance)
-                .orElseGet(() -> new CarService(CarMapRepository.getInstance()));
+                .orElseGet(() -> new CarService(CarHibernateRepository.getInstance()));
         return instance;
     }
 
@@ -43,7 +43,7 @@ public class CarService {
                 .ofNullable(instance)
                 .orElseGet(() -> new CarService(Optional
                         .ofNullable(repository)
-                        .orElseGet(() -> CarMapRepository.getInstance())));
+                        .orElseGet(() -> CarHibernateRepository.getInstance())));
         return instance;
     }
 
